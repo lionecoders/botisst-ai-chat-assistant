@@ -1,3 +1,4 @@
+const path = require( 'path' );
 const defaultConfig = require( '@wordpress/scripts/config/webpack.config' );
 
 module.exports = {
@@ -5,5 +6,11 @@ module.exports = {
 	entry: {
 		'admin/baca-dashboard': './src/admin/index.js',
 		'frontend/baca-frontend': './src/frontend/index.js',
+	},
+	output: {
+		...( defaultConfig.output || {} ),
+		path: path.resolve( __dirname, 'build' ),
+		filename: '[name].js',
+		chunkFilename: '[name].js',
 	},
 };

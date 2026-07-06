@@ -1,21 +1,26 @@
-# Git ignore rules for plugin packaging
+# Files and folders to exclude from WordPress.org and GitHub release archives
 .git
 .gitignore
 .gitattributes
 .github
 .vscode
 .idea
-
-node_modules
-vendor
-.cache
-coverage
+/claude
+/node_modules
+/.cache
+/coverage
+/tests
+/src
 
 *.log
 *.zip
 .DS_Store
 Thumbs.db
 
-# Source and build folders not needed in release
-src
-build
+# Development-only config files
+composer.lock
+package.json
+package-lock.json
+gulpfile.js
+webpack.config.js
+/dist/

@@ -1,10 +1,10 @@
 # Dependencies
 /node_modules/
-/vendor/
 
 # Build and cache artifacts
 /.cache/
 /coverage/
+/dist/
 
 # Editor and OS files
 .DS_Store

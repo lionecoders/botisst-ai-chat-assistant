@@ -5,12 +5,16 @@
   "main": "index.js",
   "scripts": {
     "build": "wp-scripts build",
-    "start": "wp-scripts start"
+    "start": "wp-scripts start",
+    "zip": "gulp"
   },
   "dependencies": {
     "react-markdown": "^9.0.0"
   },
   "devDependencies": {
-    "@wordpress/scripts": "^27.0.0"
+    "@wordpress/scripts": "^27.0.0",
+    "del": "^8.0.1",
+    "gulp": "^5.0.1",
+    "gulp-zip": "^6.1.0"
   }
 }

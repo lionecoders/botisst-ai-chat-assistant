@@ -14,3 +14,18 @@
 *.gif binary
 *.webp binary
 *.zip binary
+
+# Exclude development-only files from GitHub ZIP downloads
+/.github export-ignore
+/.vscode export-ignore
+/.idea export-ignore
+/src export-ignore
+/node_modules export-ignore
+/tests export-ignore
+/.distignore export-ignore
+/.gitignore export-ignore
+composer.lock export-ignore
+package.json export-ignore
+package-lock.json export-ignore
+gulpfile.js export-ignore
+webpack.config.js export-ignore
