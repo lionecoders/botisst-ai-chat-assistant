@@ -145,7 +145,6 @@ class BACA_RAG_Engine {
 		try {
 			$query_embedding = $this->embedding_manager->embed( $query );
 			if ( ! $query_embedding ) {
-				error_log( 'RAG: Failed to generate query embedding for: ' . substr( $query, 0, 100 ) );
 				return [];
 			}
 
@@ -153,7 +152,6 @@ class BACA_RAG_Engine {
 
 			return $documents;
 		} catch ( Exception $e ) {
-			error_log( 'RAG Context Retrieval Error: ' . $e->getMessage() );
 			return [];
 		}
 	}

@@ -53,7 +53,6 @@ class BACA_Retriever {
 
 			return $this->format_results( $results );
 		} catch ( Exception $e ) {
-			error_log( 'Retriever Search Error: ' . $e->getMessage() );
 			return [];
 		}
 	}

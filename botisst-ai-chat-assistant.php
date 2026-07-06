@@ -131,7 +131,7 @@ if (!class_exists('BACA_Chat_Assistant')):
 				return;
 			}
 
-			if (isset($_GET['activate-multi']) || !current_user_can('manage_options')) {
+			if (isset($_GET['activate_multi']) || !current_user_can('manage_options')) {
 				return;
 			}
 

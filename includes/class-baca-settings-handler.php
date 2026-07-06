@@ -686,7 +686,6 @@ class BACA_Settings_Handler
 
 			$rag_links = $rag_data['links'];
 		} catch (Exception $e) {
-			error_log('RAG Context Error: ' . $e->getMessage());
 			$rag_links = [];
 		}
 
@@ -696,14 +695,12 @@ class BACA_Settings_Handler
 				$system_message .= "\n\nCustom Data:\n" . $mcp_context;
 			}
 		} catch (Exception $e) {
-			error_log('MCP Server context injection failed: ' . $e->getMessage());
 		}
 
 		try {
 			$memory = $this->get_optimized_memory($session_id, $prompt, $system_message);
 			$system_message = $memory['system_message'];
 		} catch (Exception $e) {
-			error_log('Memory optimization failed: ' . $e->getMessage());
 		}
 
 		try {
@@ -728,13 +725,11 @@ class BACA_Settings_Handler
 		try {
 			$this->save_conversation($prompt, $ai_message, $session_id, $provider, $model_id, $bot, $email);
 		} catch (Exception $e) {
-			error_log('Failed to save conversation: ' . $e->getMessage());
 		}
 
 		try {
 			$formatted_messages = $this->get_formatted_messages($session_id);
 		} catch (Exception $e) {
-			error_log('Failed to fetch messages: ' . $e->getMessage());
 			$formatted_messages = [];
 		}
 
@@ -949,7 +944,6 @@ Always expand on the previous answer when the user asks for more information.
 
 			return $this->baca_get_custom_mcp_context($prompt, $settings) ?: '';
 		} catch (Exception $e) {
-			error_log('MCP context error: ' . $e->getMessage());
 			return '';
 		}
 	}
@@ -1005,11 +999,6 @@ Always expand on the previous answer when the user asks for more information.
 			}
 
 		} catch (Exception $e) {
-
-			error_log(
-				'Memory optimization failed: ' .
-				$e->getMessage()
-			);
 		}
 
 		return [
@@ -1029,8 +1018,12 @@ Always expand on the previous answer when the user asks for more information.
 		if (empty($key)) {
 			throw new Exception(
 				sprintf(
-					__('API Key missing for provider: %s', 'botisst-ai-chat-assistant'),
-					$provider
+					/* translators: %s: Provider name. */
+					esc_html__(
+						'API Key missing for provider: %s',
+						'botisst-ai-chat-assistant'
+					),
+					esc_html( $provider )
 				)
 			);
 		}
@@ -1060,11 +1053,6 @@ Always expand on the previous answer when the user asks for more information.
 			);
 
 		} catch (\Throwable $e) {
-
-			error_log(
-				'Model load failed: ' .
-				$e->getMessage()
-			);
 		}
 
 		/*
@@ -1139,13 +1127,7 @@ Always expand on the previous answer when the user asks for more information.
 			return $response;
 
 		} catch (\Throwable $e) {
-
-			error_log(
-				'AI Generation Error: ' .
-				$e->getMessage()
-			);
-
-			throw new Exception($e->getMessage());
+			throw new Exception( esc_html( $e->getMessage() ) );
 		}
 	}
 
@@ -1201,7 +1183,6 @@ Always expand on the previous answer when the user asks for more information.
 				}
 			}
 		} catch (Exception $e) {
-			error_log('Failed to fetch formatted messages: ' . $e->getMessage());
 		}
 
 		return $formatted_messages;
@@ -1464,12 +1445,6 @@ Always expand on the previous answer when the user asks for more information.
 			return trim($context);
 
 		} catch (Exception $e) {
-
-			error_log(
-				'RAG Context Error: ' .
-				$e->getMessage()
-			);
-
 			return '';
 		}
 	}
@@ -2258,12 +2233,6 @@ Always expand on the previous answer when the user asks for more information.
 			);
 
 		} catch (Exception $e) {
-
-			error_log(
-				'RAG Index Error: ' .
-				$e->getMessage()
-			);
-
 			return new \WP_REST_Response(
 				[
 					'success' => false,

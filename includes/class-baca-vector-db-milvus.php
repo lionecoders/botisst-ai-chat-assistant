@@ -237,7 +237,6 @@ class BACA_Vector_DB_Milvus extends BACA_Vector_DB_Base {
 		);
 
 		if ( is_wp_error( $response ) ) {
-			error_log( 'Milvus search error: ' . $response->get_error_message() );
 			return [];
 		}
 

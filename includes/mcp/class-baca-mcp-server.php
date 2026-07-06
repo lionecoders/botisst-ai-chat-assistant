@@ -38,7 +38,6 @@ class BACA_MCP_Server {
 		try {
 			return self::get_instance();
 		} catch ( Exception $e ) {
-			error_log( 'BACA_MCP_Server load error: ' . $e->getMessage() );
 			return null;
 		}
 	}
@@ -350,9 +349,5 @@ class BACA_MCP_Server {
 			)
 		);
 
-		// Log cleanup
-		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-			error_log( '[MCP] Legacy cache cleanup completed' );
-		}
 	}
 }

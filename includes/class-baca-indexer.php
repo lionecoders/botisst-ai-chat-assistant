@@ -207,11 +207,6 @@ class BACA_Indexer
 							$post->ID .
 							': ' .
 							$e->getMessage();
-
-						error_log(
-							'BACA Post Index Error: ' .
-							$e->getMessage()
-						);
 					}
 				}
 
@@ -225,10 +220,6 @@ class BACA_Indexer
 					': ' .
 					$e->getMessage();
 
-				error_log(
-					'BACA Type Index Error: ' .
-					$e->getMessage()
-				);
 			}
 		}
 
@@ -439,14 +430,6 @@ class BACA_Indexer
 			return true;
 
 		} catch (Exception $e) {
-
-			error_log(
-				'Post indexing error for ID ' .
-				$post->ID .
-				': ' .
-				$e->getMessage()
-			);
-
 			throw $e;
 		}
 	}
@@ -561,7 +544,6 @@ class BACA_Indexer
 					['%s', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s']
 				);
 				if (false === $result) {
-					error_log('Failed to update document: ' . $data['document_id'] . '. Error: ' . $wpdb->last_error);
 				}
 				return $existing->id;
 			} else {
@@ -572,13 +554,11 @@ class BACA_Indexer
 					['%s', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s']
 				);
 				if (false === $result) {
-					error_log('Failed to insert document: ' . $data['document_id'] . '. Error: ' . $wpdb->last_error);
 					return false;
 				}
 				return $wpdb->insert_id;
 			}
 		} catch (Exception $e) {
-			error_log('Document storage error: ' . $e->getMessage());
 			return false;
 		}
 	}
@@ -656,12 +636,6 @@ class BACA_Indexer
 				);
 
 				if (false === $result) {
-
-					error_log(
-						'Failed updating chunk: ' .
-						$wpdb->last_error
-					);
-
 					return false;
 				}
 
@@ -685,24 +659,12 @@ class BACA_Indexer
 			);
 
 			if (false === $result) {
-
-				error_log(
-					'Failed inserting chunk: ' .
-					$wpdb->last_error
-				);
-
 				return false;
 			}
 
 			return (int) $wpdb->insert_id;
 
 		} catch (Exception $e) {
-
-			error_log(
-				'Chunk storage error: ' .
-				$e->getMessage()
-			);
-
 			return false;
 		}
 	}
@@ -880,12 +842,6 @@ class BACA_Indexer
 					);
 
 				if (is_wp_error($result)) {
-
-					error_log(
-						'Vector Storage Error: ' .
-						$result->get_error_message()
-					);
-
 					$wpdb->update(
 						$chunks_table,
 						[
@@ -918,12 +874,6 @@ class BACA_Indexer
 				$processed++;
 
 			} catch (Exception $e) {
-
-				error_log(
-					'Embedding Error: ' .
-					$e->getMessage()
-				);
-
 				$wpdb->update(
 					$chunks_table,
 					[

@@ -76,17 +76,15 @@ class BACA_Embedding_Manager {
 					$embedding = $this->embed_local( $text );
 					break;
 				default:
-					error_log( 'RAG Embedding: Unknown provider - ' . $provider );
 					$embedding = $this->embed_google( $text );
 			}
 
 			if ( ! $embedding ) {
-				error_log( 'RAG Embedding: Failed to generate embedding for provider: ' . $provider . ' | Text length: ' . strlen( $text ) );
+				// Embedding generation failed silently.
 			}
 
 			return $embedding;
 		} catch ( Exception $e ) {
-			error_log( 'Embedding Error: ' . $e->getMessage() );
 			throw $e;
 		}
 	}
@@ -125,14 +123,14 @@ class BACA_Embedding_Manager {
 		);
 
 		if ( is_wp_error( $response ) ) {
-			throw new Exception( 'OpenAI Embedding Network Error: ' . $response->get_error_message() );
+			throw new Exception( 'OpenAI Embedding Network Error: ' . esc_html( $response->get_error_message() ) );
 		}
 
 		$data = json_decode( wp_remote_retrieve_body( $response ), true );
 
 		if ( ! empty( $data['error'] ) ) {
 			$error_msg = isset($data['error']['message']) ? $data['error']['message'] : wp_json_encode($data['error']);
-			throw new Exception( 'OpenAI API Error: ' . $error_msg );
+			throw new Exception( 'OpenAI API Error: ' . esc_html( $error_msg ) );
 		}
 
 		if ( ! empty( $data['data'][0]['embedding'] ) ) {
@@ -189,7 +187,7 @@ class BACA_Embedding_Manager {
 		);
 
 		if ( is_wp_error( $response ) ) {
-			throw new Exception( 'Google Embedding Network Error: ' . $response->get_error_message() );
+			throw new Exception( 'Google Embedding Network Error: ' . esc_html( $response->get_error_message() ) );
 		}
 
 		$body = wp_remote_retrieve_body( $response );
@@ -197,7 +195,7 @@ class BACA_Embedding_Manager {
 
 		if ( ! empty( $data['error'] ) ) {
 			$error_msg = isset($data['error']['message']) ? $data['error']['message'] : wp_json_encode($data['error']);
-			throw new Exception( 'Google API Error: ' . $error_msg );
+			throw new Exception( 'Google API Error: ' . esc_html( $error_msg ) );
 		}
 
 		if ( ! empty( $data['embedding']['values'] ) ) {
