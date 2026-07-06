@@ -1,0 +1,21 @@
+# Git ignore rules for plugin packaging
+.git
+.gitignore
+.gitattributes
+.github
+.vscode
+.idea
+
+node_modules
+vendor
+.cache
+coverage
+
+*.log
+*.zip
+.DS_Store
+Thumbs.db
+
+# Source and build folders not needed in release
+src
+build

@@ -1,1 +1,17 @@
-/node_modules
+# Dependencies
+/node_modules/
+/vendor/
+
+# Build and cache artifacts
+/.cache/
+/coverage/
+
+# Editor and OS files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Logs and archives
+*.log
+*.zip
