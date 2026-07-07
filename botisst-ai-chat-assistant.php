@@ -117,7 +117,10 @@ if (!class_exists('BACA_Chat_Assistant')):
 		 */
 		public function baca_maybe_redirect_after_activation()
 		{
-			if (isset($_GET['page']) && $_GET['page'] === 'baca' && isset($_GET['baca_wizard_status']) && $_GET['baca_wizard_status'] === 'completed') {
+			$wizard_status_nonce = isset($_GET['baca_wizard_status_nonce']) ? sanitize_text_field(wp_unslash($_GET['baca_wizard_status_nonce'])) : '';
+			$has_valid_wizard_status_nonce = empty($wizard_status_nonce) || wp_verify_nonce($wizard_status_nonce, 'baca_wizard_status');
+
+			if ($has_valid_wizard_status_nonce && isset($_GET['page']) && 'baca' === sanitize_text_field(wp_unslash($_GET['page'])) && isset($_GET['baca_wizard_status']) && 'completed' === sanitize_text_field(wp_unslash($_GET['baca_wizard_status']))) {
 				update_option('baca_setup_wizard_status', 'completed');
 			}
 
@@ -226,12 +229,17 @@ if (!class_exists('BACA_Chat_Assistant')):
 		 */
 		public function baca_render_setup_wizard_notice()
 		{
-			if (isset($_GET['page']) && $_GET['page'] === 'baca') {
+			$current_screen = function_exists('get_current_screen') ? get_current_screen() : null;
+			if ($current_screen && 'toplevel_page_baca' === $current_screen->id) {
 				return;
 			}
 
 			if (get_option('baca_setup_wizard_status') !== 'completed') {
-				$dashboard_link = admin_url('admin.php?page=baca&baca_wizard_status=completed');
+				$dashboard_link = wp_nonce_url(
+					admin_url('admin.php?page=baca&baca_wizard_status=completed'),
+					'baca_wizard_status',
+					'baca_wizard_status_nonce'
+				);
 				echo '<div class="notice notice-warning is-dismissible baca-setup-notice">';
 				echo '<p>' . sprintf(
 					/* translators: 1: run wizard link class/trigger, 2: dashboard link */
