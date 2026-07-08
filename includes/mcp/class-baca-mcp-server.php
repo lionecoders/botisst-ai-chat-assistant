@@ -176,7 +176,7 @@ class BACA_MCP_Server {
 
 		// Check for WooCommerce products
 		if ( class_exists( 'WooCommerce' ) ) {
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Optimized custom query.
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Optimized custom query.
 			$products = $wpdb->get_results(
 				"SELECT ID, post_title as name, post_excerpt as description, post_content
 				 FROM {$wpdb->posts}
@@ -202,7 +202,7 @@ class BACA_MCP_Server {
 		}
 
 		// Fallback to generic products
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Fallback query.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Fallback query.
 		$products = $wpdb->get_results(
 			"SELECT ID, post_title as name, post_excerpt as description
 			 FROM {$wpdb->posts}
@@ -232,7 +232,7 @@ class BACA_MCP_Server {
 	private function fetch_posts() {
 		global $wpdb;
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Optimized custom query.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Optimized custom query.
 		$posts = $wpdb->get_results(
 			"SELECT ID, post_title as title, post_excerpt as excerpt, post_content, post_type
 			 FROM {$wpdb->posts}
@@ -334,6 +334,7 @@ class BACA_MCP_Server {
 		global $wpdb;
 
 		// Remove old site data cache options
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Legacy cache cleanup, caching not applicable.
 		$wpdb->query(
 			$wpdb->prepare(
 				"DELETE FROM {$wpdb->options} WHERE option_name LIKE %s",
@@ -342,6 +343,7 @@ class BACA_MCP_Server {
 		);
 
 		// Remove old transients
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Legacy transients cleanup, caching not applicable.
 		$wpdb->query(
 			$wpdb->prepare(
 				"DELETE FROM {$wpdb->options} WHERE option_name LIKE %s",

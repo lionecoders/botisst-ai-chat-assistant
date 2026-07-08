@@ -512,10 +512,10 @@ class BACA_Indexer
 		try {
 			$table = esc_sql($wpdb->prefix . 'baca_rag_documents');
 
-			// Check if exists
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct database query on custom table.
 			$existing = $wpdb->get_row(
 				$wpdb->prepare(
-					"SELECT id FROM {$table} WHERE document_id = %s",
+					"SELECT id FROM {$table} WHERE document_id = %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is dynamic but safe.
 					$data['document_id']
 				)
 			);
@@ -537,6 +537,7 @@ class BACA_Indexer
 
 			if ($existing) {
 				// Update
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct update to custom table.
 				$result = $wpdb->update(
 					$table,
 					$insert_data,
@@ -548,6 +549,7 @@ class BACA_Indexer
 				return $existing->id;
 			} else {
 				// Insert
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Direct insert to custom table.
 				$result = $wpdb->insert(
 					$table,
 					$insert_data,
@@ -587,12 +589,10 @@ class BACA_Indexer
 			/*
 			 * Check existing chunk
 			 */
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct database query on custom table.
 			$existing = $wpdb->get_var(
 				$wpdb->prepare(
-					"SELECT id
-				FROM {$table}
-				WHERE document_id = %s
-				AND chunk_index = %d",
+					"SELECT id FROM {$table} WHERE document_id = %s AND chunk_index = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is dynamic but safe.
 					$document_id,
 					$index
 				)
@@ -616,6 +616,7 @@ class BACA_Indexer
 			 */
 			if ($existing) {
 
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct update to custom table.
 				$result = $wpdb->update(
 					$table,
 					$insert_data,
@@ -645,6 +646,7 @@ class BACA_Indexer
 			/*
 			 * Insert new chunk
 			 */
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Direct insert to custom table.
 			$result = $wpdb->insert(
 				$table,
 				$insert_data,
@@ -681,9 +683,10 @@ class BACA_Indexer
 
 		$table = esc_sql($wpdb->prefix . 'baca_rag_documents');
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct database query on custom table.
 		$result = $wpdb->get_row(
 			$wpdb->prepare(
-				"SELECT * FROM {$table} WHERE document_id = %s",
+				"SELECT * FROM {$table} WHERE document_id = %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is dynamic but safe.
 				$document_id
 			),
 			ARRAY_A
@@ -708,6 +711,7 @@ class BACA_Indexer
 		$chunks_table = esc_sql($wpdb->prefix . 'baca_rag_chunks');
 
 		// Remove chunks
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct deletion from custom table.
 		$wpdb->delete(
 			$chunks_table,
 			['document_id' => $document_id],
@@ -715,6 +719,7 @@ class BACA_Indexer
 		);
 
 		// Remove document
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct deletion from custom table.
 		$wpdb->delete(
 			$docs_table,
 			['document_id' => $document_id],
@@ -746,11 +751,9 @@ class BACA_Indexer
 
 		$settings = $this->get_settings();
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct database query on custom table.
 		$pending_chunks = $wpdb->get_results(
-			"SELECT *
-		FROM {$chunks_table}
-		WHERE embedding_status = 'pending'
-		LIMIT 50",
+			"SELECT * FROM {$chunks_table} WHERE embedding_status = 'pending' LIMIT 50", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is dynamic but safe.
 			ARRAY_A
 		);
 
@@ -816,6 +819,7 @@ class BACA_Indexer
 					!is_array($embedding)
 				) {
 
+					// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct update to custom table status.
 					$wpdb->update(
 						$chunks_table,
 						[
@@ -842,6 +846,7 @@ class BACA_Indexer
 					);
 
 				if (is_wp_error($result)) {
+					// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct update to custom table status.
 					$wpdb->update(
 						$chunks_table,
 						[
@@ -860,6 +865,7 @@ class BACA_Indexer
 				/*
 				 * Mark completed
 				 */
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct update to custom table status.
 				$wpdb->update(
 					$chunks_table,
 					[
@@ -874,6 +880,7 @@ class BACA_Indexer
 				$processed++;
 
 			} catch (Exception $e) {
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct update to custom table status.
 				$wpdb->update(
 					$chunks_table,
 					[
@@ -912,10 +919,10 @@ class BACA_Indexer
 
 		$table = esc_sql($wpdb->prefix . 'baca_rag_metadata');
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct database query on custom table.
 		$wpdb->query(
 			$wpdb->prepare(
-				"INSERT INTO {$table} (meta_key, meta_value) VALUES (%s, %s)
-				ON DUPLICATE KEY UPDATE meta_value = VALUES(meta_value), updated_at = CURRENT_TIMESTAMP",
+				"INSERT INTO {$table} (meta_key, meta_value) VALUES (%s, %s) ON DUPLICATE KEY UPDATE meta_value = VALUES(meta_value), updated_at = CURRENT_TIMESTAMP", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is dynamic but safe.
 				$key,
 				$value
 			)

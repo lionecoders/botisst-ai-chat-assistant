@@ -64,11 +64,12 @@ class BACA_Memory_Optimizer {
 			return [];
 		}
 
-		$table = $wpdb->prefix . 'baca_sessions';
+		$table = esc_sql( $wpdb->prefix . 'baca_sessions' );
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct database query on custom table.
 		$messages_json = $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT content FROM {$table} WHERE session_id = %s LIMIT 1",
+				"SELECT content FROM {$table} WHERE session_id = %s LIMIT 1", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is dynamic but safe.
 				$session_id
 			)
 		);
@@ -121,11 +122,12 @@ class BACA_Memory_Optimizer {
 		}
 
 		global $wpdb;
-		$table = $wpdb->prefix . 'baca_sessions';
+		$table = esc_sql( $wpdb->prefix . 'baca_sessions' );
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct database query on custom table.
 		$messages_json = $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT content FROM {$table} WHERE session_id = %s LIMIT 1",
+				"SELECT content FROM {$table} WHERE session_id = %s LIMIT 1", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is dynamic but safe.
 				$session_id
 			)
 		);

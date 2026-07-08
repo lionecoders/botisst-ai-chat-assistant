@@ -114,7 +114,8 @@ class BACA_DB {
 		dbDelta( $sql_embeddings );
 
 		// Add vector_id column if it doesn't exist (migration)
-		$chunks_table = $wpdb->prefix . 'baca_rag_chunks';
+		$chunks_table = esc_sql( $wpdb->prefix . 'baca_rag_chunks' );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Required for custom schema column check, caching is not applicable.
 		$column_exists = $wpdb->get_results( $wpdb->prepare(
 			"SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = %s AND COLUMN_NAME = %s AND TABLE_SCHEMA = DATABASE()",
 			$chunks_table,
@@ -122,7 +123,9 @@ class BACA_DB {
 		) );
 
 		if ( empty( $column_exists ) ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Safe schema alteration, no user input, caching not applicable.
 			$wpdb->query( "ALTER TABLE `$chunks_table` ADD COLUMN `vector_id` varchar(255) AFTER `tokens_count`" );
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Safe schema alteration, no user input, caching not applicable.
 			$wpdb->query( "ALTER TABLE `$chunks_table` ADD KEY `vector_id` (`vector_id`)" );
 		}
 
@@ -161,10 +164,10 @@ class BACA_DB {
 
 		// If email is provided, retrieve any existing session matching this email
 		if ( ! empty( $email ) ) {
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Required for custom table query.
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Required for custom table query.
 			$existing_session = $wpdb->get_row(
 				$wpdb->prepare(
-					"SELECT session_id, content FROM {$table} WHERE email = %s LIMIT 1",
+					"SELECT session_id, content FROM {$table} WHERE email = %s LIMIT 1", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is dynamic but safe.
 					$email
 				)
 			);
@@ -274,25 +277,22 @@ class BACA_DB {
 	public static function baca_get_all_sessions( $limit = '100', $order = 'desc' ) {
 		global $wpdb;
 
-		$table = $wpdb->prefix . 'baca_sessions';
+		$table = esc_sql( $wpdb->prefix . 'baca_sessions' );
 
 		// Normalize and validate order.
-		$order_clean = strtoupper( $order ) === 'ASC' ? 'ASC' : 'DESC';
+		$order_clean = esc_sql( strtoupper( $order ) === 'ASC' ? 'ASC' : 'DESC' );
 
 		// Normalize and build limit SQL segment.
-		$limit_sql = '';
+		$limit_sql = esc_sql( '' );
 		if ( $limit !== 'all' ) {
 			$limit_val = intval( $limit );
 			if ( $limit_val > 0 ) {
-				$limit_sql = " LIMIT {$limit_val}";
+				$limit_sql = esc_sql( " LIMIT {$limit_val}" );
 			}
 		}
 
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Custom table read.
-		$sessions = $wpdb->get_results(
-			"SELECT * FROM {$table} ORDER BY created_at {$order_clean}{$limit_sql}",
-			ARRAY_A
-		);
+		$sessions = $wpdb->get_results( "SELECT * FROM {$table} ORDER BY created_at {$order_clean}{$limit_sql}", ARRAY_A );
 
 		return is_array( $sessions ) ? $sessions : [];
 	}

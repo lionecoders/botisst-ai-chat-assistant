@@ -553,15 +553,12 @@ class BACA_Settings_Handler
 			return '';
 		}
 
-		$table = $wpdb->prefix . 'baca_sessions';
+		$table = esc_sql( $wpdb->prefix . 'baca_sessions' );
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct database query on custom table.
 		$messages_json = $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT content
-			FROM {$table}
-			WHERE session_id = %s
-			ORDER BY id DESC
-			LIMIT 1",
+				"SELECT content FROM {$table} WHERE session_id = %s ORDER BY id DESC LIMIT 1", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is dynamic but safe.
 				$session_id
 			)
 		);
@@ -1161,6 +1158,7 @@ Always expand on the previous answer when the user asks for more information.
 			global $wpdb;
 
 			// Use prepared statement properly
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Safe table prefix, direct query required.
 			$existing_messages = $wpdb->get_var(
 				$wpdb->prepare(
 					"SELECT content FROM {$wpdb->prefix}baca_sessions WHERE session_id = %s",
@@ -1463,15 +1461,12 @@ Always expand on the previous answer when the user asks for more information.
 			return '';
 		}
 
-		$table = $wpdb->prefix . 'baca_sessions';
+		$table = esc_sql( $wpdb->prefix . 'baca_sessions' );
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct database query on custom table.
 		$messages_json = $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT content
-			FROM {$table}
-			WHERE session_id = %s
-			ORDER BY id DESC
-			LIMIT 1",
+				"SELECT content FROM {$table} WHERE session_id = %s ORDER BY id DESC LIMIT 1", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is dynamic but safe.
 				$session_id
 			)
 		);

@@ -90,9 +90,10 @@ class BACA_Retriever {
 		$documents_table = esc_sql( $wpdb->prefix . 'baca_rag_documents' );
 
 		foreach ( $results as $result ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct database query on custom table.
 			$chunk = $wpdb->get_row(
 				$wpdb->prepare(
-					"SELECT * FROM {$chunks_table} WHERE id = %d",
+					"SELECT * FROM {$chunks_table} WHERE id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is dynamic but safe.
 					$result['chunk_id']
 				),
 				ARRAY_A
@@ -100,9 +101,10 @@ class BACA_Retriever {
 
 			if ( $chunk ) {
 				// Get document info for URL and title
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct database query on custom table.
 				$document = $wpdb->get_row(
 					$wpdb->prepare(
-						"SELECT title, url FROM {$documents_table} WHERE document_id = %s",
+						"SELECT title, url FROM {$documents_table} WHERE document_id = %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is dynamic but safe.
 						$chunk['document_id']
 					),
 					ARRAY_A
@@ -132,11 +134,13 @@ class BACA_Retriever {
 		$chunks_table    = esc_sql( $wpdb->prefix . 'baca_rag_chunks' );
 		$documents_table = esc_sql( $wpdb->prefix . 'baca_rag_documents' );
 
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Safe table names, direct queries.
 		$total_chunks = $wpdb->get_var( "SELECT COUNT(*) FROM {$chunks_table}" );
 		$total_documents = $wpdb->get_var( "SELECT COUNT(*) FROM {$documents_table}" );
 		$pending_chunks = $wpdb->get_var( "SELECT COUNT(*) FROM {$chunks_table} WHERE embedding_status = 'pending'" );
 		$completed_chunks = $wpdb->get_var( "SELECT COUNT(*) FROM {$chunks_table} WHERE embedding_status = 'completed'" );
 		$total_tokens = $wpdb->get_var( "SELECT SUM(tokens_count) FROM {$chunks_table}" );
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
 		return [
 			'total_documents'   => $total_documents ?? 0,

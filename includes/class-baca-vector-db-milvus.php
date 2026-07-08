@@ -95,9 +95,10 @@ class BACA_Vector_DB_Milvus extends BACA_Vector_DB_Base {
 
 		// Get chunk content from database
 		$chunks_table = esc_sql( $wpdb->prefix . 'baca_rag_chunks' );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Table name is safe, direct query required.
 		$chunk = $wpdb->get_row(
 			$wpdb->prepare(
-				"SELECT content FROM {$chunks_table} WHERE id = %d",
+				"SELECT content FROM {$chunks_table} WHERE id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is dynamic but safe.
 				$chunk_id
 			)
 		);
@@ -141,6 +142,7 @@ class BACA_Vector_DB_Milvus extends BACA_Vector_DB_Base {
 		$status_code = wp_remote_retrieve_response_code( $response );
 		if ( $status_code >= 200 && $status_code < 300 ) {
 			// Update chunk status in database
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct update to custom table.
 			$wpdb->update(
 				$chunks_table,
 				[
@@ -332,6 +334,7 @@ class BACA_Vector_DB_Milvus extends BACA_Vector_DB_Base {
 
 		// Update chunk status in database
 		$chunks_table = esc_sql( $wpdb->prefix . 'baca_rag_chunks' );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct update to custom table.
 		$wpdb->update(
 			$chunks_table,
 			[

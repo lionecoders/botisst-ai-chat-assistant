@@ -131,6 +131,7 @@ class BACA_Vector_DB_Pinecone extends BACA_Vector_DB_Base
 
 		// Update chunk status in database
 		$chunks_table = esc_sql($wpdb->prefix . 'baca_rag_chunks');
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct update to custom table.
 		$wpdb->update(
 			$chunks_table,
 			[
@@ -327,6 +328,7 @@ class BACA_Vector_DB_Pinecone extends BACA_Vector_DB_Base
 
 		// Update chunk status in database
 		$chunks_table = esc_sql($wpdb->prefix . 'baca_rag_chunks');
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct update to custom table.
 		$wpdb->update(
 			$chunks_table,
 			[
