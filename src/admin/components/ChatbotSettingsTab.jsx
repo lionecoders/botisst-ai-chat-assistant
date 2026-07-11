@@ -36,7 +36,8 @@ export default function ChatbotSettingsTab( { settings, onSave, showNotice } ) {
 		bubble_style: botSettings.bubble_style || 'rounded',
 		default_provider: botSettings.default_provider || 'openai',
 		save_chat: botSettings.save_chat ?? false,
-		enable_pre_questions: botSettings.enable_pre_questions ?? true,
+		ask_email: botSettings.ask_email ?? false,
+		enable_pre_questions: botSettings.enable_pre_questions ?? false,
 	} );
 
 	const handleChange = ( name, value ) => {
@@ -361,6 +362,13 @@ export default function ChatbotSettingsTab( { settings, onSave, showNotice } ) {
 							__( 'Enable user session continuity', 'botisst-ai-chat-assistant' ),
 							formData.save_chat,
 							( v ) => handleChange( 'save_chat', v )
+						) }
+						{ formData.save_chat && renderToggleCard(
+							'ask_email',
+							__( 'Ask User Email', 'botisst-ai-chat-assistant' ),
+							__( 'Prompt user to enter their email to save chat continuity', 'botisst-ai-chat-assistant' ),
+							formData.ask_email ?? false,
+							( v ) => handleChange( 'ask_email', v )
 						) }
 						{ renderToggleCard(
 							'enable_pre_questions',

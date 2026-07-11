@@ -128,6 +128,7 @@ class BACA_Indexer
 	 */
 	public function index_documents_by_type($post_types = [])
 	{
+		global $wpdb;
 
 		if (empty($post_types)) {
 			return [
@@ -150,7 +151,40 @@ class BACA_Indexer
 			current_time('mysql')
 		);
 
+		$registered_types = get_post_types();
+		$valid_post_types = array_intersect($post_types, $registered_types);
+		$docs_table = esc_sql($wpdb->prefix . 'baca_rag_documents');
+
+		/*
+		 * Clean up post types that are not selected or no longer registered
+		 */
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct database query on custom table.
+		$db_post_types = $wpdb->get_col("SELECT DISTINCT post_type FROM {$docs_table}");
+
+		if (!empty($db_post_types)) {
+			foreach ($db_post_types as $db_post_type) {
+				if (!in_array($db_post_type, $valid_post_types, true)) {
+					// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct database query on custom table.
+					$doc_ids = $wpdb->get_col(
+						$wpdb->prepare(
+							"SELECT document_id FROM {$docs_table} WHERE post_type = %s",
+							$db_post_type
+						)
+					);
+					if (!empty($doc_ids)) {
+						foreach ($doc_ids as $doc_id) {
+							$this->remove_document($doc_id);
+						}
+					}
+				}
+			}
+		}
+
 		foreach ($post_types as $post_type) {
+
+			if (!in_array($post_type, $registered_types, true)) {
+				continue;
+			}
 
 			try {
 
@@ -166,6 +200,32 @@ class BACA_Indexer
 						'suppress_filters' => false,
 					]
 				);
+
+				/*
+				 * Clean up stale or deleted/unpublished posts of this post type
+				 */
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct database read.
+				$db_post_ids = $wpdb->get_col(
+					$wpdb->prepare(
+						"SELECT post_id FROM {$docs_table} WHERE post_type = %s",
+						$post_type
+					)
+				);
+				$db_post_ids = array_map('intval', $db_post_ids);
+
+				$active_post_ids = [];
+				if (!empty($posts)) {
+					foreach ($posts as $post) {
+						if (!empty($post->ID)) {
+							$active_post_ids[] = intval($post->ID);
+						}
+					}
+				}
+
+				$posts_to_remove = array_diff($db_post_ids, $active_post_ids);
+				foreach ($posts_to_remove as $remove_post_id) {
+					$this->remove_document('post_' . $remove_post_id);
+				}
 
 				if (empty($posts)) {
 					continue;
@@ -709,6 +769,19 @@ class BACA_Indexer
 
 		$docs_table = esc_sql($wpdb->prefix . 'baca_rag_documents');
 		$chunks_table = esc_sql($wpdb->prefix . 'baca_rag_chunks');
+
+		// Get all chunk IDs first to delete from vector DB
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct read query from custom table.
+		$chunk_ids = $wpdb->get_col(
+			$wpdb->prepare(
+				"SELECT id FROM {$chunks_table} WHERE document_id = %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is dynamic but safe.
+				$document_id
+			)
+		);
+
+		if (!empty($chunk_ids) && $this->vector_db) {
+			$this->vector_db->bulk_delete(array_map('intval', $chunk_ids));
+		}
 
 		// Remove chunks
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct deletion from custom table.

@@ -20,25 +20,7 @@ function getDisplayUser( session ) {
 		return session.email;
 	}
 
-	const msgs = parseMessages( session.content );
-	const firstUser = msgs.find( ( m ) => m.role === 'user' )?.content || '';
-	const nameMatch = firstUser.match( /(?:my name is|i'm|i am)\s+([A-Za-z][A-Za-z'-]*)/i );
-
-	if ( nameMatch ) {
-		const raw = nameMatch[ 1 ];
-		return raw.charAt( 0 ).toUpperCase() + raw.slice( 1 ).toLowerCase();
-	}
-
-	const id = session.session_id || '';
-	if ( id === 'default' || ! id ) {
-		return __( 'Guest User', 'botisst-ai-chat-assistant' );
-	}
-
-	if ( id.length > 24 || /^[0-9a-f-]{20,}$/i.test( id ) ) {
-		return __( 'Guest User', 'botisst-ai-chat-assistant' );
-	}
-
-	return __( 'Anonymous', 'botisst-ai-chat-assistant' );
+	return __( 'Guest User', 'botisst-ai-chat-assistant' );
 }
 
 function formatProviderLabel( provider ) {

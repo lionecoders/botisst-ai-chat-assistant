@@ -105,8 +105,8 @@ if (!class_exists('BACA_Chat_Assistant')):
 			// can't be used to detect a fresh install; use a dedicated flag instead.
 			if (!get_option('baca_setup_wizard_redirection')) {
 				update_option('baca_setup_wizard_status', 'pending');
-				set_transient('baca_activation_redirect', true, 60);
 			}
+			set_transient('baca_activation_redirect', true, 60);
 		}
 
 		/**

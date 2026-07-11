@@ -1717,6 +1717,7 @@ body.toplevel_page_baca #baca-admin-root {
 }
 
 .baca-sessions-user__name {
+    word-wrap: break-word;
     font-size: 0.9375rem;
     font-weight: 600;
     color: #111827;

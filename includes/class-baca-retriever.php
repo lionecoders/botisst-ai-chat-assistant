@@ -89,6 +89,10 @@ class BACA_Retriever {
 		$chunks_table    = esc_sql( $wpdb->prefix . 'baca_rag_chunks' );
 		$documents_table = esc_sql( $wpdb->prefix . 'baca_rag_documents' );
 
+		$settings         = $this->get_settings();
+		$configured_types = ! empty( $settings['post_types'] ) ? $settings['post_types'] : [ 'post', 'page' ];
+		$registered_types = get_post_types();
+
 		foreach ( $results as $result ) {
 			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct database query on custom table.
 			$chunk = $wpdb->get_row(
@@ -100,15 +104,26 @@ class BACA_Retriever {
 			);
 
 			if ( $chunk ) {
-				// Get document info for URL and title
+				// Get document info for URL, title and post_type
 				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct database query on custom table.
 				$document = $wpdb->get_row(
 					$wpdb->prepare(
-						"SELECT title, url FROM {$documents_table} WHERE document_id = %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is dynamic but safe.
+						"SELECT title, url, post_type FROM {$documents_table} WHERE document_id = %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is dynamic but safe.
 						$chunk['document_id']
 					),
 					ARRAY_A
 				);
+
+				if ( ! $document ) {
+					continue;
+				}
+
+				$post_type = $document['post_type'] ?? '';
+
+				// Skip if post type is not configured or not currently registered (e.g. plugin deactivated)
+				if ( ! in_array( $post_type, $configured_types, true ) || ! in_array( $post_type, $registered_types, true ) ) {
+					continue;
+				}
 
 				$formatted[] = [
 					'chunk_id'   => $chunk['id'],

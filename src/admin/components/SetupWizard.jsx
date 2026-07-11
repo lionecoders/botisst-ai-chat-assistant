@@ -643,7 +643,9 @@ export default function SetupWizard({ open, settings, onSave, onClose, showNotic
 							<button
 								type="button"
 								className="baca-btn baca-btn-primary"
-								onClick={onClose}
+								onClick={() => {
+									window.location.href = 'admin.php?page=baca';
+								}}
 							>
 								{__('Go to dashboard', 'botisst-ai-chat-assistant')}
 							</button>
