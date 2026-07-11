@@ -53,6 +53,9 @@ class BACA_Retriever {
 
 			return $this->format_results( $results );
 		} catch ( Exception $e ) {
+			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+				error_log( 'Botisst AI Retriever Search Error: ' . $e->getMessage() ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Allowed under WP_DEBUG constraint.
+			}
 			return [];
 		}
 	}

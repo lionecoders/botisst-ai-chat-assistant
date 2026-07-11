@@ -38,6 +38,7 @@ export default function ChatbotSettingsTab( { settings, onSave, showNotice } ) {
 		save_chat: botSettings.save_chat ?? false,
 		ask_email: botSettings.ask_email ?? false,
 		enable_pre_questions: botSettings.enable_pre_questions ?? false,
+		rate_limit_per_minute: botSettings.rate_limit_per_minute ?? 20,
 	} );
 
 	const handleChange = ( name, value ) => {
@@ -349,6 +350,29 @@ export default function ChatbotSettingsTab( { settings, onSave, showNotice } ) {
 								) }
 							</div>
 						) }
+					</section>
+
+					<section className="baca-bot-section">
+						<h2 className="baca-bot-section__title">
+							{ __( 'Security', 'botisst-ai-chat-assistant' ) }
+						</h2>
+						<div className="baca-bot-field">
+							<label htmlFor="rate_limit_per_minute">
+								{ __( 'Chat Rate Limit (requests per minute per visitor)', 'botisst-ai-chat-assistant' ) }
+							</label>
+							<input
+								type="number"
+								id="rate_limit_per_minute"
+								className="baca-bot-input"
+								min="1"
+								max="300"
+								value={ formData.rate_limit_per_minute }
+								onChange={ ( e ) => handleChange( 'rate_limit_per_minute', parseInt( e.target.value, 10 ) || 1 ) }
+							/>
+							<p className="baca-bot-hint">
+								{ __( 'The public chat endpoint is throttled per visitor IP to stop it being used to run up your AI provider bill. Lower this if you\'re seeing abuse, or raise it if legitimate users are being blocked.', 'botisst-ai-chat-assistant' ) }
+							</p>
+						</div>
 					</section>
 
 					<section className="baca-bot-section">

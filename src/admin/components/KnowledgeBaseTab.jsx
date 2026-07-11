@@ -1,5 +1,5 @@
 import { useState, useEffect } from '@wordpress/element';
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
 import { ConfirmDialog } from './ui';
 
@@ -22,6 +22,7 @@ const URLS_HINT = __(
 export default function KnowledgeBaseTab({ settings, onSave, showNotice }) {
 	const [saving, setSaving] = useState(false);
 	const [indexing, setIndexing] = useState(false);
+	const [indexProgress, setIndexProgress] = useState(null);
 	const [stats, setStats] = useState(null);
 	const [postTypes, setPostTypes] = useState([]);
 	const [activeSubTab, setActiveSubTab] = useState('sources');
@@ -160,6 +161,34 @@ export default function KnowledgeBaseTab({ settings, onSave, showNotice }) {
 		});
 	};
 
+	// Indexing and embedding now run in background batches on the server
+	// (see baca_index_rag_content), so the REST call returns immediately
+	// with status "queued" and we poll for progress instead of assuming
+	// the work is done when the request resolves.
+	const pollIndexStatus = () => {
+		const poll = async () => {
+			let response;
+			try {
+				response = await apiFetch({ path: '/baca/v1/rag/index/status', method: 'GET' });
+				setIndexProgress(response);
+			} catch (error) {
+				console.error('Failed to fetch indexing status:', error);
+				setIndexing(false);
+				return;
+			}
+
+			if (response.status === 'indexing' || response.status === 'embedding') {
+				setTimeout(poll, 2000);
+				return;
+			}
+
+			setIndexing(false);
+			fetchRAGStats();
+		};
+
+		poll();
+	};
+
 	const handleIndexContent = async () => {
 		const indexWebsite = selectedPostTypes.length > 0;
 		const typesToIndex = indexWebsite ? [...selectedPostTypes] : [];
@@ -177,6 +206,7 @@ export default function KnowledgeBaseTab({ settings, onSave, showNotice }) {
 		}
 
 		setIndexing(true);
+		setIndexProgress(null);
 		try {
 			const response = await apiFetch({
 				path: '/baca/v1/rag/index',
@@ -189,23 +219,68 @@ export default function KnowledgeBaseTab({ settings, onSave, showNotice }) {
 				},
 			});
 
-			if (!response.success || (response.failed && response.failed > 0)) {
-				showNotice(response.message || __('Failed to index all content', 'botisst-ai-chat-assistant'), 'error');
-			} else {
-				showNotice(response.message || __('Content indexing started!', 'botisst-ai-chat-assistant'));
+			if (!response.success) {
+				showNotice(response.message || __('Failed to start indexing', 'botisst-ai-chat-assistant'), 'error');
+				setIndexing(false);
+				return;
 			}
-			
-			setTimeout(() => fetchRAGStats(), 1000);
+
+			showNotice(response.message || __('Content indexing started!', 'botisst-ai-chat-assistant'));
+
+			if (response.status === 'queued') {
+				pollIndexStatus();
+			} else {
+				setIndexing(false);
+				fetchRAGStats();
+			}
 		} catch (error) {
 			console.error('Indexing error:', error);
 			showNotice(
 				error.message || __('Failed to index content', 'botisst-ai-chat-assistant'),
 				'error'
 			);
-		} finally {
 			setIndexing(false);
 		}
 	};
+
+	const indexProgressPercent = (() => {
+		if (!indexProgress) {
+			return 0;
+		}
+		if (indexProgress.status === 'indexing' && indexProgress.docs_total > 0) {
+			return Math.round((indexProgress.docs_processed / indexProgress.docs_total) * 100);
+		}
+		if (indexProgress.status === 'embedding' && indexProgress.embed_total > 0) {
+			return Math.round((indexProgress.embed_processed / indexProgress.embed_total) * 100);
+		}
+		if (indexProgress.status === 'completed') {
+			return 100;
+		}
+		return 0;
+	})();
+
+	const indexProgressLabel = (() => {
+		if (!indexProgress) {
+			return '';
+		}
+		if (indexProgress.status === 'indexing') {
+			return sprintf(
+				__('Indexing documents… %1$d/%2$d', 'botisst-ai-chat-assistant'),
+				indexProgress.docs_processed,
+				indexProgress.docs_total
+			);
+		}
+		if (indexProgress.status === 'embedding') {
+			return indexProgress.embed_total > 0
+				? sprintf(
+					__('Generating embeddings… %1$d/%2$d', 'botisst-ai-chat-assistant'),
+					indexProgress.embed_processed,
+					indexProgress.embed_total
+				)
+				: __('Generating embeddings…', 'botisst-ai-chat-assistant');
+		}
+		return '';
+	})();
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
@@ -625,6 +700,20 @@ export default function KnowledgeBaseTab({ settings, onSave, showNotice }) {
 									<p className="baca-hint">{__('No post types available.', 'botisst-ai-chat-assistant')}</p>
 								)}
 							</div>
+
+							{indexing && indexProgress && (
+								<div className="baca-kb-index-progress" role="status">
+									<div className="baca-kb-index-progress__bar">
+										<div
+											className="baca-kb-index-progress__fill"
+											style={{ width: `${indexProgressPercent}%` }}
+										/>
+									</div>
+									<p className="baca-kb-index-progress__label">
+										{indexProgressLabel}
+									</p>
+								</div>
+							)}
 						</div>
 					</article>
 				</div>

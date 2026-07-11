@@ -38,6 +38,9 @@ class BACA_MCP_Server {
 		try {
 			return self::get_instance();
 		} catch ( Exception $e ) {
+			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+				error_log( 'Botisst AI MCP Server Load Error: ' . $e->getMessage() ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Allowed under WP_DEBUG constraint.
+			}
 			return null;
 		}
 	}
@@ -138,8 +141,6 @@ class BACA_MCP_Server {
 	 * @return array Site data with summary, items, and categories.
 	 */
 	private function fetch_site_data( $site_type ) {
-		global $wpdb;
-
 		$data = [
 			'summary'    => '',
 			'items'      => [],
@@ -172,27 +173,25 @@ class BACA_MCP_Server {
 	 * @return array Product data.
 	 */
 	private function fetch_products() {
-		global $wpdb;
+		$products = get_posts(
+			[
+				'post_type'      => 'product',
+				'post_status'    => 'publish',
+				'posts_per_page' => 10,
+				'orderby'        => 'date',
+				'order'          => 'DESC',
+			]
+		);
 
 		// Check for WooCommerce products
 		if ( class_exists( 'WooCommerce' ) ) {
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Optimized custom query.
-			$products = $wpdb->get_results(
-				"SELECT ID, post_title as name, post_excerpt as description, post_content
-				 FROM {$wpdb->posts}
-				 WHERE post_type = 'product'
-				 AND post_status = 'publish'
-				 ORDER BY post_date DESC
-				 LIMIT 10"
-			);
-
 			$result = [];
 			foreach ( $products as $product ) {
 				$product_obj = wc_get_product( $product->ID );
 				if ( $product_obj ) {
 					$result[] = [
-						'name'        => $product->name,
-						'description' => wp_strip_all_tags( $product->description ),
+						'name'        => $product->post_title,
+						'description' => wp_strip_all_tags( $product->post_excerpt ),
 						'price'       => $product_obj->get_price(),
 						'url'         => get_permalink( $product->ID ),
 					];
@@ -202,21 +201,11 @@ class BACA_MCP_Server {
 		}
 
 		// Fallback to generic products
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Fallback query.
-		$products = $wpdb->get_results(
-			"SELECT ID, post_title as name, post_excerpt as description
-			 FROM {$wpdb->posts}
-			 WHERE post_type = 'product'
-			 AND post_status = 'publish'
-			 ORDER BY post_date DESC
-			 LIMIT 10"
-		);
-
 		$result = [];
 		foreach ( $products as $product ) {
 			$result[] = [
-				'name'        => $product->name,
-				'description' => wp_strip_all_tags( $product->description ),
+				'name'        => $product->post_title,
+				'description' => wp_strip_all_tags( $product->post_excerpt ),
 				'url'         => get_permalink( $product->ID ),
 			];
 		}
@@ -230,23 +219,21 @@ class BACA_MCP_Server {
 	 * @return array Post data.
 	 */
 	private function fetch_posts() {
-		global $wpdb;
-
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Optimized custom query.
-		$posts = $wpdb->get_results(
-			"SELECT ID, post_title as title, post_excerpt as excerpt, post_content, post_type
-			 FROM {$wpdb->posts}
-			 WHERE post_status = 'publish'
-			 AND post_type IN ('post', 'page')
-			 ORDER BY post_date DESC
-			 LIMIT 10"
+		$posts = get_posts(
+			[
+				'post_type'      => [ 'post', 'page' ],
+				'post_status'    => 'publish',
+				'posts_per_page' => 10,
+				'orderby'        => 'date',
+				'order'          => 'DESC',
+			]
 		);
 
 		$result = [];
 		foreach ( $posts as $post ) {
-			$excerpt = ! empty( $post->excerpt ) ? $post->excerpt : wp_trim_words( wp_strip_all_tags( $post->post_content ), 20 );
+			$excerpt = ! empty( $post->post_excerpt ) ? $post->post_excerpt : wp_trim_words( wp_strip_all_tags( $post->post_content ), 20 );
 			$result[] = [
-				'title'       => $post->title,
+				'title'       => $post->post_title,
 				'description' => $excerpt,
 				'excerpt'     => $excerpt,
 				'url'         => get_permalink( $post->ID ),

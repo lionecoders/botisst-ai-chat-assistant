@@ -22,6 +22,7 @@ export default function ApiKeysTab({ settings, onSave, showNotice }) {
 	const [ saving, setSaving ] = useState( false );
 	const [ resetting, setResetting ] = useState( {} );
 	const [ confirmingProvider, setConfirmingProvider ] = useState( null );
+	const [ modelsList, setModelsList ] = useState( () => window.baca_data?.models_list || {} );
 	const [ formData, setFormData ] = useState( {
 		openai_key: '',
 		google_key: '',
@@ -49,7 +50,26 @@ export default function ApiKeysTab({ settings, onSave, showNotice }) {
 				data: { provider },
 			} );
 			showNotice( __( 'Key reset successfully!', 'botisst-ai-chat-assistant' ), 'success' );
-			setTimeout( () => window.location.reload(), 1000 );
+			
+			const updatedApiKeys = { ...settings?.api_keys };
+			delete updatedApiKeys[ provider ];
+
+			const updatedModels = { ...settings?.models };
+			delete updatedModels[ provider ];
+
+			onSave( {
+				api_keys: updatedApiKeys,
+				models: updatedModels,
+			} );
+
+			setFormData( ( prev ) => ( {
+				...prev,
+				[ `${ provider }_key` ]: '',
+				models: {
+					...prev.models,
+					[ provider ]: '',
+				},
+			} ) );
 		} catch ( error ) {
 			showNotice( error.message || __( 'Failed to reset key', 'botisst-ai-chat-assistant' ), 'error' );
 		} finally {
@@ -61,13 +81,28 @@ export default function ApiKeysTab({ settings, onSave, showNotice }) {
 		e.preventDefault();
 		setSaving( true );
 		try {
-			await apiFetch( {
+			const response = await apiFetch( {
 				path: '/baca/v1/save-settings',
 				method: 'POST',
 				data: formData,
 			} );
-			showNotice( __( 'Settings saved successfully! Reloading...', 'botisst-ai-chat-assistant' ), 'success' );
-			setTimeout( () => window.location.reload(), 1000 );
+			showNotice( response.message || __( 'Settings saved successfully!', 'botisst-ai-chat-assistant' ), 'success' );
+			
+			onSave( {
+				api_keys: response.api_keys || {},
+			} );
+
+			if ( response.models_list ) {
+				setModelsList( response.models_list );
+			}
+
+			setFormData( ( prev ) => {
+				const updated = { ...prev };
+				Object.keys( PROVIDERS ).forEach( ( id ) => {
+					updated[ `${ id }_key` ] = '';
+				} );
+				return updated;
+			} );
 		} catch ( error ) {
 			let errorMsg = error.message;
 			if ( error.errors && typeof error.errors === 'object' ) {
@@ -78,8 +113,6 @@ export default function ApiKeysTab({ settings, onSave, showNotice }) {
 			setSaving( false );
 		}
 	};
-
-	const modelsList = window.baca_data?.models_list || {};
 
 	return (
 		<div className="baca-api-keys">

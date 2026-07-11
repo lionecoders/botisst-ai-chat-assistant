@@ -349,6 +349,9 @@ class BACA_Indexer
 			return false;
 		}
 
+		global $wpdb;
+		$chunks_table = esc_sql($wpdb->prefix . 'baca_rag_chunks');
+
 		try {
 
 			$document_id = 'post_' . $post->ID;
@@ -485,6 +488,22 @@ class BACA_Indexer
 						$result->get_error_message()
 					);
 				}
+
+				/*
+				 * Mark completed so this chunk isn't re-embedded by the
+				 * pending-embeddings batch.
+				 */
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct update to custom table status.
+				$wpdb->update(
+					$chunks_table,
+					[
+						'embedding_status' => 'completed',
+						'vector_id' => (string) $chunk_id,
+					],
+					[
+						'id' => $chunk_id,
+					]
+				);
 			}
 
 			return true;
@@ -621,6 +640,9 @@ class BACA_Indexer
 				return $wpdb->insert_id;
 			}
 		} catch (Exception $e) {
+			if (defined('WP_DEBUG') && WP_DEBUG) {
+				error_log('Botisst AI Indexer Store Document Error: ' . $e->getMessage()); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Allowed under WP_DEBUG constraint.
+			}
 			return false;
 		}
 	}
@@ -727,6 +749,9 @@ class BACA_Indexer
 			return (int) $wpdb->insert_id;
 
 		} catch (Exception $e) {
+			if (defined('WP_DEBUG') && WP_DEBUG) {
+				error_log('Botisst AI Indexer Store Chunk Error: ' . $e->getMessage()); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Allowed under WP_DEBUG constraint.
+			}
 			return false;
 		}
 	}
@@ -805,9 +830,14 @@ class BACA_Indexer
 	/**
 	 * Generate Embeddings for Pending Chunks
 	 *
-	 * @return array Status with count of processed chunks
+	 * Processes at most $batch_size chunks per call so a full backlog is
+	 * drained over several calls (chained via wp_schedule_single_event)
+	 * instead of one long-running request.
+	 *
+	 * @param int $batch_size Maximum chunks to embed this call.
+	 * @return array Status with count of processed chunks and how many remain.
 	 */
-	public function generate_pending_embeddings()
+	public function generate_pending_embeddings($batch_size = 50)
 	{
 
 		global $wpdb;
@@ -826,15 +856,21 @@ class BACA_Indexer
 
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct database query on custom table.
 		$pending_chunks = $wpdb->get_results(
-			"SELECT * FROM {$chunks_table} WHERE embedding_status = 'pending' LIMIT 50", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is dynamic but safe.
+			$wpdb->prepare(
+				"SELECT * FROM {$chunks_table} WHERE embedding_status = 'pending' LIMIT %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is dynamic but safe.
+				max(1, (int) $batch_size)
+			),
 			ARRAY_A
 		);
 
 		if (empty($pending_chunks)) {
 
+			$this->update_metadata('index_status', 'completed');
+
 			return [
 				'processed' => 0,
 				'failed' => 0,
+				'remaining' => 0,
 				'message' => 'No pending chunks found',
 			];
 		}
@@ -968,9 +1004,20 @@ class BACA_Indexer
 			}
 		}
 
+		$remaining = $this->count_pending_embeddings();
+
+		$this->update_metadata('embed_processed', (int) $this->get_metadata('embed_processed', 0) + $processed);
+		$this->update_metadata('embed_failed', (int) $this->get_metadata('embed_failed', 0) + $failed);
+
+		if (0 === $remaining) {
+			$this->update_metadata('index_status', 'completed');
+			$this->update_metadata('last_index_time', current_time('mysql'));
+		}
+
 		return [
 			'processed' => $processed,
 			'failed' => $failed,
+			'remaining' => $remaining,
 			'message' => sprintf(
 				'Processed %d embeddings, failed %d',
 				$processed,
@@ -1000,5 +1047,239 @@ class BACA_Indexer
 				$value
 			)
 		);
+	}
+
+	/**
+	 * Get Metadata
+	 *
+	 * @param string $key     Metadata key.
+	 * @param mixed  $default Default value if the key has no stored value.
+	 * @return mixed
+	 */
+	public function get_metadata($key, $default = null)
+	{
+		global $wpdb;
+
+		$table = esc_sql($wpdb->prefix . 'baca_rag_metadata');
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct database query on custom table.
+		$value = $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT meta_value FROM {$table} WHERE meta_key = %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is dynamic but safe.
+				$key
+			)
+		);
+
+		return null === $value ? $default : $value;
+	}
+
+	/**
+	 * Count Pending Embeddings
+	 *
+	 * @return int
+	 */
+	private function count_pending_embeddings()
+	{
+		global $wpdb;
+
+		$chunks_table = esc_sql($wpdb->prefix . 'baca_rag_chunks');
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct count on custom table.
+		return (int) $wpdb->get_var(
+			"SELECT COUNT(*) FROM {$chunks_table} WHERE embedding_status = 'pending'" // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is dynamic but safe.
+		);
+	}
+
+	/**
+	 * Queue Index Job
+	 *
+	 * Cleans up stale documents and queues the post IDs that need
+	 * (re)indexing. Does not touch the embedding API itself — actual
+	 * indexing happens in small batches via process_index_batch(), so a
+	 * full-site index never runs inside a single request.
+	 *
+	 * @param array $post_types Post types to index.
+	 * @return array Queue summary, e.g. ['total' => 42].
+	 */
+	public function queue_index_job($post_types = [])
+	{
+		global $wpdb;
+
+		if (empty($post_types)) {
+			return ['total' => 0];
+		}
+
+		$registered_types = get_post_types();
+		$valid_post_types = array_intersect($post_types, $registered_types);
+		$docs_table = esc_sql($wpdb->prefix . 'baca_rag_documents');
+
+		/*
+		 * Clean up post types that are not selected or no longer registered
+		 */
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Direct query with safe dynamic table name.
+		$db_post_types = $wpdb->get_col("SELECT DISTINCT post_type FROM {$docs_table}");
+
+		if (!empty($db_post_types)) {
+			foreach ($db_post_types as $db_post_type) {
+				if (!in_array($db_post_type, $valid_post_types, true)) {
+					// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct database query on custom table.
+					$doc_ids = $wpdb->get_col(
+						$wpdb->prepare(
+							"SELECT document_id FROM {$docs_table} WHERE post_type = %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is dynamic but safe.
+							$db_post_type
+						)
+					);
+					foreach ($doc_ids as $doc_id) {
+						$this->remove_document($doc_id);
+					}
+				}
+			}
+		}
+
+		$post_ids = [];
+
+		foreach ($valid_post_types as $post_type) {
+
+			$active_ids = get_posts(
+				[
+					'post_type' => sanitize_text_field($post_type),
+					'post_status' => 'publish',
+					'posts_per_page' => -1,
+					'orderby' => 'ID',
+					'order' => 'ASC',
+					'fields' => 'ids',
+					'suppress_filters' => false,
+				]
+			);
+
+			/*
+			 * Clean up stale or deleted/unpublished posts of this post type
+			 */
+			// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct database read.
+			$db_post_ids = array_map(
+				'intval',
+				$wpdb->get_col(
+					$wpdb->prepare(
+						"SELECT post_id FROM {$docs_table} WHERE post_type = %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is dynamic but safe.
+						$post_type
+					)
+				)
+			);
+			// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+
+			foreach (array_diff($db_post_ids, $active_ids) as $stale_id) {
+				$this->remove_document('post_' . $stale_id);
+			}
+
+			$post_ids = array_merge($post_ids, $active_ids);
+		}
+
+		$post_ids = array_values(array_unique(array_map('intval', $post_ids)));
+
+		$this->update_metadata('index_queue', wp_json_encode($post_ids));
+		$this->update_metadata('index_status', empty($post_ids) ? 'embedding' : 'indexing');
+		$this->update_metadata('index_total', count($post_ids));
+		$this->update_metadata('index_processed', 0);
+		$this->update_metadata('index_indexed', 0);
+		$this->update_metadata('index_failed', 0);
+		$this->update_metadata('last_index_start', current_time('mysql'));
+
+		if (empty($post_ids)) {
+			$this->update_metadata('embed_total', $this->count_pending_embeddings());
+			$this->update_metadata('embed_processed', 0);
+			$this->update_metadata('embed_failed', 0);
+		}
+
+		return ['total' => count($post_ids)];
+	}
+
+	/**
+	 * Process Index Batch
+	 *
+	 * Indexes (and embeds, via index_post()) a small batch of queued
+	 * posts. Meant to be called repeatedly by a chained
+	 * wp_schedule_single_event tick rather than in a loop over the full
+	 * queue, so each PHP request only makes a handful of embedding API
+	 * calls.
+	 *
+	 * @param int $batch_size Number of posts to process this call.
+	 * @return array ['remaining' => int, 'indexed' => int, 'failed' => int]
+	 */
+	public function process_index_batch($batch_size = 5)
+	{
+		$queue = json_decode((string) $this->get_metadata('index_queue', '[]'), true);
+
+		if (!is_array($queue)) {
+			$queue = [];
+		}
+
+		$batch = array_splice($queue, 0, max(1, (int) $batch_size));
+
+		$indexed = 0;
+		$failed = 0;
+
+		foreach ($batch as $post_id) {
+
+			$post = get_post((int) $post_id);
+
+			if (!$post) {
+				continue;
+			}
+
+			try {
+				if ($this->index_post($post)) {
+					$indexed++;
+				} else {
+					$failed++;
+				}
+			} catch (Exception $e) {
+				$failed++;
+			}
+		}
+
+		$this->update_metadata('index_queue', wp_json_encode($queue));
+		$this->update_metadata('index_processed', (int) $this->get_metadata('index_processed', 0) + count($batch));
+		$this->update_metadata('index_indexed', (int) $this->get_metadata('index_indexed', 0) + $indexed);
+		$this->update_metadata('index_failed', (int) $this->get_metadata('index_failed', 0) + $failed);
+
+		$remaining = count($queue);
+
+		if (0 === $remaining) {
+			$this->update_metadata('index_status', 'embedding');
+			$this->update_metadata('embed_total', $this->count_pending_embeddings());
+			$this->update_metadata('embed_processed', 0);
+			$this->update_metadata('embed_failed', 0);
+			$this->update_metadata('last_index_time', current_time('mysql'));
+		}
+
+		return [
+			'remaining' => $remaining,
+			'indexed' => $indexed,
+			'failed' => $failed,
+		];
+	}
+
+	/**
+	 * Get Index Progress
+	 *
+	 * Snapshot of the current (or most recent) background indexing job,
+	 * used by the dashboard to poll and render progress.
+	 *
+	 * @return array
+	 */
+	public function get_index_progress()
+	{
+		return [
+			'status' => (string) $this->get_metadata('index_status', 'idle'),
+			'docs_total' => (int) $this->get_metadata('index_total', 0),
+			'docs_processed' => (int) $this->get_metadata('index_processed', 0),
+			'docs_indexed' => (int) $this->get_metadata('index_indexed', 0),
+			'docs_failed' => (int) $this->get_metadata('index_failed', 0),
+			'embed_total' => (int) $this->get_metadata('embed_total', 0),
+			'embed_processed' => (int) $this->get_metadata('embed_processed', 0),
+			'embed_failed' => (int) $this->get_metadata('embed_failed', 0),
+			'last_index_start' => (string) $this->get_metadata('last_index_start', ''),
+			'last_index_time' => (string) $this->get_metadata('last_index_time', ''),
+		];
 	}
 }

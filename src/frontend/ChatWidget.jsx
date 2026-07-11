@@ -158,33 +158,31 @@ export default function ChatWidget({ settings, inline }) {
     };
 
     const handleClearChat = async () => {
-        if (window.confirm(__('Are you sure you want to clear the chat history?', 'botisst-ai-chat-assistant'))) {
-            try {
-                // Call PHP REST API to clear session and re-initialize cookies
-                const response = await apiFetch({
-                    path: '/baca/v1/clear-session',
-                    method: 'POST'
-                });
+        try {
+            // Call PHP REST API to clear session and re-initialize cookies
+            const response = await apiFetch({
+                path: '/baca/v1/clear-session',
+                method: 'POST'
+            });
 
-                if (response.success && response.session_id) {
-                    // Reset React states
-                    setMessages([]);
-                    setSessionId(response.session_id);
-                    setUserEmail('');
-                    setEmailInput('');
-                    setPendingMessage('');
-                    setClearAllowed(true);
-                }
-            } catch (error) {
-                // Local fallback in case of connection failure
+            if (response.success && response.session_id) {
+                // Reset React states
                 setMessages([]);
+                setSessionId(response.session_id);
                 setUserEmail('');
                 setEmailInput('');
                 setPendingMessage('');
-                const newSid = 'sess_' + Math.random().toString(36).substr(2, 9);
-                setSessionId(newSid);
                 setClearAllowed(true);
             }
+        } catch (error) {
+            // Local fallback in case of connection failure
+            setMessages([]);
+            setUserEmail('');
+            setEmailInput('');
+            setPendingMessage('');
+            const newSid = 'sess_' + Math.random().toString(36).substr(2, 9);
+            setSessionId(newSid);
+            setClearAllowed(true);
         }
     };
 
