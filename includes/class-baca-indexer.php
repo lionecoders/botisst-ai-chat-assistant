@@ -158,7 +158,7 @@ class BACA_Indexer
 		/*
 		 * Clean up post types that are not selected or no longer registered
 		 */
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct database query on custom table.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Direct query with safe dynamic table name.
 		$db_post_types = $wpdb->get_col("SELECT DISTINCT post_type FROM {$docs_table}");
 
 		if (!empty($db_post_types)) {
@@ -167,7 +167,7 @@ class BACA_Indexer
 					// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct database query on custom table.
 					$doc_ids = $wpdb->get_col(
 						$wpdb->prepare(
-							"SELECT document_id FROM {$docs_table} WHERE post_type = %s",
+							"SELECT document_id FROM {$docs_table} WHERE post_type = %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is dynamic but safe.
 							$db_post_type
 						)
 					);
@@ -207,7 +207,7 @@ class BACA_Indexer
 				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct database read.
 				$db_post_ids = $wpdb->get_col(
 					$wpdb->prepare(
-						"SELECT post_id FROM {$docs_table} WHERE post_type = %s",
+						"SELECT post_id FROM {$docs_table} WHERE post_type = %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is dynamic but safe.
 						$post_type
 					)
 				);
