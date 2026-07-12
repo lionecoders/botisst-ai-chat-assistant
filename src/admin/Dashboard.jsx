@@ -66,6 +66,14 @@ export default function Dashboard({ settings: initialSettings }) {
 		}
 	}, [activeTab, availableTabs]);
 
+	useEffect(() => {
+		// Keep the active tab visible inside the scrollable mobile tab bar.
+		const activeButton = document.querySelector('.baca-tabs .baca-tab.active');
+		if (activeButton && typeof activeButton.scrollIntoView === 'function') {
+			activeButton.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+		}
+	}, [activeTab]);
+
 	useEffect( () => {
 		const syncTabFromHash = () => {
 			const hash = window.location.hash.replace( '#', '' );
@@ -76,6 +84,16 @@ export default function Dashboard({ settings: initialSettings }) {
 		window.addEventListener( 'hashchange', syncTabFromHash );
 		return () => window.removeEventListener( 'hashchange', syncTabFromHash );
 	}, [availableTabs] );
+
+	useEffect(() => {
+		if (showWizard) {
+			const url = new URL(window.location.href);
+			if (url.searchParams.has('baca_open_wizard')) {
+				url.searchParams.delete('baca_open_wizard');
+				window.history.replaceState({}, '', url.toString());
+			}
+		}
+	}, [showWizard]);
 
 	const handleTabClick = (tabId) => () => {
 		setActiveTab(tabId);

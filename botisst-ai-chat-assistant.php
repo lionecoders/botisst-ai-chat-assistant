@@ -171,14 +171,8 @@ if (!class_exists('BACA_Chat_Assistant')):
 		 */
 		public function baca_enqueue_admin_assets($hook)
 		{
-			// The full dashboard bundle (React app + model list fetches) is
-			// only needed on the plugin's own screen. It used to also load
-			// on every wp-admin page while the setup wizard was pending, to
-			// support an inline "open wizard here" notice link — but
-			// Dashboard.jsx already auto-opens the wizard via
-			// show_setup_wizard as soon as the admin lands on this screen,
-			// so that off-page loading was pure overhead.
-			if ('toplevel_page_baca' !== $hook) {
+			$is_wizard_pending = get_option('baca_setup_wizard_status') !== 'completed';
+			if ('toplevel_page_baca' !== $hook && !$is_wizard_pending) {
 				return;
 			}
 
@@ -221,7 +215,7 @@ if (!class_exists('BACA_Chat_Assistant')):
 					'models_list' => $models_list,
 					'load_limit' => get_user_meta(get_current_user_id(), 'baca_sessions_load_limit', true) ?: '100',
 					'sort_order' => get_user_meta(get_current_user_id(), 'baca_sessions_sort_order', true) ?: 'desc',
-					'show_setup_wizard' => get_option('baca_setup_wizard_status') === 'pending',
+					'show_setup_wizard' => get_option('baca_setup_wizard_status') === 'pending' || (isset($_GET['baca_open_wizard']) && 'true' === $_GET['baca_open_wizard']),
 				]
 			);
 		}
@@ -239,13 +233,6 @@ if (!class_exists('BACA_Chat_Assistant')):
 			}
 
 			if (get_option('baca_setup_wizard_status') !== 'completed') {
-				// Plain navigation link: lands on the plugin's own screen,
-				// where Dashboard.jsx auto-opens the wizard (status is still
-				// 'pending'). This used to be a JS click-trigger that opened
-				// the wizard inline on the current admin page, which required
-				// loading the full dashboard bundle on every wp-admin page —
-				// moved to baca_enqueue_admin_assets() being page-scoped instead.
-				$wizard_link = admin_url('admin.php?page=baca');
 
 				// Explicitly dismisses the wizard (marks it completed) and
 				// goes straight to the plain dashboard.
@@ -257,12 +244,13 @@ if (!class_exists('BACA_Chat_Assistant')):
 				echo '<div class="notice notice-warning is-dismissible baca-setup-notice">';
 				echo '<p>' . sprintf(
 					/* translators: 1: run wizard link open tag, 2: link close tag, 3: dashboard link open tag, 4: link close tag */
-					esc_html__('To use the chatbot properly, please %1$srun the setup wizard%2$s or %3$sgo to the plugin dashboard%4$s to configure the settings.', 'botisst-ai-chat-assistant'),
-					'<a href="' . esc_url($wizard_link) . '">',
+					esc_html__('Your chatbot is almost ready! %1$sRun the Setup Wizard%2$s for a guided setup, or %3$sgo to the plugin dashboard%4$s to configure it manually.', 'botisst-ai-chat-assistant'),
+					'<a href="#" class="baca-run-wizard-trigger">',
 					'</a>',
 					'<a href="' . esc_url($dashboard_link) . '">',
 					'</a>'
 				) . '</p>';
+				echo '<div id="baca-wizard-standalone-root"></div>';
 				?>
 				<script type="text/javascript">
 					jQuery(document).ready(function ($) {
