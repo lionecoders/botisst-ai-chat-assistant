@@ -104,7 +104,6 @@ class BACA_Key_Store
 		$provider_names = [
 			'openai' => 'OpenAI',
 			'google' => 'Google Gemini',
-			'anthropic' => 'Anthropic',
 		];
 		$provider_name = isset($provider_names[$provider]) ? $provider_names[$provider] : ucfirst($provider);
 
@@ -156,7 +155,6 @@ class BACA_Key_Store
 		$params = $request->get_json_params();
 		$openai = isset($params['openai_key']) ? sanitize_text_field($params['openai_key']) : '';
 		$google = isset($params['google_key']) ? sanitize_text_field($params['google_key']) : '';
-		$anthropic = isset($params['anthropic_key']) ? sanitize_text_field($params['anthropic_key']) : '';
 		$models = isset($params['models']) ? (array) $params['models'] : [];
 
 		$errors = [];
@@ -179,14 +177,6 @@ class BACA_Key_Store
 			}
 		}
 
-		if ($anthropic) {
-			$valid = $this->validate_api_key('anthropic', $anthropic);
-			if (is_wp_error($valid)) {
-				$errors['anthropic'] = $valid->get_error_message();
-			} else {
-				$this->persist_key('anthropic', $anthropic);
-			}
-		}
 
 		// Save selected fallback models.
 		if (!empty($models)) {
@@ -201,7 +191,7 @@ class BACA_Key_Store
 			return new \WP_REST_Response(['success' => false, 'errors' => $errors], 400);
 		}
 
-		$providers = ['openai', 'google', 'anthropic'];
+		$providers = ['openai', 'google'];
 		$api_keys = [];
 		$models_list = [];
 		foreach ($providers as $id) {

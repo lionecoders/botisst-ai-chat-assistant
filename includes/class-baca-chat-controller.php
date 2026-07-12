@@ -376,7 +376,7 @@ class BACA_Chat_Controller
 	{
 		$available_providers = [];
 
-		foreach (['openai', 'google', 'anthropic'] as $provider) {
+		foreach (['openai', 'google'] as $provider) {
 			if (!empty(BACA_Key_Store::get_provider_key($provider))) {
 				$available_providers[] = $provider;
 			}
@@ -411,7 +411,6 @@ class BACA_Chat_Controller
 		$defaults = [
 			'openai' => 'gpt-4o-mini',
 			'google' => 'gemini-2.5-flash',
-			'anthropic' => 'claude-3-haiku-20240307',
 		];
 
 		return isset($defaults[$provider]) ? $defaults[$provider] : '';

@@ -12,10 +12,6 @@ const PROVIDERS = {
 		name: __('Google Gemini', 'botisst-ai-chat-assistant'),
 		link: 'https://aistudio.google.com/api-keys',
 	},
-	anthropic: {
-		name: __('Anthropic', 'botisst-ai-chat-assistant'),
-		link: 'https://platform.claude.com/settings/keys',
-	},
 };
 
 export default function ApiKeysTab({ settings, onSave, showNotice }) {
@@ -26,7 +22,6 @@ export default function ApiKeysTab({ settings, onSave, showNotice }) {
 	const [ formData, setFormData ] = useState( {
 		openai_key: '',
 		google_key: '',
-		anthropic_key: '',
 		models: settings?.models || {},
 	} );
 

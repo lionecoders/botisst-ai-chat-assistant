@@ -155,8 +155,7 @@ if (!class_exists('BACA_Chat_Assistant')):
 		{
 			if (
 				strpos($url, 'generativelanguage.googleapis.com') !== false ||
-				strpos($url, 'api.openai.com') !== false ||
-				strpos($url, 'api.anthropic.com') !== false
+				strpos($url, 'api.openai.com') !== false
 			) {
 				return 60;
 			}
@@ -191,7 +190,7 @@ if (!class_exists('BACA_Chat_Assistant')):
 			$settings = BACA_Settings_Handler::baca_get_all_settings();
 
 			// Mask api keys for UI display and gather available models
-			$providers = ['openai', 'google', 'anthropic'];
+			$providers = ['openai', 'google'];
 			$models_list = [];
 			foreach ($providers as $id) {
 				$key = BACA_Settings_Handler::baca_get_provider_key($id);
@@ -464,7 +463,7 @@ if (!class_exists('BACA_Chat_Assistant')):
 		}
 
 		/**
-		 * Load the AI client SDK and register the OpenAI, Google, and Anthropic providers.
+		 * Load the AI client SDK and register the OpenAI and Google providers.
 		 *
 		 * @return void
 		 */
@@ -505,11 +504,6 @@ if (!class_exists('BACA_Chat_Assistant')):
 				'\WordPress\GoogleAiProvider\Provider\GoogleProvider'
 			);
 
-			$this->baca_register_ai_provider(
-				$registry,
-				'anthropic',
-				'\WordPress\AnthropicAiProvider\Provider\AnthropicProvider'
-			);
 
 			$this->baca_migrate_to_unified_settings();
 
@@ -559,7 +553,7 @@ if (!class_exists('BACA_Chat_Assistant')):
 			$settings = BACA_Settings_Handler::baca_get_all_settings();
 			$migrated = false;
 
-			$providers = ['openai', 'google', 'anthropic'];
+			$providers = ['openai', 'google'];
 
 			// 1. Migrate provider API keys.
 			foreach ($providers as $provider) {

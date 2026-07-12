@@ -75,7 +75,7 @@ export default function KnowledgeBaseTab({ settings, onSave, showNotice }) {
 		const apiKeys = allSettings.api_keys || {};
 
 		if (embeddingProviderName === 'google') {
-			const hasKey = !!apiKeys.google || !!apiKeys.anthropic; // Anthropic falls back to Google
+			const hasKey = !!apiKeys.google; // Only check Google key
 			return { 
 				provider: 'Google Gemini', 
 				model: 'gemini-embedding-001', 

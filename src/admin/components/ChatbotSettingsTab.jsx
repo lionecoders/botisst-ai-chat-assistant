@@ -5,7 +5,6 @@ import apiFetch from '@wordpress/api-fetch';
 const PROVIDER_LABELS = {
 	openai: __( 'OpenAI', 'botisst-ai-chat-assistant' ),
 	google: __( 'Google Gemini', 'botisst-ai-chat-assistant' ),
-	anthropic: __( 'Anthropic', 'botisst-ai-chat-assistant' ),
 };
 
 const SUB_TABS = [
@@ -88,9 +87,6 @@ export default function ChatbotSettingsTab( { settings, onSave, showNotice } ) {
 	}
 	if ( settings?.api_keys?.google ) {
 		connectedProviders.push( { id: 'google', name: PROVIDER_LABELS.google } );
-	}
-	if ( settings?.api_keys?.anthropic ) {
-		connectedProviders.push( { id: 'anthropic', name: PROVIDER_LABELS.anthropic } );
 	}
 
 	const activeProviderId = connectedProviders.find( ( p ) => p.id === formData.default_provider )

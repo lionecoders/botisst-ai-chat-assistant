@@ -301,7 +301,6 @@ class BACA_Settings_Handler
 			'models' => [
 				'openai' => 'gpt-4o-mini',
 				'google' => 'gemini-2.5-flash',
-				'anthropic' => 'claude-3-haiku-20240307',
 			],
 			'chatbot' => [
 				'bot_name' => 'Botisst',

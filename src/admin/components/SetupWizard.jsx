@@ -11,10 +11,6 @@ const PROVIDERS = {
 		name: __('Google Gemini', 'botisst-ai-chat-assistant'),
 		link: 'https://aistudio.google.com/api-keys',
 	},
-	anthropic: {
-		name: __('Anthropic', 'botisst-ai-chat-assistant'),
-		link: 'https://platform.claude.com/settings/keys',
-	},
 };
 
 const VECTOR_DB_OPTIONS = [
@@ -45,7 +41,6 @@ export default function SetupWizard({ open, settings, onSave, onClose, showNotic
 	const getInitialProvider = () => {
 		if (settings?.api_keys?.openai) return 'openai';
 		if (settings?.api_keys?.google) return 'google';
-		if (settings?.api_keys?.anthropic) return 'anthropic';
 		return settings?.chatbot?.default_provider || 'openai';
 	};
 

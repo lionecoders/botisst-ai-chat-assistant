@@ -30,7 +30,6 @@ function formatProviderLabel( provider ) {
 	const labels = {
 		openai: 'OpenAI',
 		google: 'Google',
-		anthropic: 'Anthropic',
 	};
 	return labels[ provider.toLowerCase() ] || provider.charAt( 0 ).toUpperCase() + provider.slice( 1 );
 }
