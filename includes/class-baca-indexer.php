@@ -611,7 +611,6 @@ class BACA_Indexer
 				'url' => $data['url'],
 				'hash' => $data['hash'],
 				'indexed_at' => $data['indexed_at'],
-				'embedding_status' => 'pending',
 			];
 
 			if ($existing) {
@@ -621,7 +620,7 @@ class BACA_Indexer
 					$table,
 					$insert_data,
 					['document_id' => $data['document_id']],
-					['%s', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s']
+					['%s', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s']
 				);
 				if (false === $result) {
 				}
@@ -632,7 +631,7 @@ class BACA_Indexer
 				$result = $wpdb->insert(
 					$table,
 					$insert_data,
-					['%s', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s']
+					['%s', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s']
 				);
 				if (false === $result) {
 					return false;

@@ -58,12 +58,10 @@ class BACA_DB {
 			url varchar(2083),
 			hash varchar(32),
 			indexed_at datetime,
-			embedding_status varchar(20) DEFAULT 'pending',
 			PRIMARY KEY (id),
 			UNIQUE KEY document_id (document_id),
 			KEY post_id (post_id),
-			KEY post_type (post_type),
-			KEY embedding_status (embedding_status)
+			KEY post_type (post_type)
 		) $charset_collate;";
 
 		dbDelta( $sql_rag_documents );
