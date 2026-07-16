@@ -11,7 +11,7 @@ import SetupWizard from './components/SetupWizard';
 
 const TABS = [
 	{ id: 'api-keys', label: __('API Keys', 'botisst-ai-chat-assistant'), icon: 'dashicons-rest-api', desc: __('Configure your AI providers and select your preferred chatbot models.', 'botisst-ai-chat-assistant'), component: ApiKeysTab },
-	{ id: 'chatbot-settings', label: __('Chatbot Settings', 'botisst-ai-chat-assistant'), icon: 'dashicons-admin-settings', desc: __('Customize your chatbot name, greeting message, and behavioral features.', 'botisst-ai-chat-assistant'), component: ChatbotSettingsTab },
+	{ id: 'chatbot-settings', label: __('Chatbot', 'botisst-ai-chat-assistant'), icon: 'dashicons-admin-settings', desc: __('Customize your chatbot name, greeting message, and behavioral features.', 'botisst-ai-chat-assistant'), component: ChatbotSettingsTab },
 	{ id: 'display-settings', label: __('Display Options', 'botisst-ai-chat-assistant'), icon: 'dashicons-align-center', desc: __('Configure where and how your chatbot appears on the frontend.', 'botisst-ai-chat-assistant'), component: DisplaySettingsTab },
 	{ id: 'instructions', label: __('Instructions', 'botisst-ai-chat-assistant'), icon: 'dashicons-edit', desc: __('Set how your chatbot talks, what it helps with, and how creative its replies are.', 'botisst-ai-chat-assistant'), component: InstructionsTab },
 	{ id: 'knowledge-base', label: __('Knowledge Base', 'botisst-ai-chat-assistant'), icon: 'dashicons-database', desc: __('Provide custom text, links, documents, and index your website content for the chatbot to learn from.', 'botisst-ai-chat-assistant'), component: KnowledgeBaseTab },

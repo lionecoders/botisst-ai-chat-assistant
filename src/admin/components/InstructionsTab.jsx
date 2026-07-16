@@ -55,7 +55,7 @@ export default function InstructionsTab( { settings, onSave, showNotice } ) {
 					</header>
 					<div className="baca-instructions-card__body">
 						<label htmlFor="system_prompt" className="baca-instructions-label">
-							{ __( 'System Prompt', 'botisst-ai-chat-assistant' ) }
+							{ __( 'Custom ChatBot Prompt', 'botisst-ai-chat-assistant' ) }
 						</label>
 						<textarea
 							id="system_prompt"
@@ -86,7 +86,7 @@ export default function InstructionsTab( { settings, onSave, showNotice } ) {
 							<div className="baca-instructions-param">
 								<div className="baca-instructions-param__head">
 									<label htmlFor="temperature">
-										{ __( 'Temperature', 'botisst-ai-chat-assistant' ) }
+										{ __( 'Chat Accuracy', 'botisst-ai-chat-assistant' ) }
 									</label>
 									<span className="baca-instructions-value-badge">
 										{ temperatureValue.toFixed( 1 ) }
@@ -136,7 +136,7 @@ export default function InstructionsTab( { settings, onSave, showNotice } ) {
 					<button type="submit" className="baca-btn baca-btn-primary" disabled={ saving }>
 						{ saving
 							? <><span className="baca-spinner" aria-hidden="true" /> { __( 'Saving…', 'botisst-ai-chat-assistant' ) }</>
-							: __( 'Save Instructions', 'botisst-ai-chat-assistant' ) }
+							: __( 'Save', 'botisst-ai-chat-assistant' ) }
 					</button>
 				</footer>
 			</form>

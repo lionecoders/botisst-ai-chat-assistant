@@ -170,10 +170,9 @@ export default function DisplaySettingsTab( { settings, onSave, showNotice } ) {
 
 				<footer className="baca-display-footer">
 					<button type="submit" className="baca-btn baca-btn-primary" disabled={ saving }>
-						<span className="dashicons dashicons-saved" aria-hidden="true" />
 						{ saving
 							? __( 'Saving…', 'botisst-ai-chat-assistant' )
-							: __( 'Save Display Settings', 'botisst-ai-chat-assistant' ) }
+							: __( 'Save', 'botisst-ai-chat-assistant' ) }
 					</button>
 				</footer>
 			</form>

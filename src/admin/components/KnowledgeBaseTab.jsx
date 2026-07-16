@@ -5,7 +5,7 @@ import { ConfirmDialog } from './ui';
 
 const SUB_TABS = [
 	{ id: 'sources', label: __( 'Sources', 'botisst-ai-chat-assistant' ) },
-	{ id: 'vector-db', label: __( 'Vector Database', 'botisst-ai-chat-assistant' ) },
+	{ id: 'vector-db', label: __( 'Database', 'botisst-ai-chat-assistant' ) },
 	{ id: 'indexing', label: __( 'Indexing Rules', 'botisst-ai-chat-assistant' ) },
 ];
 
@@ -459,7 +459,7 @@ export default function KnowledgeBaseTab({ settings, onSave, showNotice }) {
 						</span>
 						<div className="baca-kb-card__heading">
 							<h3 className="baca-kb-card__title">
-								{__('Vector Database', 'botisst-ai-chat-assistant')}
+								{__('Database', 'botisst-ai-chat-assistant')}
 							</h3>
 							<p className="baca-kb-card__desc">
 								{__('Choose where to store your document embeddings for semantic search.', 'botisst-ai-chat-assistant')}
@@ -720,10 +720,9 @@ export default function KnowledgeBaseTab({ settings, onSave, showNotice }) {
 
 				<footer className="baca-kb-footer">
 					<button type="submit" className="baca-btn baca-btn-primary" disabled={saving}>
-						<span className="dashicons dashicons-saved" aria-hidden="true" />
 						{saving
 							? __('Saving…', 'botisst-ai-chat-assistant')
-							: __('Save All Settings', 'botisst-ai-chat-assistant')}
+							: __('Save', 'botisst-ai-chat-assistant')}
 					</button>
 
 					{activeSubTab === 'indexing' && selectedPostTypes.length > 0 && (

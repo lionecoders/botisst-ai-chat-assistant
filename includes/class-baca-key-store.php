@@ -156,6 +156,7 @@ class BACA_Key_Store
 		$openai = isset($params['openai_key']) ? sanitize_text_field($params['openai_key']) : '';
 		$google = isset($params['google_key']) ? sanitize_text_field($params['google_key']) : '';
 		$models = isset($params['models']) ? (array) $params['models'] : [];
+		$default_provider = isset($params['default_provider']) ? sanitize_text_field($params['default_provider']) : '';
 
 		$errors = [];
 
@@ -187,6 +188,15 @@ class BACA_Key_Store
 			}
 		}
 
+		// Save selected default provider.
+		if ($default_provider) {
+			$settings = BACA_Settings_Handler::baca_get_all_settings();
+			if (isset($settings['chatbot'])) {
+				$settings['chatbot']['default_provider'] = $default_provider;
+				BACA_Settings_Handler::baca_persist_settings($settings);
+			}
+		}
+
 		if (!empty($errors)) {
 			return new \WP_REST_Response(['success' => false, 'errors' => $errors], 400);
 		}
@@ -206,12 +216,16 @@ class BACA_Key_Store
 			$models_list[$id] = self::get_models($id);
 		}
 
+		$updated_settings = BACA_Settings_Handler::baca_get_all_settings();
+		$chatbot_data = isset($updated_settings['chatbot']) ? $updated_settings['chatbot'] : [];
+
 		return new \WP_REST_Response(
 			[
 				'success' => true,
 				'message' => esc_html__('Settings saved successfully!', 'botisst-ai-chat-assistant'),
 				'api_keys' => $api_keys,
 				'models_list' => $models_list,
+				'chatbot' => $chatbot_data,
 			],
 			200
 		);
@@ -234,6 +248,18 @@ class BACA_Key_Store
 		if (isset($settings['api_keys'][$provider])) {
 			unset($settings['api_keys'][$provider]);
 		}
+
+		// If the reset provider was the default_provider, update it
+		if (isset($settings['chatbot']['default_provider']) && $settings['chatbot']['default_provider'] === $provider) {
+			$remaining = [];
+			foreach (['openai', 'google'] as $p) {
+				if ($p !== $provider && !empty($settings['api_keys'][$p])) {
+					$remaining[] = $p;
+				}
+			}
+			$settings['chatbot']['default_provider'] = !empty($remaining) ? $remaining[0] : '';
+		}
+
 		BACA_Settings_Handler::baca_persist_settings($settings);
 
 		$is_wp_ai_client_70 = function_exists('wp_ai_client_prompt');
@@ -247,7 +273,10 @@ class BACA_Key_Store
 			}
 		}
 
-		return new \WP_REST_Response(['success' => true], 200);
+		return new \WP_REST_Response([
+			'success' => true,
+			'chatbot' => isset($settings['chatbot']) ? $settings['chatbot'] : []
+		], 200);
 	}
 
 	/**
