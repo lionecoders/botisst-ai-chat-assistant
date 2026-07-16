@@ -1,2 +1,3728 @@
-(()=>{"use strict";var e={n:a=>{var t=a&&a.__esModule?()=>a.default:()=>a;return e.d(t,{a:t}),t},d:(a,t)=>{for(var s in t)e.o(t,s)&&!e.o(a,s)&&Object.defineProperty(a,s,{enumerable:!0,get:t[s]})},o:(e,a)=>Object.prototype.hasOwnProperty.call(e,a)};const a=window.React,t=window.wp.element,s=window.wp.i18n,n=window.wp.apiFetch;var i=e.n(n);function c({open:e,title:n,message:i,confirmLabel:c,danger:o=!0,busy:l=!1,onConfirm:r,onCancel:m}){return(0,t.useEffect)(()=>{if(!e)return;document.body.classList.add("baca-modal-open");const a=e=>{"Escape"===e.key&&m()};return document.addEventListener("keydown",a),()=>{document.body.classList.remove("baca-modal-open"),document.removeEventListener("keydown",a)}},[e,m]),e?(0,a.createElement)("div",{className:"baca-modal baca-confirm-modal is-visible",role:"dialog","aria-modal":"true","aria-labelledby":"baca-confirm-title"},(0,a.createElement)("div",{className:"baca-modal-overlay",onClick:m}),(0,a.createElement)("div",{className:"baca-modal-content baca-confirm-modal__content"},(0,a.createElement)("div",{className:"baca-modal-header"},(0,a.createElement)("div",{className:"baca-modal-title"},(0,a.createElement)("span",{className:"baca-modal-title-icon","aria-hidden":"true"},(0,a.createElement)("span",{className:"dashicons dashicons-warning"})),(0,a.createElement)("h3",{id:"baca-confirm-title"},n)),(0,a.createElement)("button",{type:"button",className:"baca-modal-close",onClick:m,"aria-label":(0,s.__)("Close","botisst-ai-chat-assistant")},(0,a.createElement)("span",{className:"dashicons dashicons-no-alt","aria-hidden":"true"}))),(0,a.createElement)("div",{className:"baca-modal-body baca-confirm-modal__body"},(0,a.createElement)("p",null,i)),(0,a.createElement)("div",{className:"baca-modal-footer baca-confirm-modal__footer"},(0,a.createElement)("button",{type:"button",className:"baca-btn baca-btn-secondary",onClick:m,disabled:l},(0,s.__)("Cancel","botisst-ai-chat-assistant")),(0,a.createElement)("button",{type:"button",className:"baca-btn "+(o?"baca-btn-danger":"baca-btn-primary"),onClick:r,disabled:l},l?(0,a.createElement)("span",{className:"baca-spinner","aria-hidden":"true"}):c||(0,s.__)("Confirm","botisst-ai-chat-assistant"))))):null}const o={openai:{name:(0,s.__)("OpenAI","botisst-ai-chat-assistant"),link:"https://platform.openai.com/settings/organization/api-keys"},google:{name:(0,s.__)("Google Gemini","botisst-ai-chat-assistant"),link:"https://aistudio.google.com/api-keys"}};(0,s.__)("OpenAI","botisst-ai-chat-assistant"),(0,s.__)("Google Gemini","botisst-ai-chat-assistant");const l=[{id:"general",label:(0,s.__)("General","botisst-ai-chat-assistant")},{id:"advanced",label:(0,s.__)("Advance","botisst-ai-chat-assistant")},{id:"style",label:(0,s.__)("Style","botisst-ai-chat-assistant")}],r=(0,s.__)("Explain how your chatbot should sound and behave—its tone, what it helps with, and any rules it should follow.","botisst-ai-chat-assistant"),m=[{id:"sources",label:(0,s.__)("Sources","botisst-ai-chat-assistant")},{id:"vector-db",label:(0,s.__)("Database","botisst-ai-chat-assistant")},{id:"indexing",label:(0,s.__)("Indexing Rules","botisst-ai-chat-assistant")}],d=(0,s.__)("Add facts, FAQs, or company info you want the chatbot to rely on when answering.","botisst-ai-chat-assistant"),b=(0,s.__)("We will read these pages from time to time and use what we find in replies.","botisst-ai-chat-assistant");function _(e){if(!e)return[];try{const a="string"==typeof e?JSON.parse(e):e;return Array.isArray(a)?a:[]}catch{return[]}}function u(e){return e.email?e.email:(0,s.__)("Guest User","botisst-ai-chat-assistant")}function p(e){return e?{openai:"OpenAI",google:"Google"}[e.toLowerCase()]||e.charAt(0).toUpperCase()+e.slice(1):(0,s.__)("Unknown","botisst-ai-chat-assistant")}function h(e){return{provider:e?.provider?p(e.provider):(0,s.__)("Unknown","botisst-ai-chat-assistant"),model:e?.model||(0,s.__)("Unknown","botisst-ai-chat-assistant")}}function g(e){return String(null!=e?e:"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}function v(e){const a=_(e.content);if(!a.length)return"";const t=a[a.length-1],s=(t?.content||"").replace(/\s+/g," ").trim();return s?`"${s.length>72?`${s.slice(0,72)}…`:s}"`:""}function E(e){if(!e)return"";const a=String(e).includes("T")?e:String(e).replace(" ","T"),t=new Date(a);if(Number.isNaN(t.getTime()))return e;const s=new Date,n={month:"short",day:"numeric",...t.getFullYear()!==s.getFullYear()?{year:"numeric"}:{}};return`${t.toLocaleDateString(void 0,n)} · ${t.toLocaleTimeString(void 0,{hour:"numeric",minute:"2-digit"})}`}const y=[(0,s.__)("Header & User Message colors","botisst-ai-chat-assistant"),(0,s.__)("Assistant Name & Greeting","botisst-ai-chat-assistant"),(0,s.__)("Bot Avatar updates","botisst-ai-chat-assistant"),(0,s.__)("Message bubble styling","botisst-ai-chat-assistant"),(0,s.__)("Chat Launcher visibility","botisst-ai-chat-assistant")],N=(0,s.__)("How do I customize this chat window?","botisst-ai-chat-assistant"),f=(0,s.__)("It's easy! Just use the settings in the dashboard to change the name, colors, and more.","botisst-ai-chat-assistant"),w={openai:{name:(0,s.__)("OpenAI","botisst-ai-chat-assistant"),link:"https://platform.openai.com/settings/organization/api-keys"},google:{name:(0,s.__)("Google Gemini","botisst-ai-chat-assistant"),link:"https://aistudio.google.com/api-keys"}},k=[{value:"sqlite",label:(0,s.__)("SQLite (Local)","botisst-ai-chat-assistant"),desc:(0,s.__)("Local vector storage - no setup needed","botisst-ai-chat-assistant")},{value:"pinecone",label:(0,s.__)("Pinecone (Cloud)","botisst-ai-chat-assistant"),desc:(0,s.__)("Managed cloud service - requires API key","botisst-ai-chat-assistant")}];async function x(e){try{await i()({path:"/baca/v1/setup-wizard",method:"POST",data:{status:e}})}catch(e){}}function S({open:e,settings:n,onSave:c,onClose:o,showNotice:l}){const[r,m]=(0,t.useState)(1),[d,b]=(0,t.useState)(!1),_=()=>n?.api_keys?.openai?"openai":n?.api_keys?.google?"google":n?.chatbot?.default_provider||"openai",[u,p]=(0,t.useState)(_),[h,g]=(0,t.useState)(()=>n?.api_keys?.[_()]||""),[v,E]=(0,t.useState)(()=>n?.rag?.vector_db?.provider||"sqlite"),[y,N]=(0,t.useState)(()=>n?.rag?.embeddings?.provider||"openai"),[f,S]=(0,t.useState)(()=>n?.rag?.vector_db?.api_key||""),[C,P]=(0,t.useState)(()=>n?.rag?.vector_db?.host||""),[I,A]=(0,t.useState)(()=>n?.rag?.vector_db?.index_name||""),[q,F]=(0,t.useState)(""),[z,L]=(0,t.useState)([]),[T,O]=(0,t.useState)(()=>n?.rag?.post_types||["post","page"]);if((0,t.useEffect)(()=>{if(!e)return;document.body.classList.add("baca-modal-open");const a=_();return p(a),g(n?.api_keys?.[a]||""),E(n?.rag?.vector_db?.provider||"sqlite"),N(n?.rag?.embeddings?.provider||"openai"),S(n?.rag?.vector_db?.api_key||""),P(n?.rag?.vector_db?.host||""),A(n?.rag?.vector_db?.index_name||""),O(n?.rag?.post_types||["post","page"]),i()({path:"/baca/v1/rag/post-types"}).then(e=>L(e.types||[])).catch(()=>{}),()=>document.body.classList.remove("baca-modal-open")},[e,n]),!e)return null;const $=e=>{m(e)},M=async e=>{b(!0),await x(e),b(!1),o()},R=async()=>{b(!0);try{const e="pinecone"===v?{provider:"pinecone",api_key:f,host:C,index_name:I}:{provider:"sqlite"},a={provider:y};await i()({path:"/baca/v1/rag/settings",method:"POST",data:{vector_db:e,embeddings:a}}),c({rag:{...n?.rag,vector_db:e,embeddings:{...n?.rag?.embeddings,...a}}}),$("pinecone"===v?4:3)}catch(e){l(e?.message||(0,s.__)("Could not connect to this vector database. Please check your details.","botisst-ai-chat-assistant"),"error")}finally{b(!1)}},D=async()=>{b(!0);try{await i()({path:"/baca/v1/rag/settings",method:"POST",data:{post_types:T}}),c({rag:{...n?.rag,post_types:T}});const e=await i()({path:"/baca/v1/rag/index",method:"POST",data:{post_types:T,index_sources:{knowledge_text:!1,urls:!1,files:!1,website:T.length>0}}});if(e&&!1===e.success)throw new Error(e.message||(0,s.__)("Embedding generation failed.","botisst-ai-chat-assistant"));$("pinecone"===v?5:4)}catch(e){l(e.message||(0,s.__)("Could not save post types.","botisst-ai-chat-assistant"),"error")}finally{b(!1)}},G=async()=>{b(!0);try{if(await i()({path:"/baca/v1/save-bot-settings",method:"POST",data:{knowledge_text:q}}),c({chatbot:{...n?.chatbot,knowledge_text:q}}),q.trim()){const e=await i()({path:"/baca/v1/rag/index",method:"POST",data:{post_types:T,index_sources:{knowledge_text:!0,urls:!1,files:!1,website:!1}}});if(e&&!1===e.success)throw new Error(e.message||(0,s.__)("Embedding generation failed.","botisst-ai-chat-assistant"))}l((0,s.__)("Embedding generation and setup completed successfully!","botisst-ai-chat-assistant")),await x("completed"),$("done")}catch(e){l(e?.message||(0,s.__)("Could not complete the setup process. Please try again.","botisst-ai-chat-assistant"),"error")}finally{b(!1)}},B="pinecone"===v?5:4,U="pinecone"===v?[(0,s.__)("Connect an AI provider","botisst-ai-chat-assistant"),(0,s.__)("Choose vector database","botisst-ai-chat-assistant"),(0,s.__)("Pinecone settings","botisst-ai-chat-assistant"),(0,s.__)("Content for Your Chatbot","botisst-ai-chat-assistant"),(0,s.__)("Add chatbot knowledge","botisst-ai-chat-assistant")]:[(0,s.__)("Connect an AI provider","botisst-ai-chat-assistant"),(0,s.__)("Choose vector database","botisst-ai-chat-assistant"),(0,s.__)("Content for Your Chatbot","botisst-ai-chat-assistant"),(0,s.__)("Add chatbot knowledge","botisst-ai-chat-assistant")],K=()=>(0,a.createElement)(a.Fragment,null,(0,a.createElement)("h2",{className:"baca-wizard-step-title"},(0,s.__)("Add what your bot should know","botisst-ai-chat-assistant")),(0,a.createElement)("p",{className:"baca-wizard-step-desc"},(0,s.__)("Add facts, FAQs, or company information for your chatbot. You can add more content later in the Knowledge Base.","botisst-ai-chat-assistant")),(0,a.createElement)("div",{className:"baca-bot-field"},(0,a.createElement)("label",{htmlFor:"wizard_knowledge_text"},(0,s.__)("Knowledge Base Text","botisst-ai-chat-assistant")),(0,a.createElement)("textarea",{id:"wizard_knowledge_text",className:"baca-bot-input baca-bot-textarea",rows:"6",value:q,onChange:e=>F(e.target.value),placeholder:(0,s.__)("e.g. We are open Monday-Friday, 9am-5pm. Our return policy is...","botisst-ai-chat-assistant")}))),j=()=>(0,a.createElement)(a.Fragment,null,(0,a.createElement)("h2",{className:"baca-wizard-step-title"},(0,s.__)("Content for Your Chatbot","botisst-ai-chat-assistant")),(0,a.createElement)("p",{className:"baca-wizard-step-desc"},(0,s.__)("Choose which WordPress content the chatbot can use to answer questions.","botisst-ai-chat-assistant")),(0,a.createElement)("div",{className:"baca-kb-post-types",style:{marginTop:"1.5rem",display:"flex",flexDirection:"column",gap:"0.75rem"}},z.length>0?z.map(e=>(0,a.createElement)("label",{key:e.value,className:"baca-checkbox",style:{display:"flex",alignItems:"center",gap:"0.5rem",fontSize:"0.875rem",color:"#374151",cursor:"pointer"}},(0,a.createElement)("input",{type:"checkbox",checked:T.includes(e.value),onChange:()=>{O(a=>a.includes(e.value)?a.filter(a=>a!==e.value):[...a,e.value])}}),(0,a.createElement)("span",{className:"baca-checkbox__label"},e.label," (",e.count,")"))):(0,a.createElement)("p",{className:"baca-hint",style:{fontSize:"0.8125rem",color:"#6b7280"}},(0,s.__)("Fetching available content types...","botisst-ai-chat-assistant")))),W="pinecone"===v?5===r:4===r;return(0,a.createElement)("div",{className:"baca-modal baca-wizard-modal is-visible",role:"dialog","aria-modal":"true","aria-labelledby":"baca-wizard-title"},(0,a.createElement)("div",{className:"baca-modal-overlay"}),(0,a.createElement)("div",{className:"baca-modal-content baca-wizard-modal__content"},(0,a.createElement)("div",{className:"baca-modal-header"},(0,a.createElement)("div",{className:"baca-modal-title"},(0,a.createElement)("span",{className:"baca-modal-title-icon","aria-hidden":"true"},(0,a.createElement)("span",{className:"dashicons dashicons-format-chat"})),(0,a.createElement)("h3",{id:"baca-wizard-title"},(0,s.__)("Welcome to Botisst — quick setup","botisst-ai-chat-assistant"))),(0,a.createElement)("button",{type:"button",className:"baca-modal-close",onClick:()=>M("skipped"),"aria-label":(0,s.__)("Close","botisst-ai-chat-assistant"),disabled:d},(0,a.createElement)("span",{className:"dashicons dashicons-no-alt","aria-hidden":"true"}))),"done"===r?null:(0,a.createElement)("div",{className:"baca-wizard-progress"},Array.from({length:B},(e,a)=>a+1).map(e=>(0,a.createElement)("button",{key:e,type:"button",className:`baca-wizard-progress__dot ${e===r?"is-active":""} ${e<r?"is-done":""}`,onClick:()=>e<r&&$(e),disabled:e>=r||d,"aria-label":(0,s.__)("Go back to step","botisst-ai-chat-assistant")+": "+U[e-1],"aria-current":e===r?"step":void 0}))),(0,a.createElement)("div",{className:"baca-modal-body baca-wizard-modal__body"},1===r&&(0,a.createElement)(a.Fragment,null,(0,a.createElement)("h2",{className:"baca-wizard-step-title"},(0,s.__)("Connect an AI provider","botisst-ai-chat-assistant")),(0,a.createElement)("p",{className:"baca-wizard-step-desc"},(0,s.__)("Choose an AI provider and enter your API key to continue.","botisst-ai-chat-assistant")),(0,a.createElement)("div",{className:"baca-bot-field"},(0,a.createElement)("label",{htmlFor:"wizard_provider"},(0,s.__)("AI Provider","botisst-ai-chat-assistant")),(0,a.createElement)("select",{id:"wizard_provider",className:"baca-bot-select",value:u,onChange:e=>{const a=e.target.value;p(a),g(n?.api_keys?.[a]||"")}},Object.entries(w).map(([e,t])=>(0,a.createElement)("option",{key:e,value:e},t.name)))),(0,a.createElement)("div",{className:"baca-bot-field"},(0,a.createElement)("label",{htmlFor:"wizard_api_key"},(0,s.__)("API Key","botisst-ai-chat-assistant")),(0,a.createElement)("input",{type:"text",id:"wizard_api_key",className:"baca-bot-input",value:h,onChange:e=>g(e.target.value),placeholder:(0,s.__)("Paste your API key here","botisst-ai-chat-assistant")}),(0,a.createElement)("a",{href:w[u].link,className:"baca-api-help-link",target:"_blank",rel:"noopener noreferrer"},(0,s.__)("Generate your API key here","botisst-ai-chat-assistant"),(0,a.createElement)("span",{className:"dashicons dashicons-external","aria-hidden":"true"})))),2===r&&(()=>{const e=!!n?.api_keys?.[y];return(0,a.createElement)(a.Fragment,null,(0,a.createElement)("h2",{className:"baca-wizard-step-title"},(0,s.__)("Choose your database","botisst-ai-chat-assistant")),(0,a.createElement)("p",{className:"baca-wizard-step-desc"},(0,s.__)("Your knowledge base is stored here so the AI can quickly search and use it when answering questions.","botisst-ai-chat-assistant")),(0,a.createElement)("div",{className:"baca-kb-db-options"},k.map(e=>(0,a.createElement)("label",{key:e.value,className:"baca-radio-card",style:{margin:0}},(0,a.createElement)("input",{type:"radio",name:"wizard_vector_db",value:e.value,checked:v===e.value,onChange:()=>E(e.value)}),(0,a.createElement)("span",{className:"baca-radio-card__label"},(0,a.createElement)("strong",null,e.label),(0,a.createElement)("br",null),(0,a.createElement)("small",null,e.desc))))),(0,a.createElement)("div",{className:"baca-bot-field",style:{marginTop:"1.5rem"}},(0,a.createElement)("label",{htmlFor:"wizard_embedding_provider"},(0,s.__)("Embedding Provider","botisst-ai-chat-assistant")),(0,a.createElement)("select",{id:"wizard_embedding_provider",className:"baca-bot-select",value:y,onChange:e=>N(e.target.value)},(0,a.createElement)("option",{value:"openai"},(0,s.__)("OpenAI (text-embedding-3-small)","botisst-ai-chat-assistant")),(0,a.createElement)("option",{value:"google"},(0,s.__)("Google Gemini (gemini-embedding-001)","botisst-ai-chat-assistant"))),(0,a.createElement)("p",{className:"baca-bot-hint",style:{marginTop:"0.375rem"}},(0,s.__)("Select the AI provider to generate vector embeddings.","botisst-ai-chat-assistant")),!e&&(0,a.createElement)("div",{className:"baca-bot-warning",style:{marginTop:"0.75rem",padding:"0.75rem 1rem",background:"#fef2f2",border:"1px solid #fee2e2",borderRadius:"8px",fontSize:"0.8125rem",color:"#b91c1c",display:"flex",alignItems:"center",gap:"0.5rem",flexWrap:"wrap"}},(0,a.createElement)("span",null,(0,s.__)("You need to add an API key to generate embeddings.","botisst-ai-chat-assistant")),(0,a.createElement)("button",{type:"button",className:"baca-bot-link",style:{display:"inline-flex",padding:0,border:"none",background:"none",color:"#2563eb",textDecoration:"underline",cursor:"pointer",fontSize:"inherit",fontWeight:"600"},onClick:()=>$(1)},(0,s.__)("Go back to Step 1 to add the API key","botisst-ai-chat-assistant")))))})(),"pinecone"===v?(0,a.createElement)(a.Fragment,null,3===r&&(0,a.createElement)(a.Fragment,null,(0,a.createElement)("h2",{className:"baca-wizard-step-title"},(0,s.__)("Pinecone Settings","botisst-ai-chat-assistant")),(0,a.createElement)("p",{className:"baca-wizard-step-desc"},(0,s.__)("Configure your Pinecone connection details below.","botisst-ai-chat-assistant")),(0,a.createElement)("div",{className:"baca-bot-field"},(0,a.createElement)("label",{htmlFor:"wizard_pinecone_key"},(0,s.__)("Pinecone API Key","botisst-ai-chat-assistant")),(0,a.createElement)("input",{type:"password",id:"wizard_pinecone_key",className:"baca-bot-input",value:f,onChange:e=>S(e.target.value),placeholder:"pcsk_..."})),(0,a.createElement)("div",{className:"baca-bot-field"},(0,a.createElement)("label",{htmlFor:"wizard_pinecone_host"},(0,s.__)("Pinecone Host","botisst-ai-chat-assistant")),(0,a.createElement)("input",{type:"text",id:"wizard_pinecone_host",className:"baca-bot-input",value:C,onChange:e=>P(e.target.value),placeholder:"https://index-xxxxx.svc.aped-4627-b74a.pinecone.io"}),(0,a.createElement)("a",{href:"https://app.pinecone.io/",className:"baca-api-help-link",target:"_blank",rel:"noopener noreferrer"},(0,s.__)("Find your Pinecone API details and host URL here","botisst-ai-chat-assistant"),(0,a.createElement)("span",{className:"dashicons dashicons-external","aria-hidden":"true"}))),(0,a.createElement)("div",{className:"baca-bot-field"},(0,a.createElement)("label",{htmlFor:"wizard_pinecone_index"},(0,s.__)("Index Name","botisst-ai-chat-assistant")),(0,a.createElement)("input",{type:"text",id:"wizard_pinecone_index",className:"baca-bot-input",value:I,onChange:e=>A(e.target.value),placeholder:(0,s.__)("e.g. botisst-index","botisst-ai-chat-assistant")}))),4===r&&j(),5===r&&K()):(0,a.createElement)(a.Fragment,null,3===r&&j(),4===r&&K()),"done"===r&&(0,a.createElement)("div",{className:"baca-wizard-done"},(0,a.createElement)("span",{className:"baca-wizard-done__icon dashicons dashicons-yes-alt","aria-hidden":"true"}),(0,a.createElement)("h2",{className:"baca-wizard-step-title"},(0,s.__)("You're all set!","botisst-ai-chat-assistant")),(0,a.createElement)("p",{className:"baca-wizard-step-desc"},(0,s.__)("Your chatbot is ready to go. You can fine-tune everything else from the dashboard at any time.","botisst-ai-chat-assistant")))),(0,a.createElement)("div",{className:"baca-modal-footer baca-wizard-modal__footer"},"done"===r?(0,a.createElement)(a.Fragment,null,(0,a.createElement)("span",null),(0,a.createElement)("button",{type:"button",className:"baca-btn baca-btn-primary",onClick:()=>{window.location.href.includes("page=baca")?o():window.location.href="admin.php?page=baca"}},(0,s.__)("Go to Settings","botisst-ai-chat-assistant"))):(0,a.createElement)(a.Fragment,null,1===r?(0,a.createElement)("span",null):(0,a.createElement)("button",{type:"button",className:"baca-bot-link baca-wizard-skip",onClick:()=>{r===("pinecone"===v?5:4)?M("skipped"):$(r+1)},disabled:d},(0,s.__)("Skip for now","botisst-ai-chat-assistant")),(0,a.createElement)("button",{type:"button",className:"baca-btn baca-btn-primary",onClick:()=>{1===r?(async()=>{if(h.trim())if(n?.api_keys?.[u]&&h===n.api_keys[u])$(2);else{b(!0);try{await i()({path:"/baca/v1/save-settings",method:"POST",data:{[`${u}_key`]:h}});const e=h.length<8?"********":h.slice(0,4)+"..."+h.slice(-4);c({api_keys:{...n?.api_keys,[u]:e}}),$(2)}catch(e){const a=e?.errors?.[u]||e?.message||(0,s.__)("Could not validate this API key. Please try again.","botisst-ai-chat-assistant");l(a,"error")}finally{b(!1)}}else l((0,s.__)("An API key is required to continue.","botisst-ai-chat-assistant"),"error")})():2===r?"pinecone"===v?$(3):R():3===r?"pinecone"===v?R():D():4===r?"pinecone"===v?D():G():5===r&&G()},disabled:d||2===r&&!n?.api_keys?.[y]},d?(0,a.createElement)("span",{className:"baca-spinner","aria-hidden":"true"}):W?(0,s.__)("Finish","botisst-ai-chat-assistant"):(0,s.__)("Next","botisst-ai-chat-assistant"))))))}const C=[{id:"api-keys",label:(0,s.__)("API Keys","botisst-ai-chat-assistant"),icon:"dashicons-rest-api",desc:(0,s.__)("Configure your AI providers and select your preferred chatbot models.","botisst-ai-chat-assistant"),component:function({settings:e,onSave:n,showNotice:l}){const[r,m]=(0,t.useState)(!1),[d,b]=(0,t.useState)({}),[_,u]=(0,t.useState)(null),[p,h]=(0,t.useState)(()=>window.baca_data?.models_list||{}),[g,v]=(0,t.useState)({openai_key:"",google_key:"",models:e?.models||{},default_provider:e?.chatbot?.default_provider||"openai"}),E=a=>!!e.api_keys?.[a],y=a=>e.api_keys?.[a]||"";return(0,a.createElement)("div",{className:"baca-api-keys"},(0,a.createElement)("form",{onSubmit:async e=>{e.preventDefault(),m(!0);try{const e=await i()({path:"/baca/v1/save-settings",method:"POST",data:g});l(e.message||(0,s.__)("Settings saved successfully!","botisst-ai-chat-assistant"),"success"),n({api_keys:e.api_keys||{},chatbot:e.chatbot||{}}),e.models_list&&h(e.models_list),v(a=>{const t={...a};return Object.keys(o).forEach(e=>{t[`${e}_key`]=""}),e.chatbot?.default_provider&&(t.default_provider=e.chatbot.default_provider),t})}catch(e){let a=e.message;e.errors&&"object"==typeof e.errors&&(a=Object.values(e.errors).join(" | ")),l(a||(0,s.__)("Failed to save settings","botisst-ai-chat-assistant"),"error")}finally{m(!1)}}},Object.entries(o).map(([e,t])=>(0,a.createElement)("article",{key:e,className:"baca-api-provider-card"},(0,a.createElement)("header",{className:"baca-api-provider-card__header",style:{display:"flex",justifyContent:"space-between",alignItems:"center"}},(0,a.createElement)("h3",null,t.name),E(e)&&(0,a.createElement)("div",{className:"baca-api-provider-toggle",style:{display:"flex",alignItems:"center",gap:"8px"}},(0,a.createElement)("span",{style:{fontSize:"12px",fontWeight:"500",color:g.default_provider===e?"var(--baca-success, #10b981)":"#6b7280"}},g.default_provider===e?(0,s.__)("Active","botisst-ai-chat-assistant"):(0,s.__)("Inactive","botisst-ai-chat-assistant")),(0,a.createElement)("label",{className:"baca-toggle",htmlFor:`toggle_${e}`},(0,a.createElement)("input",{id:`toggle_${e}`,type:"checkbox",checked:g.default_provider===e,onChange:a=>{if(a.target.checked)v(a=>({...a,default_provider:e}));else{const a=Object.keys(o).find(a=>a!==e&&E(a));v(e=>({...e,default_provider:a||""}))}}}),(0,a.createElement)("span",{className:"baca-toggle-slider","aria-hidden":"true"})))),(0,a.createElement)("div",{className:"baca-api-provider-card__body"},(0,a.createElement)("div",{className:"baca-api-field"},(0,a.createElement)("div",{className:"baca-api-field__label-row"},(0,a.createElement)("label",{htmlFor:`${e}_key`},(0,s.__)("API Key","botisst-ai-chat-assistant")),E(e)&&(0,a.createElement)("button",{type:"button",className:"baca-api-btn-reset",onClick:()=>u(e),disabled:d[e]},d[e]?(0,a.createElement)("span",{className:"baca-spinner","aria-hidden":"true"}):(0,s.__)("Reset Key","botisst-ai-chat-assistant"))),(0,a.createElement)("input",{type:"text",id:`${e}_key`,className:"baca-api-input"+(E(e)?" baca-api-input--masked":""),value:E(e)?y(e):g[`${e}_key`],onChange:a=>((e,a)=>{v(t=>({...t,[`${e}_key`]:a}))})(e,a.target.value),placeholder:(0,s.__)(`Enter your ${t.name} API key`,"botisst-ai-chat-assistant"),disabled:E(e)}),(0,a.createElement)("a",{href:t.link,className:"baca-api-help-link",target:"_blank",rel:"noopener noreferrer"},(0,s.__)(`Generate your ${t.name} API key here`,"botisst-ai-chat-assistant"),(0,a.createElement)("span",{className:"dashicons dashicons-external","aria-hidden":"true"}))),E(e)&&p[e]&&Object.keys(p[e]).length>0&&(0,a.createElement)("div",{className:"baca-api-field"},(0,a.createElement)("label",{htmlFor:`models_${e}`},(0,s.__)("Select Model","botisst-ai-chat-assistant")),(0,a.createElement)("select",{id:`models_${e}`,className:"baca-api-select",value:g.models[e]||"",onChange:a=>((e,a)=>{v(t=>({...t,models:{...t.models,[e]:a}}))})(e,a.target.value)},Object.entries(p[e]).map(([e,t])=>(0,a.createElement)("option",{key:e,value:e},t))))))),(0,a.createElement)("footer",{className:"baca-api-keys-footer"},(0,a.createElement)("button",{type:"submit",className:"baca-btn baca-btn-primary",disabled:r},r?(0,a.createElement)(a.Fragment,null,(0,a.createElement)("span",{className:"baca-spinner","aria-hidden":"true"})," ",(0,s.__)("Saving…","botisst-ai-chat-assistant")):(0,s.__)("Save","botisst-ai-chat-assistant")))),(0,a.createElement)(c,{open:!!_,title:(0,s.__)("Reset API key","botisst-ai-chat-assistant"),message:(0,s.__)(`Are you sure you want to reset the ${o[_]?.name||""} API key? This cannot be undone.`,"botisst-ai-chat-assistant"),confirmLabel:(0,s.__)("Reset Key","botisst-ai-chat-assistant"),busy:d[_],onCancel:()=>u(null),onConfirm:()=>{const a=_;u(null),(async a=>{b(e=>({...e,[a]:!0}));try{const t=await i()({path:"/baca/v1/reset-key",method:"POST",data:{provider:a}});l((0,s.__)("Key reset successfully!","botisst-ai-chat-assistant"),"success");const c={...e?.api_keys};delete c[a];const o={...e?.models};delete o[a],n({api_keys:c,models:o,chatbot:t.chatbot||e?.chatbot}),v(e=>({...e,[`${a}_key`]:"",default_provider:t.chatbot?.default_provider||"",models:{...e.models,[a]:""}}))}catch(e){l(e.message||(0,s.__)("Failed to reset key","botisst-ai-chat-assistant"),"error")}finally{b(e=>({...e,[a]:!1}))}})(a)}}))}},{id:"chatbot-settings",label:(0,s.__)("Chatbot","botisst-ai-chat-assistant"),icon:"dashicons-admin-settings",desc:(0,s.__)("Customize your chatbot name, greeting message, and behavioral features.","botisst-ai-chat-assistant"),component:function({settings:e,onSave:n,showNotice:c}){var o,r,m,d,b;const _=e?.chatbot||{},[u,p]=(0,t.useState)("general"),[h,g]=(0,t.useState)(!1),[v,E]=(0,t.useState)({bot_name:_.bot_name||"",primary_color:_.primary_color||"#6366f1",greeting_msg:_.greeting_msg||"",api_error_msg:_.api_error_msg||"",support_url:_.support_url||"",pre_question_1:_.pre_question_1||"",pre_question_2:_.pre_question_2||"",pre_question_3:_.pre_question_3||"",pre_question_4:_.pre_question_4||"",pre_questions_bg_color:_.pre_questions_bg_color||"#ffffff",pre_questions_text_color:_.pre_questions_text_color||"#475569",pre_questions_border_color:_.pre_questions_border_color||"#e2e8f0",pre_questions_border_radius:_.pre_questions_border_radius||"rounded",bot_avatar:_.bot_avatar||"",bubble_style:_.bubble_style||"rounded",save_chat:null!==(o=_.save_chat)&&void 0!==o&&o,ask_email:null!==(r=_.ask_email)&&void 0!==r&&r,enable_pre_questions:null!==(m=_.enable_pre_questions)&&void 0!==m&&m,rate_limit_per_minute:null!==(d=_.rate_limit_per_minute)&&void 0!==d?d:20}),y=(e,a)=>{E(t=>({...t,[e]:a}))},N=(v.bot_name||"B").charAt(0).toUpperCase(),f=(e,t,s,n,i)=>(0,a.createElement)("div",{className:"baca-bot-setting-card"},(0,a.createElement)("div",{className:"baca-bot-setting-card__text"},(0,a.createElement)("strong",null,t),(0,a.createElement)("span",null,s)),(0,a.createElement)("label",{className:"baca-toggle",htmlFor:e},(0,a.createElement)("input",{id:e,type:"checkbox",checked:n,onChange:e=>i(e.target.checked)}),(0,a.createElement)("span",{className:"baca-toggle-slider","aria-hidden":"true"})));return(0,a.createElement)("div",{className:"baca-bot-settings"},(0,a.createElement)("nav",{className:"baca-kb-subnav",role:"tablist","aria-label":(0,s.__)("Chatbot settings sections","botisst-ai-chat-assistant")},l.map(e=>(0,a.createElement)("button",{key:e.id,type:"button",role:"tab","aria-selected":u===e.id,className:"baca-kb-subtab "+(u===e.id?"active":""),onClick:()=>p(e.id)},e.label))),(0,a.createElement)("form",{onSubmit:async e=>{e.preventDefault(),g(!0);try{await i()({path:"/baca/v1/save-bot-settings",method:"POST",data:v}),n({chatbot:{..._,...v}}),c((0,s.__)("Bot settings saved successfully!","botisst-ai-chat-assistant"))}catch(e){c(e.message||(0,s.__)("Failed to save settings","botisst-ai-chat-assistant"),"error")}finally{g(!1)}}},(0,a.createElement)("div",{className:"baca-bot-panel "+("general"===u?"":"baca-kb-panel--hidden")},(0,a.createElement)("section",{className:"baca-bot-section"},(0,a.createElement)("h2",{className:"baca-bot-section__title"},(0,s.__)("Bot Identity","botisst-ai-chat-assistant")),(0,a.createElement)("div",{className:"baca-bot-col--stack"},(0,a.createElement)("div",{className:"baca-bot-field"},(0,a.createElement)("label",{htmlFor:"bot_name"},(0,s.__)("AI Assistant Name","botisst-ai-chat-assistant")),(0,a.createElement)("input",{type:"text",id:"bot_name",className:"baca-bot-input",value:v.bot_name,onChange:e=>y("bot_name",e.target.value),placeholder:(0,s.__)("Botisst","botisst-ai-chat-assistant")}),(0,a.createElement)("p",{className:"baca-bot-hint"},(0,s.__)("This name will appear in the chat window header for your users.","botisst-ai-chat-assistant"))),(0,a.createElement)("div",{className:"baca-bot-field"},(0,a.createElement)("label",{htmlFor:"greeting_msg"},(0,s.__)("Greeting Message","botisst-ai-chat-assistant")),(0,a.createElement)("textarea",{id:"greeting_msg",className:"baca-bot-input baca-bot-textarea",rows:"4",value:v.greeting_msg,onChange:e=>y("greeting_msg",e.target.value),placeholder:(0,s.__)("Hello! I am your AI assistant. How can I help you today?","botisst-ai-chat-assistant")}),(0,a.createElement)("p",{className:"baca-bot-hint"},(0,s.__)("The first message your chatbot sends to initiate a conversation.","botisst-ai-chat-assistant"))),(0,a.createElement)("div",{className:"baca-bot-field"},(0,a.createElement)("label",{htmlFor:"support_url"},(0,s.__)("Support System URL","botisst-ai-chat-assistant")),(0,a.createElement)("input",{type:"text",id:"support_url",className:"baca-bot-input",value:v.support_url,onChange:e=>y("support_url",e.target.value),placeholder:(0,s.__)("https://example.com/support","botisst-ai-chat-assistant")}),(0,a.createElement)("p",{className:"baca-bot-hint"},(0,s.__)('The link users will be redirected to when they click "support agent" in case of errors.',"botisst-ai-chat-assistant"))),(0,a.createElement)("div",{className:"baca-bot-field"},(0,a.createElement)("label",{htmlFor:"api_error_msg"},(0,s.__)("API/Server Error Message","botisst-ai-chat-assistant")),(0,a.createElement)("textarea",{id:"api_error_msg",className:"baca-bot-input baca-bot-textarea",rows:"3",value:v.api_error_msg,onChange:e=>y("api_error_msg",e.target.value),placeholder:(0,s.__)("There is some error on server, please contact our [support agent]({support_url}).","botisst-ai-chat-assistant")}),(0,a.createElement)("p",{className:"baca-bot-hint"},(0,s.__)("The message shown when a connection or API error occurs. You can use the {support_url} placeholder to insert the Support URL link.","botisst-ai-chat-assistant")))))),(0,a.createElement)("div",{className:"baca-bot-panel "+("advanced"===u?"":"baca-kb-panel--hidden")},(0,a.createElement)("section",{className:"baca-bot-section"},(0,a.createElement)("h2",{className:"baca-bot-section__title"},(0,s.__)("Security","botisst-ai-chat-assistant")),(0,a.createElement)("div",{className:"baca-bot-field"},(0,a.createElement)("label",{htmlFor:"rate_limit_per_minute"},(0,s.__)("Chat Rate Limit (requests per minute per visitor)","botisst-ai-chat-assistant")),(0,a.createElement)("input",{type:"number",id:"rate_limit_per_minute",className:"baca-bot-input",min:"1",max:"300",value:v.rate_limit_per_minute,onChange:e=>y("rate_limit_per_minute",parseInt(e.target.value,10)||1)}),(0,a.createElement)("p",{className:"baca-bot-hint"},(0,s.__)("The public chat endpoint is throttled per visitor IP to stop it being used to run up your AI provider bill. Lower this if you're seeing abuse, or raise it if legitimate users are being blocked.","botisst-ai-chat-assistant")))),(0,a.createElement)("section",{className:"baca-bot-section"},(0,a.createElement)("h2",{className:"baca-bot-section__title"},(0,s.__)("Conversation Features","botisst-ai-chat-assistant")),(0,a.createElement)("div",{className:"baca-bot-features"},f("save_chat",(0,s.__)("Save Chat History","botisst-ai-chat-assistant"),(0,s.__)("Enable user session continuity","botisst-ai-chat-assistant"),v.save_chat,e=>y("save_chat",e)),v.save_chat&&f("ask_email",(0,s.__)("Ask User Email","botisst-ai-chat-assistant"),(0,s.__)("Prompt user to enter their email to save chat continuity","botisst-ai-chat-assistant"),null!==(b=v.ask_email)&&void 0!==b&&b,e=>y("ask_email",e)),f("enable_pre_questions",(0,s.__)("Enable Suggested Questions","botisst-ai-chat-assistant"),(0,s.__)("Provide quick suggestion questions to start a conversation","botisst-ai-chat-assistant"),v.enable_pre_questions,e=>y("enable_pre_questions",e)))),v.enable_pre_questions&&(0,a.createElement)(a.Fragment,null,(0,a.createElement)("section",{className:"baca-bot-section"},(0,a.createElement)("h2",{className:"baca-bot-section__title"},(0,s.__)("Suggested Questions","botisst-ai-chat-assistant")),(0,a.createElement)("p",{className:"baca-bot-hint",style:{marginBottom:"1.25rem"}},(0,s.__)("Provide up to 4 suggested questions that users can click to instantly start a conversation.","botisst-ai-chat-assistant")),(0,a.createElement)("div",{className:"baca-bot-grid"},(0,a.createElement)("div",{className:"baca-bot-col"},(0,a.createElement)("div",{className:"baca-bot-field"},(0,a.createElement)("label",{htmlFor:"pre_question_1"},(0,s.__)("Suggested Question 1","botisst-ai-chat-assistant")),(0,a.createElement)("input",{type:"text",id:"pre_question_1",className:"baca-bot-input",value:v.pre_question_1,onChange:e=>y("pre_question_1",e.target.value),placeholder:(0,s.__)("e.g. What services do you offer?","botisst-ai-chat-assistant")})),(0,a.createElement)("div",{className:"baca-bot-field"},(0,a.createElement)("label",{htmlFor:"pre_question_2"},(0,s.__)("Suggested Question 2","botisst-ai-chat-assistant")),(0,a.createElement)("input",{type:"text",id:"pre_question_2",className:"baca-bot-input",value:v.pre_question_2,onChange:e=>y("pre_question_2",e.target.value),placeholder:(0,s.__)("e.g. How can I contact support?","botisst-ai-chat-assistant")}))),(0,a.createElement)("div",{className:"baca-bot-col"},(0,a.createElement)("div",{className:"baca-bot-field"},(0,a.createElement)("label",{htmlFor:"pre_question_3"},(0,s.__)("Suggested Question 3","botisst-ai-chat-assistant")),(0,a.createElement)("input",{type:"text",id:"pre_question_3",className:"baca-bot-input",value:v.pre_question_3,onChange:e=>y("pre_question_3",e.target.value),placeholder:(0,s.__)("e.g. What are your pricing plans?","botisst-ai-chat-assistant")})),(0,a.createElement)("div",{className:"baca-bot-field"},(0,a.createElement)("label",{htmlFor:"pre_question_4"},(0,s.__)("Suggested Question 4","botisst-ai-chat-assistant")),(0,a.createElement)("input",{type:"text",id:"pre_question_4",className:"baca-bot-input",value:v.pre_question_4,onChange:e=>y("pre_question_4",e.target.value),placeholder:(0,s.__)("e.g. Tell me about your company.","botisst-ai-chat-assistant")}))))),(0,a.createElement)("section",{className:"baca-bot-section"},(0,a.createElement)("h2",{className:"baca-bot-section__title"},(0,s.__)("Suggested Questions Styling","botisst-ai-chat-assistant")),(0,a.createElement)("div",{className:"baca-bot-grid"},(0,a.createElement)("div",{className:"baca-bot-col"},(0,a.createElement)("div",{className:"baca-bot-field"},(0,a.createElement)("label",{htmlFor:"pre_questions_bg_color"},(0,s.__)("Background Color","botisst-ai-chat-assistant")),(0,a.createElement)("div",{className:"baca-bot-color-field"},(0,a.createElement)("input",{type:"color",id:"pre_questions_bg_color",className:"baca-bot-color-picker",value:v.pre_questions_bg_color,onChange:e=>y("pre_questions_bg_color",e.target.value)}),(0,a.createElement)("span",{className:"baca-bot-color-value"},v.pre_questions_bg_color))),(0,a.createElement)("div",{className:"baca-bot-field"},(0,a.createElement)("label",{htmlFor:"pre_questions_text_color"},(0,s.__)("Text Color","botisst-ai-chat-assistant")),(0,a.createElement)("div",{className:"baca-bot-color-field"},(0,a.createElement)("input",{type:"color",id:"pre_questions_text_color",className:"baca-bot-color-picker",value:v.pre_questions_text_color,onChange:e=>y("pre_questions_text_color",e.target.value)}),(0,a.createElement)("span",{className:"baca-bot-color-value"},v.pre_questions_text_color)))),(0,a.createElement)("div",{className:"baca-bot-col"},(0,a.createElement)("div",{className:"baca-bot-field"},(0,a.createElement)("label",{htmlFor:"pre_questions_border_color"},(0,s.__)("Border Color","botisst-ai-chat-assistant")),(0,a.createElement)("div",{className:"baca-bot-color-field"},(0,a.createElement)("input",{type:"color",id:"pre_questions_border_color",className:"baca-bot-color-picker",value:v.pre_questions_border_color,onChange:e=>y("pre_questions_border_color",e.target.value)}),(0,a.createElement)("span",{className:"baca-bot-color-value"},v.pre_questions_border_color))),(0,a.createElement)("div",{className:"baca-bot-field"},(0,a.createElement)("label",{htmlFor:"pre_questions_border_radius"},(0,s.__)("Border Radius Style","botisst-ai-chat-assistant")),(0,a.createElement)("select",{id:"pre_questions_border_radius",className:"baca-bot-select",value:v.pre_questions_border_radius,onChange:e=>y("pre_questions_border_radius",e.target.value)},(0,a.createElement)("option",{value:"rounded"},(0,s.__)("Rounded (Default)","botisst-ai-chat-assistant")),(0,a.createElement)("option",{value:"square"},(0,s.__)("Square","botisst-ai-chat-assistant")),(0,a.createElement)("option",{value:"pill"},(0,s.__)("Pill","botisst-ai-chat-assistant"))))))))),(0,a.createElement)("div",{className:"baca-bot-panel "+("style"===u?"":"baca-kb-panel--hidden")},(0,a.createElement)("div",{className:"baca-bot-grid"},(0,a.createElement)("section",{className:"baca-bot-section"},(0,a.createElement)("h2",{className:"baca-bot-section__title"},(0,s.__)("Bot Avatar","botisst-ai-chat-assistant")),(0,a.createElement)("div",{className:"baca-bot-avatar-card",style:{margin:"0 auto"}},(0,a.createElement)("div",{className:"baca-bot-avatar-preview"},v.bot_avatar?(0,a.createElement)("img",{src:v.bot_avatar,alt:""}):(0,a.createElement)("span",null,N)),(0,a.createElement)("button",{type:"button",className:"baca-btn baca-btn-primary baca-bot-upload-btn",onClick:()=>{if(!window.wp?.media)return void c((0,s.__)("WordPress media modal is not available.","botisst-ai-chat-assistant"),"error");const e=window.wp.media({title:(0,s.__)("Select Bot Avatar","botisst-ai-chat-assistant"),button:{text:(0,s.__)("Use as Avatar","botisst-ai-chat-assistant")},multiple:!1});e.on("select",()=>{const a=e.state().get("selection").first().toJSON();y("bot_avatar",a.url)}),e.open()}},(0,a.createElement)("span",{className:"dashicons dashicons-upload","aria-hidden":"true"}),(0,s.__)("Upload New","botisst-ai-chat-assistant")),!!v.bot_avatar&&(0,a.createElement)("button",{type:"button",className:"baca-bot-remove-avatar",onClick:()=>y("bot_avatar","")},(0,s.__)("Remove","botisst-ai-chat-assistant")),(0,a.createElement)("p",{className:"baca-bot-hint baca-bot-hint--center"},(0,s.__)("JPG, PNG or SVG. Max size 2MB.","botisst-ai-chat-assistant")))),(0,a.createElement)("section",{className:"baca-bot-section"},(0,a.createElement)("h2",{className:"baca-bot-section__title"},(0,s.__)("Branding & Styles","botisst-ai-chat-assistant")),(0,a.createElement)("div",{className:"baca-bot-col--stack"},(0,a.createElement)("div",{className:"baca-bot-field"},(0,a.createElement)("label",{htmlFor:"primary_color"},(0,s.__)("Primary Color","botisst-ai-chat-assistant")),(0,a.createElement)("div",{className:"baca-bot-color-field"},(0,a.createElement)("input",{type:"color",id:"primary_color",className:"baca-bot-color-picker",value:v.primary_color,onChange:e=>y("primary_color",e.target.value),"aria-label":(0,s.__)("Primary color","botisst-ai-chat-assistant")}),(0,a.createElement)("span",{className:"baca-bot-color-value"},v.primary_color)),(0,a.createElement)("p",{className:"baca-bot-hint"},(0,s.__)("Used for the chat header, launcher button, and your messages.","botisst-ai-chat-assistant"))),(0,a.createElement)("div",{className:"baca-bot-field"},(0,a.createElement)("label",{htmlFor:"bubble_style"},(0,s.__)("Chat Bubble Style","botisst-ai-chat-assistant")),(0,a.createElement)("select",{id:"bubble_style",className:"baca-bot-select",value:v.bubble_style,onChange:e=>y("bubble_style",e.target.value)},(0,a.createElement)("option",{value:"rounded"},(0,s.__)("Rounded (Default)","botisst-ai-chat-assistant")),(0,a.createElement)("option",{value:"square"},(0,s.__)("Square","botisst-ai-chat-assistant")),(0,a.createElement)("option",{value:"pill"},(0,s.__)("Pill","botisst-ai-chat-assistant"))),(0,a.createElement)("p",{className:"baca-bot-hint"},(0,s.__)("Controls the corner rounding of chat message bubbles.","botisst-ai-chat-assistant"))))))),(0,a.createElement)("footer",{className:"baca-bot-footer"},(0,a.createElement)("button",{type:"submit",className:"baca-btn baca-btn-primary",disabled:h},h?(0,a.createElement)(a.Fragment,null,(0,a.createElement)("span",{className:"baca-spinner","aria-hidden":"true"})," ",(0,s.__)("Saving…","botisst-ai-chat-assistant")):(0,s.__)("Save","botisst-ai-chat-assistant")))))}},{id:"display-settings",label:(0,s.__)("Display Options","botisst-ai-chat-assistant"),icon:"dashicons-align-center",desc:(0,s.__)("Configure where and how your chatbot appears on the frontend.","botisst-ai-chat-assistant"),component:function({settings:e,onSave:n,showNotice:c}){var o,l,r;const[m,d]=(0,t.useState)(!1),b=e?.display||{},[_,u]=(0,t.useState)({entire_site:null!==(o=b.entire_site)&&void 0!==o&&o,show_on_mobile:null===(l=b.show_on_mobile)||void 0===l||l,exclude_pages:b.exclude_pages||"",position:b.position||"bottom-right",launcher_text:b.launcher_text||"",trigger_type:b.trigger_type||"click",trigger_delay:null!==(r=b.trigger_delay)&&void 0!==r?r:5}),p=(e,a)=>{u(t=>({...t,[e]:a}))},h=(e,t,s,n,i,c=null)=>(0,a.createElement)("div",{className:"baca-bot-setting-card"},(0,a.createElement)("div",{className:"baca-bot-setting-card__main"},c,(0,a.createElement)("div",{className:"baca-bot-setting-card__text"},(0,a.createElement)("strong",null,t),(0,a.createElement)("span",null,s))),(0,a.createElement)("label",{className:"baca-toggle",htmlFor:e},(0,a.createElement)("input",{id:e,type:"checkbox",checked:n,onChange:e=>i(e.target.checked)}),(0,a.createElement)("span",{className:"baca-toggle-slider","aria-hidden":"true"})));return(0,a.createElement)("div",{className:"baca-display-settings"},(0,a.createElement)("form",{onSubmit:async e=>{e.preventDefault(),d(!0);try{await i()({path:"/baca/v1/save-display-settings",method:"POST",data:_}),n({display:{...b,..._}}),c((0,s.__)("Display settings saved successfully!","botisst-ai-chat-assistant"))}catch(e){c(e.message||(0,s.__)("Failed to save settings","botisst-ai-chat-assistant"),"error")}finally{d(!1)}}},h("entire_site",(0,s.__)("Enable Site-wide Chatbot","botisst-ai-chat-assistant"),(0,s.__)("Activate the chatbot across all pages of your website","botisst-ai-chat-assistant"),_.entire_site,e=>p("entire_site",e)),(0,a.createElement)("div",{className:"baca-display-grid"},(0,a.createElement)("div",{className:"baca-bot-field"},(0,a.createElement)("label",{htmlFor:"launcher_text"},(0,s.__)("Chat Button Text","botisst-ai-chat-assistant")),(0,a.createElement)("input",{type:"text",id:"launcher_text",className:"baca-bot-input",value:_.launcher_text,onChange:e=>p("launcher_text",e.target.value),placeholder:(0,s.__)("How can we help?","botisst-ai-chat-assistant")})),(0,a.createElement)("div",{className:"baca-bot-field"},(0,a.createElement)("label",{htmlFor:"exclude_pages"},(0,s.__)("Exclude Pages (comma-separated page IDs)","botisst-ai-chat-assistant")),(0,a.createElement)("input",{type:"text",id:"exclude_pages",className:"baca-bot-input",value:_.exclude_pages,onChange:e=>p("exclude_pages",e.target.value),placeholder:(0,s.__)("e.g. 12, 45, 103","botisst-ai-chat-assistant")})),(0,a.createElement)("div",{className:"baca-bot-field"},(0,a.createElement)("label",{htmlFor:"trigger_type"},(0,s.__)("Auto-Open Trigger","botisst-ai-chat-assistant")),(0,a.createElement)("select",{id:"trigger_type",className:"baca-bot-select",value:_.trigger_type,onChange:e=>p("trigger_type",e.target.value)},(0,a.createElement)("option",{value:"delay"},(0,s.__)("On Page Load","botisst-ai-chat-assistant")),(0,a.createElement)("option",{value:"click"},(0,s.__)("Wait for Click","botisst-ai-chat-assistant")))),(0,a.createElement)("div",{className:"baca-bot-field"},(0,a.createElement)("label",{htmlFor:"position"},(0,s.__)("Widget Position on Screen","botisst-ai-chat-assistant")),(0,a.createElement)("select",{id:"position",className:"baca-bot-select",value:_.position,onChange:e=>p("position",e.target.value)},(0,a.createElement)("option",{value:"bottom-right"},(0,s.__)("Bottom Right","botisst-ai-chat-assistant")),(0,a.createElement)("option",{value:"bottom-left"},(0,s.__)("Bottom Left","botisst-ai-chat-assistant"))))),"delay"===_.trigger_type&&(0,a.createElement)("div",{className:"baca-bot-field baca-display-delay-field"},(0,a.createElement)("label",{htmlFor:"trigger_delay"},(0,s.__)("Delay (seconds)","botisst-ai-chat-assistant")),(0,a.createElement)("input",{type:"number",id:"trigger_delay",className:"baca-bot-input",min:"1",max:"60",value:_.trigger_delay,onChange:e=>p("trigger_delay",e.target.value)})),h("show_on_mobile",(0,s.__)("Show on Mobile","botisst-ai-chat-assistant"),(0,s.__)("Optimize interface for mobile devices","botisst-ai-chat-assistant"),_.show_on_mobile,e=>p("show_on_mobile",e),(0,a.createElement)("span",{className:"baca-display-mobile-icon","aria-hidden":"true"},(0,a.createElement)("span",{className:"dashicons dashicons-smartphone"}))),(0,a.createElement)("footer",{className:"baca-display-footer"},(0,a.createElement)("button",{type:"submit",className:"baca-btn baca-btn-primary",disabled:m},m?(0,s.__)("Saving…","botisst-ai-chat-assistant"):(0,s.__)("Save","botisst-ai-chat-assistant")))))}},{id:"instructions",label:(0,s.__)("Instructions","botisst-ai-chat-assistant"),icon:"dashicons-edit",desc:(0,s.__)("Set how your chatbot talks, what it helps with, and how creative its replies are.","botisst-ai-chat-assistant"),component:function({settings:e,onSave:n,showNotice:c}){var o,l;const[m,d]=(0,t.useState)(!1),b=e?.chatbot||{},[_,u]=(0,t.useState)({system_prompt:b.system_prompt||"",temperature:null!==(o=b.temperature)&&void 0!==o?o:.7,max_tokens:null!==(l=b.max_tokens)&&void 0!==l?l:500}),p=(e,a)=>{u(t=>({...t,[e]:a}))},h=Number(_.temperature);return(0,a.createElement)("div",{className:"baca-instructions-settings"},(0,a.createElement)("form",{onSubmit:async e=>{e.preventDefault(),d(!0);try{await i()({path:"/baca/v1/save-bot-settings",method:"POST",data:_}),n({chatbot:{...b,..._}}),c((0,s.__)("Instructions saved successfully!","botisst-ai-chat-assistant"))}catch(e){c(e.message||(0,s.__)("Failed to save instructions","botisst-ai-chat-assistant"),"error")}finally{d(!1)}}},(0,a.createElement)("article",{className:"baca-instructions-card"},(0,a.createElement)("header",{className:"baca-instructions-card__header"},(0,a.createElement)("span",{className:"baca-instructions-card__icon","aria-hidden":"true"},(0,a.createElement)("span",{className:"dashicons dashicons-edit"})),(0,a.createElement)("h3",{className:"baca-instructions-card__title"},(0,s.__)("System Instructions","botisst-ai-chat-assistant"))),(0,a.createElement)("div",{className:"baca-instructions-card__body"},(0,a.createElement)("label",{htmlFor:"system_prompt",className:"baca-instructions-label"},(0,s.__)("Custom ChatBot Prompt","botisst-ai-chat-assistant")),(0,a.createElement)("textarea",{id:"system_prompt",className:"baca-instructions-textarea",rows:"6",value:_.system_prompt,onChange:e=>p("system_prompt",e.target.value),placeholder:(0,s.__)("For example: You're a friendly assistant on our site. Answer clearly, stay helpful, and keep replies short.","botisst-ai-chat-assistant")}),(0,a.createElement)("p",{className:"baca-bot-hint"},r))),(0,a.createElement)("article",{className:"baca-instructions-card"},(0,a.createElement)("header",{className:"baca-instructions-card__header"},(0,a.createElement)("span",{className:"baca-instructions-card__icon","aria-hidden":"true"},(0,a.createElement)("span",{className:"dashicons dashicons-admin-settings"})),(0,a.createElement)("h3",{className:"baca-instructions-card__title"},(0,s.__)("Model Parameters","botisst-ai-chat-assistant"))),(0,a.createElement)("div",{className:"baca-instructions-card__body"},(0,a.createElement)("div",{className:"baca-instructions-params-grid"},(0,a.createElement)("div",{className:"baca-instructions-param"},(0,a.createElement)("div",{className:"baca-instructions-param__head"},(0,a.createElement)("label",{htmlFor:"temperature"},(0,s.__)("Chat Accuracy","botisst-ai-chat-assistant")),(0,a.createElement)("span",{className:"baca-instructions-value-badge"},h.toFixed(1))),(0,a.createElement)("input",{type:"range",id:"temperature",className:"baca-instructions-range",min:"0",max:"2",step:"0.1",value:_.temperature,onChange:e=>p("temperature",e.target.value)}),(0,a.createElement)("div",{className:"baca-instructions-range-labels"},(0,a.createElement)("span",null,(0,s.__)("Focused/Deterministic","botisst-ai-chat-assistant")),(0,a.createElement)("span",null,(0,s.__)("Creative","botisst-ai-chat-assistant"))),(0,a.createElement)("p",{className:"baca-bot-hint"},(0,s.__)("Turn it up for more creative replies; turn it down for shorter, more predictable answers. Values above 1.0 make replies noticeably more random and are rarely needed.","botisst-ai-chat-assistant"))),(0,a.createElement)("div",{className:"baca-instructions-param"},(0,a.createElement)("label",{htmlFor:"max_tokens",className:"baca-instructions-label"},(0,s.__)("Max Tokens","botisst-ai-chat-assistant")),(0,a.createElement)("input",{type:"number",id:"max_tokens",className:"baca-bot-input",value:_.max_tokens,onChange:e=>p("max_tokens",e.target.value),min:"100",max:"8192"}),(0,a.createElement)("p",{className:"baca-bot-hint"},(0,s.__)("Sets the longest reply the chatbot can send in one message.","botisst-ai-chat-assistant")))))),(0,a.createElement)("footer",{className:"baca-instructions-footer"},(0,a.createElement)("button",{type:"submit",className:"baca-btn baca-btn-primary",disabled:m},m?(0,a.createElement)(a.Fragment,null,(0,a.createElement)("span",{className:"baca-spinner","aria-hidden":"true"})," ",(0,s.__)("Saving…","botisst-ai-chat-assistant")):(0,s.__)("Save","botisst-ai-chat-assistant")))))}},{id:"knowledge-base",label:(0,s.__)("Knowledge Base","botisst-ai-chat-assistant"),icon:"dashicons-database",desc:(0,s.__)("Provide custom text, links, documents, and index your website content for the chatbot to learn from.","botisst-ai-chat-assistant"),component:function({settings:e,onSave:n,showNotice:o}){const[l,r]=(0,t.useState)(!1),[_,u]=(0,t.useState)(!1),[p,h]=(0,t.useState)(null),[g,v]=(0,t.useState)(null),[E,y]=(0,t.useState)([]),[N,f]=(0,t.useState)("sources"),[w,k]=(0,t.useState)(!1),x=e?.chatbot||{},S=e?.rag||{},C=!!(S.vector_db?.api_key||S.vector_db?.host||S.vector_db?.index_name),[P,I]=(0,t.useState)(x.knowledge_text||""),[A,q]=(0,t.useState)(Array.isArray(x.knowledge_urls)&&x.knowledge_urls.length?x.knowledge_urls:[]),[F,z]=(0,t.useState)(Array.isArray(x.training_files)?x.training_files:[]),[L,T]=(0,t.useState)(S.post_types||["post","page"]),[O,$]=(0,t.useState)(S.chunk_size||1e3),[M,R]=(0,t.useState)(S.max_results||5),[D,G]=(0,t.useState)(S.vector_db?.provider||"sqlite"),[B,U]=(0,t.useState)(S.require_indexed_data||!1),[K,j]=(0,t.useState)(S.no_data_message||"I don't have information about your question in my knowledge base. Please rephrase or ask about topics I have knowledge of."),[W,Y]=(0,t.useState)(S.vector_db?.api_key||""),[H,Q]=(0,t.useState)(S.vector_db?.host||""),[V,J]=(0,t.useState)(S.vector_db?.index_name||""),[X,Z]=(0,t.useState)(S.embeddings?.provider||"openai"),ee=(()=>{const a=(e||{}).api_keys||{};return"google"===X?{provider:"Google Gemini",model:"gemini-embedding-001",key:a.google?"google":null,dimensions:768}:{provider:"OpenAI",model:"text-embedding-3-small",key:a.openai?"openai":null,dimensions:1536}})(),[ae,te]=(0,t.useState)({knowledge_text:!0,urls:!0,files:!0}),se=[{value:"sqlite",label:(0,s.__)("SQLite (Local)","botisst-ai-chat-assistant"),desc:(0,s.__)("Local vector storage - no setup needed","botisst-ai-chat-assistant")},{value:"pinecone",label:(0,s.__)("Pinecone (Cloud)","botisst-ai-chat-assistant"),desc:(0,s.__)("Managed cloud service - requires API key","botisst-ai-chat-assistant")}];(0,t.useEffect)(()=>{ne(),ie()},[]);const ne=async()=>{try{const e=await i()({path:"/baca/v1/rag/post-types",method:"GET"});y(e.types||[])}catch(e){console.error("Failed to fetch post types:",e)}},ie=async()=>{try{const e=await i()({path:"/baca/v1/rag/stats",method:"GET"});v(e)}catch(e){console.error("Failed to fetch RAG stats:",e)}},ce=p?"indexing"===p.status&&p.docs_total>0?Math.round(p.docs_processed/p.docs_total*100):"embedding"===p.status&&p.embed_total>0?Math.round(p.embed_processed/p.embed_total*100):"completed"===p.status?100:0:0,oe=p?"indexing"===p.status?(0,s.sprintf)((0,s.__)("Indexing documents… %1$d/%2$d","botisst-ai-chat-assistant"),p.docs_processed,p.docs_total):"embedding"===p.status?p.embed_total>0?(0,s.sprintf)((0,s.__)("Generating embeddings… %1$d/%2$d","botisst-ai-chat-assistant"),p.embed_processed,p.embed_total):(0,s.__)("Generating embeddings…","botisst-ai-chat-assistant"):"":"";return(0,a.createElement)("div",{className:"baca-kb-settings"},(0,a.createElement)("nav",{className:"baca-kb-subnav",role:"tablist","aria-label":(0,s.__)("Knowledge base sections","botisst-ai-chat-assistant")},m.map(e=>(0,a.createElement)("button",{key:e.id,type:"button",role:"tab","aria-selected":N===e.id,className:"baca-kb-subtab "+(N===e.id?"active":""),onClick:()=>f(e.id)},e.label))),(0,a.createElement)("form",{onSubmit:async e=>{e.preventDefault(),r(!0);const a=F.map(e=>"object"==typeof e?e.id:parseInt(e,10)),t=A.filter(e=>!!e.trim()),c={knowledge_text:P,knowledge_urls:t,training_files:a},l={post_types:L,chunk_size:parseInt(O,10),max_results:parseInt(M,10),require_indexed_data:B,no_data_message:K,vector_db:{provider:D,api_key:"pinecone"===D?W:"",host:"pinecone"===D?H:"",index_name:"pinecone"===D?V:""},embeddings:{provider:X}};try{await i()({path:"/baca/v1/save-bot-settings",method:"POST",data:c}),await i()({path:"/baca/v1/rag/settings",method:"POST",data:l}),n({chatbot:{...x,...c},rag:{...S,...l}}),o((0,s.__)("Knowledge base and RAG settings saved successfully!","botisst-ai-chat-assistant"))}catch(e){console.error("Save error:",e),o(e.message||(0,s.__)("Failed to save settings","botisst-ai-chat-assistant"),"error")}finally{r(!1)}}},(0,a.createElement)("div",{className:"sources"===N?"":"baca-kb-panel--hidden"},(0,a.createElement)("article",{className:"baca-kb-card"},(0,a.createElement)("header",{className:"baca-kb-card__header"},(0,a.createElement)("span",{className:"baca-kb-card__icon","aria-hidden":"true"},(0,a.createElement)("span",{className:"dashicons dashicons-media-text"})),(0,a.createElement)("div",{className:"baca-kb-card__heading"},(0,a.createElement)("h3",{className:"baca-kb-card__title"},(0,s.__)("Direct Text Knowledge","botisst-ai-chat-assistant")),(0,a.createElement)("p",{className:"baca-kb-card__desc"},d))),(0,a.createElement)("div",{className:"baca-kb-card__body"},(0,a.createElement)("textarea",{className:"baca-kb-textarea",rows:"8",value:P,onChange:e=>I(e.target.value),placeholder:(0,s.__)("Enter factual information directly…","botisst-ai-chat-assistant")}))),(0,a.createElement)("article",{className:"baca-kb-card"},(0,a.createElement)("header",{className:"baca-kb-card__header"},(0,a.createElement)("span",{className:"baca-kb-card__icon","aria-hidden":"true"},(0,a.createElement)("span",{className:"dashicons dashicons-admin-site-alt3"})),(0,a.createElement)("div",{className:"baca-kb-card__heading"},(0,a.createElement)("h3",{className:"baca-kb-card__title"},(0,s.__)("Web Pages (URLs)","botisst-ai-chat-assistant")),(0,a.createElement)("p",{className:"baca-kb-card__desc"},b))),(0,a.createElement)("div",{className:"baca-kb-card__body"},(0,a.createElement)("div",{className:"baca-kb-url-list"},A.map((e,t)=>(0,a.createElement)("div",{key:t,className:"baca-kb-url-item"},(0,a.createElement)("span",{className:"baca-kb-url-item__icon dashicons dashicons-admin-links","aria-hidden":"true"}),(0,a.createElement)("input",{type:"url",className:"baca-kb-url-input",value:e,onChange:e=>{return a=t,s=e.target.value,void q(e=>{const t=[...e];return t[a]=s,t});var a,s},placeholder:"https://example.com/page"}),(0,a.createElement)("button",{type:"button",className:"baca-kb-url-remove",onClick:()=>{return e=t,void q(a=>a.filter((a,t)=>t!==e));var e},"aria-label":(0,s.__)("Remove URL","botisst-ai-chat-assistant")},(0,a.createElement)("span",{className:"dashicons dashicons-trash","aria-hidden":"true"}))))),(0,a.createElement)("button",{type:"button",className:"baca-kb-add-url",onClick:()=>q([...A,""])},(0,s.__)("+ Add URL","botisst-ai-chat-assistant"))))),(0,a.createElement)("div",{className:"vector-db"===N?"":"baca-kb-panel--hidden"},(0,a.createElement)("article",{className:"baca-kb-card"},(0,a.createElement)("header",{className:"baca-kb-card__header"},(0,a.createElement)("span",{className:"baca-kb-card__icon","aria-hidden":"true"},(0,a.createElement)("span",{className:"dashicons dashicons-database"})),(0,a.createElement)("div",{className:"baca-kb-card__heading"},(0,a.createElement)("h3",{className:"baca-kb-card__title"},(0,s.__)("Database","botisst-ai-chat-assistant")),(0,a.createElement)("p",{className:"baca-kb-card__desc"},(0,s.__)("Choose where to store your document embeddings for semantic search.","botisst-ai-chat-assistant")))),(0,a.createElement)("div",{className:"baca-kb-card__body"},(0,a.createElement)("div",{className:"baca-kb-db-options"},se.map(e=>(0,a.createElement)("label",{key:e.value,className:"baca-radio-card"},(0,a.createElement)("input",{type:"radio",name:"vector_db",value:e.value,checked:D===e.value,onChange:e=>G(e.target.value)}),(0,a.createElement)("span",{className:"baca-radio-card__label"},(0,a.createElement)("strong",null,e.label),(0,a.createElement)("br",null),(0,a.createElement)("small",null,e.desc))))))),"pinecone"===D&&(0,a.createElement)("article",{className:"baca-kb-card"},(0,a.createElement)("header",{className:"baca-kb-card__header",style:{display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:"1rem"}},(0,a.createElement)("div",{style:{display:"flex",gap:"0.75rem",alignItems:"center",minWidth:0,flex:1}},(0,a.createElement)("span",{className:"baca-kb-card__icon","aria-hidden":"true",style:{flexShrink:0}},(0,a.createElement)("span",{className:"dashicons dashicons-cloud"})),(0,a.createElement)("div",{className:"baca-kb-card__heading",style:{minWidth:0}},(0,a.createElement)("h3",{className:"baca-kb-card__title"},(0,s.__)("Pinecone Configuration","botisst-ai-chat-assistant")),(0,a.createElement)("p",{className:"baca-kb-card__desc",style:{margin:0,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}},(0,s.__)("Connect your Pinecone cloud vector database.","botisst-ai-chat-assistant")," ",(0,a.createElement)("a",{href:"https://app.pinecone.io/",target:"_blank",rel:"noopener noreferrer",style:{fontWeight:"500"}},(0,s.__)("Open Pinecone Console","botisst-ai-chat-assistant")," →")))),C&&(0,a.createElement)("button",{type:"button",className:"baca-btn baca-btn-secondary baca-btn-sm",onClick:()=>k(!0),style:{fontSize:"0.8125rem",padding:"0.5rem 0.875rem",flexShrink:0}},(0,s.__)("Reset Settings","botisst-ai-chat-assistant"))),(0,a.createElement)("div",{className:"baca-kb-card__body"},ee.dimensions&&(0,a.createElement)("div",{className:"baca-kb-info-block"},(0,a.createElement)("p",null,(0,a.createElement)("strong",null,(0,s.__)("Important:","botisst-ai-chat-assistant"))," ",(0,s.__)("Because you are using","botisst-ai-chat-assistant")," ",(0,a.createElement)("strong",null,ee.provider),", ",(0,s.__)("you must create your Pinecone index with exactly","botisst-ai-chat-assistant")," ",(0,a.createElement)("strong",null,ee.dimensions," ",(0,s.__)("dimensions","botisst-ai-chat-assistant")),"."),(0,a.createElement)("p",null,(0,a.createElement)("em",null,(0,s.__)('Note: If you change your API provider later, you must delete your Pinecone index, create a new one with the new dimensions, and click "Index Content" again.',"botisst-ai-chat-assistant")))),(0,a.createElement)("div",{className:"baca-kb-form-group"},(0,a.createElement)("label",{className:"baca-label"},(0,s.__)("Pinecone API Key","botisst-ai-chat-assistant"),(0,a.createElement)("input",{type:"password",className:"baca-input",value:W,onChange:e=>Y(e.target.value),placeholder:"pcsk_..."})),(0,a.createElement)("p",{className:"baca-hint"},(0,s.__)('You can generate an API key from the "API Keys" section in your Pinecone dashboard.',"botisst-ai-chat-assistant"))),(0,a.createElement)("div",{className:"baca-kb-form-group"},(0,a.createElement)("label",{className:"baca-label"},(0,s.__)("Pinecone Host","botisst-ai-chat-assistant"),(0,a.createElement)("input",{type:"text",className:"baca-input",value:H,onChange:e=>Q(e.target.value),placeholder:"https://index-xxxxx.svc.aped-4627-b74a.pinecone.io"})),(0,a.createElement)("p",{className:"baca-hint"},(0,s.__)("The host URL for your index. Find this by clicking on your index in the Pinecone dashboard.","botisst-ai-chat-assistant"))),(0,a.createElement)("div",{className:"baca-kb-form-group"},(0,a.createElement)("label",{className:"baca-label"},(0,s.__)("Index Name","botisst-ai-chat-assistant"),(0,a.createElement)("input",{type:"text",className:"baca-input",value:V,onChange:e=>J(e.target.value),placeholder:"e.g. botisst-index"})),(0,a.createElement)("p",{className:"baca-hint"},(0,s.__)("The exact name of the index you created.","botisst-ai-chat-assistant"))),C&&(0,a.createElement)("div",{className:"baca-kb-pinecone-reset"},(0,a.createElement)("button",{type:"button",className:"baca-btn baca-btn-secondary",onClick:()=>k(!0)},(0,s.__)("Reset Pinecone Settings","botisst-ai-chat-assistant")),(0,a.createElement)("p",{className:"baca-hint"},(0,s.__)("Click this to clear your Pinecone API Key, Host, and Index Name.","botisst-ai-chat-assistant"))))),(0,a.createElement)("article",{className:"baca-kb-card"},(0,a.createElement)("header",{className:"baca-kb-card__header"},(0,a.createElement)("span",{className:"baca-kb-card__icon","aria-hidden":"true"},(0,a.createElement)("span",{className:"dashicons dashicons-lightbulb"})),(0,a.createElement)("div",{className:"baca-kb-card__heading"},(0,a.createElement)("h3",{className:"baca-kb-card__title"},(0,s.__)("Embedding Configuration","botisst-ai-chat-assistant")),(0,a.createElement)("p",{className:"baca-kb-card__desc"},(0,s.__)("Select the AI provider to generate vector embeddings.","botisst-ai-chat-assistant")))),(0,a.createElement)("div",{className:"baca-kb-card__body"},(0,a.createElement)("div",{className:"baca-kb-form-group"},(0,a.createElement)("label",{className:"baca-label"},(0,s.__)("Embedding Provider","botisst-ai-chat-assistant"),(0,a.createElement)("select",{className:"baca-select baca-kb-embedding-select",value:X,onChange:e=>Z(e.target.value)},(0,a.createElement)("option",{value:"openai"},(0,s.__)("OpenAI (text-embedding-3-small)","botisst-ai-chat-assistant")),(0,a.createElement)("option",{value:"google"},(0,s.__)("Google Gemini (gemini-embedding-001)","botisst-ai-chat-assistant")))),(0,a.createElement)("p",{className:"baca-hint"},(0,s.__)("Select the provider to use for processing your knowledge base into vectors.","botisst-ai-chat-assistant"))),(0,a.createElement)("div",{className:"baca-kb-info-block"},(0,a.createElement)("p",null,(0,a.createElement)("strong",null,(0,s.__)("Status:","botisst-ai-chat-assistant")),ee.key?(0,a.createElement)("span",{className:"baca-kb-status baca-kb-status--ok"},"✓ ",(0,s.__)("API Key Configured","botisst-ai-chat-assistant")):(0,a.createElement)("span",{className:"baca-kb-status baca-kb-status--missing"},"✗ ",(0,s.__)("API Key Missing","botisst-ai-chat-assistant"))),(0,a.createElement)("p",null,(0,a.createElement)("strong",null,(0,s.__)("Required Index Dimensions:","botisst-ai-chat-assistant"))," ",ee.dimensions),!ee.key&&(0,a.createElement)("p",{className:"baca-kb-warning"},(0,s.__)("⚠️ No AI API key found for the selected provider. Please add an API key in the API Keys tab to enable RAG indexing.","botisst-ai-chat-assistant")))))),(0,a.createElement)("div",{className:"indexing"===N?"":"baca-kb-panel--hidden"},(0,a.createElement)("article",{className:"baca-kb-card"},(0,a.createElement)("header",{className:"baca-kb-card__header"},(0,a.createElement)("span",{className:"baca-kb-card__icon","aria-hidden":"true"},(0,a.createElement)("span",{className:"dashicons dashicons-media-text"})),(0,a.createElement)("div",{className:"baca-kb-card__heading"},(0,a.createElement)("h3",{className:"baca-kb-card__title"},(0,s.__)("Website Content to Index","botisst-ai-chat-assistant")),(0,a.createElement)("p",{className:"baca-kb-card__desc"},(0,s.__)("Select which post types to include. Leave all unchecked to skip indexing your website content.","botisst-ai-chat-assistant")))),(0,a.createElement)("div",{className:"baca-kb-card__body"},(0,a.createElement)("div",{className:"baca-kb-post-types"},E.length>0?E.map(e=>(0,a.createElement)("label",{key:e.value,className:"baca-checkbox"},(0,a.createElement)("input",{type:"checkbox",checked:L.includes(e.value),onChange:()=>{return a=e.value,void T(e=>e.includes(a)?e.filter(e=>e!==a):[...e,a]);var a}}),(0,a.createElement)("span",{className:"baca-checkbox__label"},e.label," (",e.count,")"))):(0,a.createElement)("p",{className:"baca-hint"},(0,s.__)("No post types available.","botisst-ai-chat-assistant"))),_&&p&&(0,a.createElement)("div",{className:"baca-kb-index-progress",role:"status"},(0,a.createElement)("div",{className:"baca-kb-index-progress__bar"},(0,a.createElement)("div",{className:"baca-kb-index-progress__fill",style:{width:`${ce}%`}})),(0,a.createElement)("p",{className:"baca-kb-index-progress__label"},oe))))),(0,a.createElement)("footer",{className:"baca-kb-footer"},(0,a.createElement)("button",{type:"submit",className:"baca-btn baca-btn-primary",disabled:l},l?(0,s.__)("Saving…","botisst-ai-chat-assistant"):(0,s.__)("Save","botisst-ai-chat-assistant")),"indexing"===N&&L.length>0&&(0,a.createElement)("button",{type:"button",className:"baca-btn baca-btn-secondary",onClick:async()=>{const e=L.length>0,a=e?[...L]:[],t={knowledge_text:ae.knowledge_text,urls:ae.urls,files:ae.files,website:e};if(0!==a.length){u(!0),h(null);try{const e=await i()({path:"/baca/v1/rag/index",method:"POST",data:{post_types:a,index_sources:t}});if(!e.success)return o(e.message||(0,s.__)("Failed to start indexing","botisst-ai-chat-assistant"),"error"),void u(!1);o(e.message||(0,s.__)("Content indexing started!","botisst-ai-chat-assistant")),"queued"===e.status?(()=>{const e=async()=>{let a;try{a=await i()({path:"/baca/v1/rag/index/status",method:"GET"}),h(a)}catch(e){return console.error("Failed to fetch indexing status:",e),void u(!1)}"indexing"!==a.status&&"embedding"!==a.status?(u(!1),ie()):setTimeout(e,2e3)};e()})():(u(!1),ie())}catch(e){console.error("Indexing error:",e),o(e.message||(0,s.__)("Failed to index content","botisst-ai-chat-assistant"),"error"),u(!1)}}else o((0,s.__)("Please select at least one content type to index or enable website indexing","botisst-ai-chat-assistant"),"error")},disabled:_},(0,a.createElement)("span",{className:"dashicons dashicons-update","aria-hidden":"true"}),_?(0,s.__)("Indexing…","botisst-ai-chat-assistant"):(0,s.__)("Index Content Now","botisst-ai-chat-assistant")))),(0,a.createElement)(c,{open:w,title:(0,s.__)("Reset Pinecone settings","botisst-ai-chat-assistant"),message:(0,s.__)("Are you sure you want to clear your Pinecone API Key, Host, and Index Name?","botisst-ai-chat-assistant"),confirmLabel:(0,s.__)("Reset Pinecone Settings","botisst-ai-chat-assistant"),onCancel:()=>k(!1),onConfirm:async()=>{k(!1),r(!0);try{const e={...S,vector_db:{provider:D,api_key:"",host:"",index_name:""}};await i()({path:"/baca/v1/rag/settings",method:"POST",data:e}),Y(""),Q(""),J(""),n({rag:{...S,vector_db:{...S.vector_db,api_key:"",host:"",index_name:""}}}),o((0,s.__)("Pinecone settings reset successfully!","botisst-ai-chat-assistant"))}catch(e){o(e.message||(0,s.__)("Failed to reset Pinecone settings","botisst-ai-chat-assistant"),"error")}finally{r(!1)}}}))}},{id:"chat-sessions",label:(0,s.__)("Chat Sessions","botisst-ai-chat-assistant"),icon:"dashicons-format-chat",desc:(0,s.__)("View and manage recent conversations with your AI assistant.","botisst-ai-chat-assistant"),component:function({showNotice:e}){const[n,o]=(0,t.useState)([]),[l,r]=(0,t.useState)(!0),[m,d]=(0,t.useState)(""),[b,y]=(0,t.useState)("all"),[N,f]=(0,t.useState)(1),[w,k]=(0,t.useState)(10),[x,S]=(0,t.useState)(null),[C,P]=(0,t.useState)(!1),[I,A]=(0,t.useState)(null),[q,F]=(0,t.useState)(null),[z,L]=(0,t.useState)(!1),T=(0,t.useRef)(null),[O,$]=(0,t.useState)(window.baca_data?.load_limit||"100"),[M,R]=(0,t.useState)(O),[D,G]=(0,t.useState)(window.baca_data?.sort_order||"desc"),[B,U]=(0,t.useState)(String(w));(0,t.useEffect)(()=>{R(O)},[O]),(0,t.useEffect)(()=>{U(String(w))},[w]);const K=e=>{const a=e.trim();if(""===a)$("all");else{const e=parseInt(a,10);!isNaN(e)&&e>0?$(String(e)):R(O)}},j=e=>{const a=e.trim(),t=parseInt(a,10);!isNaN(t)&&t>0?k(t):U(String(w))},W=(0,t.useMemo)(()=>{const e=new Set;return n.forEach(a=>{a.provider&&e.add(a.provider)}),[...e].sort()},[n]),Y=(0,t.useMemo)(()=>n.filter(e=>("all"===b||(e.provider||"")===b)&&function(e,a){if(!a)return!0;const t=a.toLowerCase(),s=u(e),n=v(e).toLowerCase();return e.session_id?.toLowerCase().includes(t)||s.toLowerCase().includes(t)||(e.provider||"").toLowerCase().includes(t)||(e.model||"").toLowerCase().includes(t)||n.includes(t)}(e,m.trim())),[n,m,b]),H=(0,t.useMemo)(()=>Math.max(1,Math.ceil(Y.length/w)),[Y.length,w]),Q=(0,t.useMemo)(()=>{const e=(Math.min(N,H)-1)*w;return Y.slice(e,e+w)},[Y,N,H,w]);(0,t.useEffect)(()=>{let a=!1;return(async()=>{r(!0);try{const e=await i()({path:`/baca/v1/sessions?limit=${O}&order=${D}`});a||(o(Array.isArray(e?.sessions)?e.sessions:[]),e?.load_limit&&$(e.load_limit),e?.sort_order&&G(e.sort_order))}catch{a||(o([]),e?.((0,s.__)("Could not load chat sessions. Please refresh the page.","botisst-ai-chat-assistant"),"error"))}finally{a||r(!1)}})(),()=>{a=!0}},[e,O,D]),(0,t.useEffect)(()=>{f(1)},[m,b,w,O,D]),(0,t.useEffect)(()=>{if(!z)return;const e=e=>{T.current&&!T.current.contains(e.target)&&L(!1)},a=e=>{"Escape"===e.key&&L(!1)};return document.addEventListener("mousedown",e),document.addEventListener("keydown",a),()=>{document.removeEventListener("mousedown",e),document.removeEventListener("keydown",a)}},[z]);const V=(0,t.useMemo)(()=>[{value:"all",label:(0,s.__)("All providers","botisst-ai-chat-assistant")},...W.map(e=>({value:e,label:p(e)}))],[W]),J=V.find(e=>e.value===b)?.label||(0,s.__)("All providers","botisst-ai-chat-assistant"),X=(0,t.useCallback)(e=>{y(e),L(!1)},[]);(0,t.useEffect)(()=>{N>H&&f(H)},[N,H]),(0,t.useEffect)(()=>(x?(P(!0),document.body.classList.add("baca-modal-open")):(P(!1),document.body.classList.remove("baca-modal-open")),()=>document.body.classList.remove("baca-modal-open")),[x]);const Z=(0,t.useCallback)(e=>{S(e)},[]),ee=(0,t.useCallback)(()=>{S(null)},[]),ae=(0,t.useCallback)(async a=>{A(a.session_id);try{await i()({path:"/baca/v1/delete-session",method:"POST",data:{session_id:a.session_id}}),o(e=>e.filter(e=>e.session_id!==a.session_id)),x?.session_id===a.session_id&&ee(),e?.((0,s.__)("Session deleted.","botisst-ai-chat-assistant"),"success")}catch{e?.((0,s.__)("Could not delete this session. Please try again.","botisst-ai-chat-assistant"),"error")}finally{A(null)}},[x,ee,e]),te=(0,t.useCallback)(()=>{if(!Y.length)return void e?.((0,s.__)("No sessions to export.","botisst-ai-chat-assistant"),"error");const a=e=>`"${String(null!=e?e:"").replace(/"/g,'""')}"`,t=Y.map(e=>[u(e),e.provider||"",e.model||"",v(e).replace(/^"|"$/g,""),e.created_at||"",e.updated_at||""].map(a).join(",")),n=[["Email","Provider","Model","Last Message","Created","Updated"].map(a).join(","),...t].join("\n"),i=new Blob([n],{type:"text/csv;charset=utf-8;"}),c=URL.createObjectURL(i),o=document.createElement("a");o.href=c,o.download=`botisst-chat-sessions-${(new Date).toISOString().slice(0,10)}.csv`,o.click(),URL.revokeObjectURL(c)},[Y,e]),se=(0,t.useCallback)(()=>{if(!x)return;const a=u(x),t=h(x),n=_(x.content),i=window.open("","_blank","width=720,height=900");i?(i.document.write(`<!DOCTYPE html><html><head><title>${(0,s.__)("Session Transcript","botisst-ai-chat-assistant")}</title>\n\t\t\t<style>\n\t\t\t\tbody { font-family: system-ui, sans-serif; padding: 2rem; color: #111827; line-height: 1.5; }\n\t\t\t\th1 { font-size: 1.25rem; margin-bottom: 0.25rem; }\n\t\t\t\t.meta { color: #6b7280; font-size: 0.875rem; margin-bottom: 2rem; }\n\t\t\t\t.msg { margin-bottom: 1.25rem; }\n\t\t\t\t.role { font-weight: 600; font-size: 0.8125rem; text-transform: uppercase; letter-spacing: 0.04em; color: #6366f1; }\n\t\t\t\t.time { color: #9ca3af; font-size: 0.75rem; font-weight: 400; margin-left: 0.5rem; }\n\t\t\t\t.body { margin-top: 0.35rem; white-space: pre-wrap; }\n\t\t\t</style></head><body>\n\t\t\t<h1>${(0,s.__)("Session Transcript","botisst-ai-chat-assistant")}</h1>\n\t\t\t<p class="meta">${g(a)}</p>\n\t\t\t<p class="meta"><strong>${(0,s.__)("Provider","botisst-ai-chat-assistant")}:</strong> ${g(t.provider)} · <strong>${(0,s.__)("Model","botisst-ai-chat-assistant")}:</strong> ${g(t.model)}</p>\n\t\t\t${n.map(e=>`<div class="msg"><div class="role">${"user"===e.role?a:(0,s.__)("Assistant","botisst-ai-chat-assistant")}<span class="time">${E(e.created_at)}</span></div><div class="body">${e.content.replace(/</g,"&lt;")}</div></div>`).join("")}\n\t\t\t</body></html>`),i.document.close(),i.focus(),i.print()):e?.((0,s.__)("Allow pop-ups to download or print the transcript.","botisst-ai-chat-assistant"),"error")},[x,e]),ne=function(e,a){if(a<=7)return Array.from({length:a},(e,a)=>a+1);const t=new Set([1,a,e]);e>2&&t.add(e-1),e<a-1&&t.add(e+1);const s=[...t].sort((e,a)=>e-a),n=[];for(let e=0;e<s.length;e++)e>0&&s[e]-s[e-1]>1&&n.push("…"),n.push(s[e]);return n}(Math.min(N,H),H),ie=Y.length?(Math.min(N,H)-1)*w+1:0,ce=Math.min(Math.min(N,H)*w,Y.length);return(0,a.createElement)("div",{className:"baca-sessions"},(0,a.createElement)("div",{className:"baca-sessions-toolbar"},(0,a.createElement)("div",{className:"baca-sessions-toolbar__left"},(0,a.createElement)("div",{className:"baca-sessions-search"},(0,a.createElement)("span",{className:"dashicons dashicons-search","aria-hidden":"true"}),(0,a.createElement)("input",{type:"search",className:"baca-sessions-search__input",placeholder:(0,s.__)("Search sessions…","botisst-ai-chat-assistant"),value:m,onChange:e=>d(e.target.value),"aria-label":(0,s.__)("Search sessions","botisst-ai-chat-assistant")})),(0,a.createElement)("div",{ref:T,className:"baca-sessions-filter "+(z?"is-open":"")},(0,a.createElement)("button",{type:"button",className:"baca-sessions-filter__trigger",onClick:()=>L(e=>!e),"aria-expanded":z,"aria-haspopup":"listbox","aria-label":(0,s.__)("Filter by provider","botisst-ai-chat-assistant")},(0,a.createElement)("span",{className:"dashicons dashicons-filter","aria-hidden":"true"}),(0,a.createElement)("span",{className:"baca-sessions-filter__label"},J),(0,a.createElement)("span",{className:"dashicons dashicons-arrow-down-alt2 baca-sessions-filter__chevron "+(z?"is-open":""),"aria-hidden":"true"})),z&&(0,a.createElement)("ul",{className:"baca-sessions-filter__menu",role:"listbox","aria-label":(0,s.__)("Providers","botisst-ai-chat-assistant")},V.map(e=>(0,a.createElement)("li",{key:e.value,role:"presentation"},(0,a.createElement)("button",{type:"button",role:"option","aria-selected":b===e.value,className:"baca-sessions-filter__option "+(b===e.value?"is-selected":""),onClick:()=>X(e.value)},e.label))))),(0,a.createElement)("div",{className:"baca-sessions-limit"},(0,a.createElement)("span",{className:"dashicons dashicons-database","aria-hidden":"true"}),(0,a.createElement)("span",{className:"baca-sessions-limit__label"},(0,s.__)("Limit:","botisst-ai-chat-assistant")),(0,a.createElement)("input",{type:"text",pattern:"[0-9]*",inputMode:"numeric",className:"baca-sessions-limit__input",placeholder:(0,s.__)("All","botisst-ai-chat-assistant"),value:"all"===M?"":M,onChange:e=>R(e.target.value),onBlur:()=>K(M),onKeyDown:e=>{"Enter"===e.key&&(e.preventDefault(),K(M),e.target.blur())},title:(0,s.__)("Sessions load limit (empty for all)","botisst-ai-chat-assistant"),"aria-label":(0,s.__)("Sessions load limit","botisst-ai-chat-assistant")})),(0,a.createElement)("div",{className:"baca-sessions-switcher"},(0,a.createElement)("button",{type:"button",className:"baca-sessions-switcher__btn "+("desc"===D?"is-active":""),onClick:()=>G("desc"),"aria-label":(0,s.__)("Sort by newest first","botisst-ai-chat-assistant")},(0,s.__)("Newest","botisst-ai-chat-assistant")),(0,a.createElement)("button",{type:"button",className:"baca-sessions-switcher__btn "+("asc"===D?"is-active":""),onClick:()=>G("asc"),"aria-label":(0,s.__)("Sort by oldest first","botisst-ai-chat-assistant")},(0,s.__)("Oldest","botisst-ai-chat-assistant")))),(0,a.createElement)("div",{className:"baca-sessions-toolbar__right"},(0,a.createElement)("button",{type:"button",className:"baca-sessions-export",onClick:te},(0,s.__)("Export CSV","botisst-ai-chat-assistant")))),l?(0,a.createElement)("div",{className:"baca-sessions-empty"},(0,a.createElement)("span",{className:"baca-spinner baca-spinner--muted","aria-hidden":"true"}),(0,a.createElement)("h3",null,(0,s.__)("Loading sessions…","botisst-ai-chat-assistant"))):0===n.length?(0,a.createElement)("div",{className:"baca-sessions-empty"},(0,a.createElement)("span",{className:"dashicons dashicons-format-chat","aria-hidden":"true"}),(0,a.createElement)("h3",null,(0,s.__)("No sessions yet","botisst-ai-chat-assistant")),(0,a.createElement)("p",null,(0,s.__)("Conversations will show up here once visitors start chatting with your bot.","botisst-ai-chat-assistant"))):0===Y.length?(0,a.createElement)("div",{className:"baca-sessions-empty baca-sessions-empty--compact"},(0,a.createElement)("span",{className:"dashicons dashicons-search","aria-hidden":"true"}),(0,a.createElement)("h3",null,(0,s.__)("No matching sessions","botisst-ai-chat-assistant")),(0,a.createElement)("p",null,(0,s.__)("Try a different search term or filter.","botisst-ai-chat-assistant"))):(0,a.createElement)(a.Fragment,null,(0,a.createElement)("div",{className:"baca-sessions-table-wrap"},(0,a.createElement)("table",{className:"baca-sessions-table"},(0,a.createElement)("thead",null,(0,a.createElement)("tr",null,(0,a.createElement)("th",null,(0,s.__)("Email","botisst-ai-chat-assistant")),(0,a.createElement)("th",null,(0,s.__)("Provider","botisst-ai-chat-assistant")),(0,a.createElement)("th",null,(0,s.__)("Created","botisst-ai-chat-assistant")),(0,a.createElement)("th",null,(0,s.__)("Last message","botisst-ai-chat-assistant")),(0,a.createElement)("th",{className:"baca-sessions-table__actions-col"},(0,s.__)("Actions","botisst-ai-chat-assistant")))),(0,a.createElement)("tbody",null,Q.map(e=>{const t=u(e),n=v(e),i=I===e.session_id;return(0,a.createElement)("tr",{key:e.session_id},(0,a.createElement)("td",null,(0,a.createElement)("span",{className:"baca-sessions-user__name"},t)),(0,a.createElement)("td",{className:"baca-sessions-provider"},e.provider?(0,a.createElement)("span",{className:"baca-sessions-provider__badge"},p(e.provider)):(0,a.createElement)("span",{className:"baca-sessions-last-msg--empty"},(0,s.__)("Unknown","botisst-ai-chat-assistant"))),(0,a.createElement)("td",{className:"baca-sessions-date"},e.created_at?(0,a.createElement)("span",null,E(e.created_at)):(0,a.createElement)("span",{className:"baca-sessions-last-msg--empty"},(0,s.__)("Unknown","botisst-ai-chat-assistant"))),(0,a.createElement)("td",{className:"baca-sessions-last-msg"},n||(0,a.createElement)("span",{className:"baca-sessions-last-msg--empty"},(0,s.__)("No messages","botisst-ai-chat-assistant"))),(0,a.createElement)("td",{className:"baca-sessions-table__actions"},(0,a.createElement)("button",{type:"button",className:"baca-sessions-icon-btn",onClick:()=>Z(e),title:(0,s.__)("View session","botisst-ai-chat-assistant"),"aria-label":(0,s.__)("View session","botisst-ai-chat-assistant")},(0,a.createElement)("span",{className:"dashicons dashicons-visibility","aria-hidden":"true"})),(0,a.createElement)("button",{type:"button",className:"baca-sessions-icon-btn baca-sessions-icon-btn--danger",onClick:a=>{a.stopPropagation(),F(e)},disabled:i,title:(0,s.__)("Delete session","botisst-ai-chat-assistant"),"aria-label":(0,s.__)("Delete session","botisst-ai-chat-assistant")},(0,a.createElement)("span",{className:"dashicons dashicons-trash","aria-hidden":"true"}))))})))),(0,a.createElement)("footer",{className:"baca-sessions-footer"},(0,a.createElement)("p",{className:"baca-sessions-footer__count"},Y.length?(0,s.sprintf)(/* translators: 1: start index, 2: end index, 3: total count */ /* translators: 1: start index, 2: end index, 3: total count */
-(0,s.__)("Showing %1$d–%2$d of %3$d sessions","botisst-ai-chat-assistant"),ie,ce,Y.length):(0,s.__)("No sessions","botisst-ai-chat-assistant")),(0,a.createElement)("div",{className:"baca-sessions-footer__right"},(0,a.createElement)("div",{className:"baca-sessions-per-page-input-wrap"},(0,a.createElement)("span",{className:"baca-sessions-per-page-input__label"},(0,s.__)("Rows per page:","botisst-ai-chat-assistant")),(0,a.createElement)("input",{type:"text",pattern:"[0-9]*",inputMode:"numeric",className:"baca-sessions-per-page-input__field",value:B,onChange:e=>U(e.target.value),onBlur:()=>j(B),onKeyDown:e=>{"Enter"===e.key&&(e.preventDefault(),j(B),e.target.blur())},"aria-label":(0,s.__)("Sessions per page","botisst-ai-chat-assistant")})),H>1&&(0,a.createElement)("nav",{className:"baca-sessions-pagination","aria-label":(0,s.__)("Sessions pagination","botisst-ai-chat-assistant")},(0,a.createElement)("button",{type:"button",className:"baca-sessions-page-btn",disabled:N<=1,onClick:()=>f(e=>Math.max(1,e-1)),"aria-label":(0,s.__)("Previous page","botisst-ai-chat-assistant")},(0,a.createElement)("span",{className:"dashicons dashicons-arrow-left-alt2","aria-hidden":"true"})),ne.map((e,t)=>"…"===e?(0,a.createElement)("span",{key:`ellipsis-${t}`,className:"baca-sessions-page-ellipsis"},"…"):(0,a.createElement)("button",{key:e,type:"button",className:"baca-sessions-page-num "+(N===e?"is-active":""),onClick:()=>f(e),"aria-current":N===e?"page":void 0},e)),(0,a.createElement)("button",{type:"button",className:"baca-sessions-page-btn",disabled:N>=H,onClick:()=>f(e=>Math.min(H,e+1)),"aria-label":(0,s.__)("Next page","botisst-ai-chat-assistant")},(0,a.createElement)("span",{className:"dashicons dashicons-arrow-right-alt2","aria-hidden":"true"})))))),x&&(0,a.createElement)("div",{className:"baca-modal baca-sessions-modal "+(C?"is-visible":""),role:"dialog","aria-modal":"true","aria-labelledby":"baca-session-modal-title"},(0,a.createElement)("div",{className:"baca-modal-overlay",onClick:ee}),(0,a.createElement)("div",{className:"baca-modal-content"},(0,a.createElement)("div",{className:"baca-modal-header"},(0,a.createElement)("div",{className:"baca-modal-title"},(0,a.createElement)("span",{className:"baca-modal-title-icon","aria-hidden":"true"},(0,a.createElement)("span",{className:"dashicons dashicons-format-chat"})),(0,a.createElement)("h3",{id:"baca-session-modal-title"},(0,s.__)("Session Transcript","botisst-ai-chat-assistant"))),(0,a.createElement)("button",{type:"button",className:"baca-modal-close",onClick:ee,"aria-label":(0,s.__)("Close","botisst-ai-chat-assistant")},(0,a.createElement)("span",{className:"dashicons dashicons-no-alt","aria-hidden":"true"}))),(()=>{const e=h(x);return(0,a.createElement)("div",{className:"baca-sessions-modal-meta"},(0,a.createElement)("div",{className:"baca-sessions-modal-meta__item"},(0,a.createElement)("span",{className:"baca-sessions-modal-meta__label"},(0,s.__)("Provider","botisst-ai-chat-assistant")),(0,a.createElement)("span",{className:"baca-sessions-modal-meta__value"},e.provider)),(0,a.createElement)("div",{className:"baca-sessions-modal-meta__item"},(0,a.createElement)("span",{className:"baca-sessions-modal-meta__label"},(0,s.__)("Model","botisst-ai-chat-assistant")),(0,a.createElement)("span",{className:"baca-sessions-modal-meta__value"},e.model)))})(),(0,a.createElement)("div",{className:"baca-modal-body"},(()=>{const e=_(x.content);return e.length?e.map((e,t)=>(0,a.createElement)("div",{key:t,className:"baca-modal-msg "+("user"===e.role?"baca-modal-msg-user":"baca-modal-msg-assistant")},(0,a.createElement)("div",{className:"baca-modal-msg-content"},e.content),e.created_at&&(0,a.createElement)("div",{className:"baca-modal-msg-time"},E(e.created_at)))):(0,a.createElement)("p",{className:"baca-text-muted"},(0,s.__)("No messages in this session.","botisst-ai-chat-assistant"))})()),(0,a.createElement)("div",{className:"baca-modal-footer"},(0,a.createElement)("button",{type:"button",className:"baca-modal-footer-link",onClick:se},(0,s.__)("Print Chat Transcript","botisst-ai-chat-assistant")),(0,a.createElement)("button",{type:"button",className:"baca-btn baca-btn-primary",onClick:ee},(0,s.__)("Return to Sessions","botisst-ai-chat-assistant"))))),(0,a.createElement)(c,{open:!!q,title:(0,s.__)("Delete chat session","botisst-ai-chat-assistant"),message:(0,s.__)("Delete this chat session permanently? This cannot be undone.","botisst-ai-chat-assistant"),confirmLabel:(0,s.__)("Delete Session","botisst-ai-chat-assistant"),busy:!!I&&q?.session_id===I,onCancel:()=>F(null),onConfirm:()=>{const e=q;F(null),ae(e)}}))}},{id:"chat-preview",label:(0,s.__)("Chat Preview","botisst-ai-chat-assistant"),icon:"dashicons-welcome-view-site",desc:(0,s.__)("See how your chatbot appears to your website visitors.","botisst-ai-chat-assistant"),component:function({settings:e}){const t=e?.chatbot||{},n=t.primary_color||"#6366f1",i=t.bot_name||(0,s.__)("Botisst","botisst-ai-chat-assistant"),c=t.greeting_msg||(0,s.__)("Hello! I am your AI assistant. How can I help you today?","botisst-ai-chat-assistant"),o=`baca-preview-widget--${t.bubble_style||"rounded"}`,l=t.bot_avatar||"",r=i.trim().charAt(0).toUpperCase()||"B";return(0,a.createElement)("div",{className:"baca-preview"},(0,a.createElement)("div",{className:"baca-preview__stage"},(0,a.createElement)("div",{className:`baca-preview-widget ${o}`,style:{"--baca-preview-primary":n}},(0,a.createElement)("header",{className:"baca-preview-widget__header"},(0,a.createElement)("div",{className:"baca-preview-widget__header-main"},(0,a.createElement)("div",{className:"baca-preview-widget__avatar","aria-hidden":"true"},l?(0,a.createElement)("img",{src:l,alt:""}):(0,a.createElement)("span",null,r)),(0,a.createElement)("div",{className:"baca-preview-widget__info"},(0,a.createElement)("strong",null,i),(0,a.createElement)("span",{className:"baca-preview-widget__status"},(0,a.createElement)("span",{className:"baca-preview-widget__status-dot","aria-hidden":"true"}),(0,s.__)("Online","botisst-ai-chat-assistant")))),(0,a.createElement)("button",{type:"button",className:"baca-preview-widget__close","aria-label":(0,s.__)("Close chat","botisst-ai-chat-assistant"),tabIndex:-1},(0,a.createElement)("span",{className:"dashicons dashicons-no-alt","aria-hidden":"true"}))),(0,a.createElement)("div",{className:"baca-preview-widget__messages"},(0,a.createElement)("div",{className:"baca-preview-widget__row baca-preview-widget__row--bot"},(0,a.createElement)("div",{className:"baca-preview-widget__bot-avatar","aria-hidden":"true"},l?(0,a.createElement)("img",{src:l,alt:""}):(0,a.createElement)("span",{className:"dashicons dashicons-admin-users","aria-hidden":"true"})),(0,a.createElement)("div",{className:"baca-preview-widget__bubble baca-preview-widget__bubble--bot"},(0,a.createElement)("p",null,c))),(0,a.createElement)("div",{className:"baca-preview-widget__row baca-preview-widget__row--user"},(0,a.createElement)("div",{className:"baca-preview-widget__bubble baca-preview-widget__bubble--user"},(0,a.createElement)("p",null,N))),(0,a.createElement)("div",{className:"baca-preview-widget__row baca-preview-widget__row--bot"},(0,a.createElement)("div",{className:"baca-preview-widget__bot-avatar","aria-hidden":"true"},l?(0,a.createElement)("img",{src:l,alt:""}):(0,a.createElement)("span",{className:"dashicons dashicons-admin-users","aria-hidden":"true"})),(0,a.createElement)("div",{className:"baca-preview-widget__bubble baca-preview-widget__bubble--bot"},(0,a.createElement)("p",null,f)))),(0,a.createElement)("footer",{className:"baca-preview-widget__footer"},(0,a.createElement)("input",{type:"text",className:"baca-preview-widget__input",placeholder:(0,s.__)("Type a message…","botisst-ai-chat-assistant"),disabled:!0,"aria-label":(0,s.__)("Message input","botisst-ai-chat-assistant")}),(0,a.createElement)("button",{type:"button",className:"baca-preview-widget__send",disabled:!0,"aria-label":(0,s.__)("Send","botisst-ai-chat-assistant"),tabIndex:-1},(0,a.createElement)("svg",{width:"18",height:"18",viewBox:"0 0 24 24",fill:"none","aria-hidden":"true"},(0,a.createElement)("path",{d:"M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z",stroke:"currentColor",strokeWidth:"2",strokeLinecap:"round",strokeLinejoin:"round"}))))),(0,a.createElement)("div",{className:"baca-preview__launcher",style:{background:n},"aria-hidden":"true"},(0,a.createElement)("span",{className:"dashicons dashicons-format-chat"}))),(0,a.createElement)("aside",{className:"baca-preview__panel"},(0,a.createElement)("div",{className:"baca-preview__panel-icon","aria-hidden":"true"},(0,a.createElement)("span",{className:"dashicons dashicons-visibility"})),(0,a.createElement)("h3",{className:"baca-preview__panel-title"},(0,s.__)("Live Preview","botisst-ai-chat-assistant")),(0,a.createElement)("p",{className:"baca-preview__panel-desc"},(0,s.__)("Any changes you make in the Chatbot Settings will immediately reflect here. Test your user experience before going live.","botisst-ai-chat-assistant")),(0,a.createElement)("ul",{className:"baca-preview__features"},y.map(e=>(0,a.createElement)("li",{key:e},(0,a.createElement)("span",{className:"baca-preview__check","aria-hidden":"true"},(0,a.createElement)("span",{className:"dashicons dashicons-yes"})),e)))))}}],P=[{label:(0,s.__)("Setup","botisst-ai-chat-assistant"),items:["api-keys","chatbot-settings","display-settings","instructions"]},{label:(0,s.__)("Knowledge","botisst-ai-chat-assistant"),items:["knowledge-base"]},{label:(0,s.__)("Monitor","botisst-ai-chat-assistant"),items:["chat-sessions","chat-preview"]}];function I({settings:e}){const[n,i]=(0,t.useState)(e),[c,o]=(0,t.useState)(null),[l,r]=(0,t.useState)(!!window.baca_data?.show_setup_wizard),m=!!n?.chatbot?.save_chat,d=C.filter(e=>"chat-sessions"!==e.id||m),[b,_]=(0,t.useState)(()=>{const e=window.location.hash.replace("#","");return e&&d.some(a=>a.id===e)?e:d[0].id}),u=(0,t.useCallback)((e,a="success")=>{o({message:e,type:a}),setTimeout(()=>o(null),1e4)},[]),p=(0,t.useCallback)(e=>{i(a=>({...a,...e}))},[]),h=d.find(e=>e.id===b)||d[0],g=h?.component;(0,t.useEffect)(()=>{if(!d.some(e=>e.id===b)){const e=d[0].id;_(e),window.location.hash=e}},[b,d]),(0,t.useEffect)(()=>{const e=document.querySelector(".baca-tabs .baca-tab.active");e&&"function"==typeof e.scrollIntoView&&e.scrollIntoView({block:"nearest",inline:"nearest"})},[b]),(0,t.useEffect)(()=>{const e=()=>{const e=window.location.hash.replace("#","");e&&d.some(a=>a.id===e)&&_(e)};return window.addEventListener("hashchange",e),()=>window.removeEventListener("hashchange",e)},[d]),(0,t.useEffect)(()=>{if(l){const e=new URL(window.location.href);e.searchParams.has("baca_open_wizard")&&(e.searchParams.delete("baca_open_wizard"),window.history.replaceState({},"",e.toString()))}},[l]);const v=e=>()=>{_(e),window.location.hash=e};return(0,a.createElement)("div",{className:"baca-dashboard-wrapper"},(0,a.createElement)(S,{open:l,settings:n,onSave:p,onClose:()=>r(!1),showNotice:u}),(0,a.createElement)("header",{className:"baca-dashboard-header"},(0,a.createElement)("div",{className:"baca-brand"},(0,a.createElement)("span",{className:"dashicons dashicons-format-chat","aria-hidden":"true"}),(0,a.createElement)("span",null,(0,s.__)("Botisst","botisst-ai-chat-assistant"))),(0,a.createElement)("nav",{className:"baca-tabs",role:"tablist","aria-label":(0,s.__)("Settings sections","botisst-ai-chat-assistant")},P.map(e=>(0,a.createElement)("div",{className:"baca-nav-group",key:e.label},(0,a.createElement)("span",{className:"baca-nav-group__label"},e.label),e.items.map(e=>{const t=d.find(a=>a.id===e);return t?(0,a.createElement)("button",{key:t.id,type:"button",role:"tab",title:t.label,"aria-selected":b===t.id,tabIndex:b===t.id?0:-1,className:"baca-tab "+(b===t.id?"active":""),onClick:v(t.id)},(0,a.createElement)("span",{className:`dashicons ${t.icon}`,"aria-hidden":"true"}),(0,a.createElement)("span",{className:"baca-tab-label"},t.label)):null}))))),(0,a.createElement)("main",{className:"baca-content"},(0,a.createElement)("header",{className:"baca-content-header"},(0,a.createElement)("h1",{id:"baca-tab-title"},h?.label),(0,a.createElement)("p",{id:"baca-tab-desc"},h?.desc)),c&&(0,a.createElement)("div",{className:`baca-toast baca-toast-${c.type}`},(0,a.createElement)("span",{className:"dashicons "+("success"===c.type?"dashicons-yes-alt":"dashicons-warning")}),(0,a.createElement)("span",{className:"baca-toast-message"},c.message),(0,a.createElement)("button",{type:"button",className:"baca-toast-close",onClick:()=>o(null),"aria-label":(0,s.__)("Close notice","botisst-ai-chat-assistant")},(0,a.createElement)("span",{className:"dashicons dashicons-no-alt"}))),(0,a.createElement)("div",{className:"baca-tab-panel active"},g&&(0,a.createElement)(g,{settings:n,onSave:p,showNotice:u}))))}function A(){const[e,s]=(0,t.useState)(!1),[n,i]=(0,t.useState)(()=>window.baca_data?.settings),[c,o]=(0,t.useState)(null);return(0,t.useEffect)(()=>{const e=e=>{(e.target.classList.contains("baca-run-wizard-trigger")||e.target.closest(".baca-run-wizard-trigger"))&&(e.preventDefault(),s(!0))};return document.addEventListener("click",e),()=>document.removeEventListener("click",e)},[]),e?(0,a.createElement)(a.Fragment,null,(0,a.createElement)(S,{open:e,settings:n,onSave:e=>{window.baca_data&&(window.baca_data.settings={...window.baca_data.settings,...e}),i(a=>({...a,...e}))},onClose:()=>{s(!1);const e=document.querySelector(".baca-setup-notice");e&&(e.style.display="none")},showNotice:(e,a="success")=>{o({message:e,type:a}),setTimeout(()=>o(null),1e4)}}),c&&(0,a.createElement)("div",{className:`baca-toast baca-toast-${c.type}`,style:{zIndex:9999999}},(0,a.createElement)("span",{className:"dashicons "+("success"===c.type?"dashicons-yes-alt":"dashicons-warning")}),(0,a.createElement)("span",{className:"baca-toast-message"},c.message),(0,a.createElement)("button",{type:"button",className:"baca-toast-close",onClick:()=>o(null),"aria-label":"Close notice"},(0,a.createElement)("span",{className:"dashicons dashicons-no-alt"})))):null}document.addEventListener("DOMContentLoaded",()=>{const e=document.getElementById("baca-admin-root");e&&(0,t.render)((0,a.createElement)(I,{settings:window.baca_data.settings}),e);const s=document.getElementById("baca-wizard-standalone-root");s&&(0,t.render)((0,a.createElement)(A,null),s)})})();
+/******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
+/******/ 	var __webpack_modules__ = ({
+
+/***/ "./src/admin/Dashboard.jsx"
+/*!*********************************!*\
+  !*** ./src/admin/Dashboard.jsx ***!
+  \*********************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ Dashboard)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _components_ApiKeysTab__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/ApiKeysTab */ "./src/admin/components/ApiKeysTab.jsx");
+/* harmony import */ var _components_ChatbotSettingsTab__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/ChatbotSettingsTab */ "./src/admin/components/ChatbotSettingsTab.jsx");
+/* harmony import */ var _components_DisplaySettingsTab__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/DisplaySettingsTab */ "./src/admin/components/DisplaySettingsTab.jsx");
+/* harmony import */ var _components_InstructionsTab__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./components/InstructionsTab */ "./src/admin/components/InstructionsTab.jsx");
+/* harmony import */ var _components_KnowledgeBaseTab__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./components/KnowledgeBaseTab */ "./src/admin/components/KnowledgeBaseTab.jsx");
+/* harmony import */ var _components_ChatSessionsTab__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./components/ChatSessionsTab */ "./src/admin/components/ChatSessionsTab.jsx");
+/* harmony import */ var _components_ChatPreviewTab__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./components/ChatPreviewTab */ "./src/admin/components/ChatPreviewTab.jsx");
+/* harmony import */ var _components_SetupWizard__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./components/SetupWizard */ "./src/admin/components/SetupWizard.jsx");
+
+
+
+
+
+
+
+
+
+
+
+const TABS = [{
+  id: 'api-keys',
+  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('API Keys', 'botisst-ai-chat-assistant'),
+  icon: 'dashicons-rest-api',
+  desc: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Configure your AI providers and select your preferred chatbot models.', 'botisst-ai-chat-assistant'),
+  component: _components_ApiKeysTab__WEBPACK_IMPORTED_MODULE_3__["default"]
+}, {
+  id: 'chatbot-settings',
+  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Chatbot', 'botisst-ai-chat-assistant'),
+  icon: 'dashicons-admin-settings',
+  desc: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Customize your chatbot name, greeting message, and behavioral features.', 'botisst-ai-chat-assistant'),
+  component: _components_ChatbotSettingsTab__WEBPACK_IMPORTED_MODULE_4__["default"]
+}, {
+  id: 'display-settings',
+  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Display Options', 'botisst-ai-chat-assistant'),
+  icon: 'dashicons-align-center',
+  desc: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Configure where and how your chatbot appears on the frontend.', 'botisst-ai-chat-assistant'),
+  component: _components_DisplaySettingsTab__WEBPACK_IMPORTED_MODULE_5__["default"]
+}, {
+  id: 'instructions',
+  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Instructions', 'botisst-ai-chat-assistant'),
+  icon: 'dashicons-edit',
+  desc: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Set how your chatbot talks, what it helps with, and how creative its replies are.', 'botisst-ai-chat-assistant'),
+  component: _components_InstructionsTab__WEBPACK_IMPORTED_MODULE_6__["default"]
+}, {
+  id: 'knowledge-base',
+  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Knowledge Base', 'botisst-ai-chat-assistant'),
+  icon: 'dashicons-database',
+  desc: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Provide custom text, links, documents, and index your website content for the chatbot to learn from.', 'botisst-ai-chat-assistant'),
+  component: _components_KnowledgeBaseTab__WEBPACK_IMPORTED_MODULE_7__["default"]
+}, {
+  id: 'chat-sessions',
+  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Chat Sessions', 'botisst-ai-chat-assistant'),
+  icon: 'dashicons-format-chat',
+  desc: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('View and manage recent conversations with your AI assistant.', 'botisst-ai-chat-assistant'),
+  component: _components_ChatSessionsTab__WEBPACK_IMPORTED_MODULE_8__["default"]
+}, {
+  id: 'chat-preview',
+  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Chat Preview', 'botisst-ai-chat-assistant'),
+  icon: 'dashicons-welcome-view-site',
+  desc: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('See how your chatbot appears to your website visitors.', 'botisst-ai-chat-assistant'),
+  component: _components_ChatPreviewTab__WEBPACK_IMPORTED_MODULE_9__["default"]
+}];
+const NAV_GROUPS = [{
+  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Setup', 'botisst-ai-chat-assistant'),
+  items: ['api-keys', 'chatbot-settings', 'display-settings', 'instructions']
+}, {
+  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Knowledge', 'botisst-ai-chat-assistant'),
+  items: ['knowledge-base']
+}, {
+  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Monitor', 'botisst-ai-chat-assistant'),
+  items: ['chat-sessions', 'chat-preview']
+}];
+function Dashboard({
+  settings: initialSettings
+}) {
+  const [settings, setSettings] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(initialSettings);
+  const [notice, setNotice] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(null);
+  const [showWizard, setShowWizard] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(!!window.baca_data?.show_setup_wizard);
+  const isSaveChatEnabled = !!settings?.chatbot?.save_chat;
+  const availableTabs = TABS.filter(tab => {
+    if (tab.id === 'chat-sessions') {
+      return isSaveChatEnabled;
+    }
+    return true;
+  });
+  const [activeTab, setActiveTab] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(() => {
+    const hash = window.location.hash.replace('#', '');
+    if (hash && availableTabs.some(t => t.id === hash)) {
+      return hash;
+    }
+    return availableTabs[0].id;
+  });
+  const showNotice = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useCallback)((message, type = 'success') => {
+    setNotice({
+      message,
+      type
+    });
+    setTimeout(() => setNotice(null), 10000);
+  }, []);
+  const updateSettingsData = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useCallback)(newData => {
+    setSettings(prev => ({
+      ...prev,
+      ...newData
+    }));
+  }, []);
+  const activeTabData = availableTabs.find(t => t.id === activeTab) || availableTabs[0];
+  const ActiveComponent = activeTabData?.component;
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
+    if (!availableTabs.some(t => t.id === activeTab)) {
+      const fallbackTab = availableTabs[0].id;
+      setActiveTab(fallbackTab);
+      window.location.hash = fallbackTab;
+    }
+  }, [activeTab, availableTabs]);
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
+    // Keep the active tab visible inside the scrollable mobile tab bar.
+    const activeButton = document.querySelector('.baca-tabs .baca-tab.active');
+    if (activeButton && typeof activeButton.scrollIntoView === 'function') {
+      activeButton.scrollIntoView({
+        block: 'nearest',
+        inline: 'nearest'
+      });
+    }
+  }, [activeTab]);
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
+    const syncTabFromHash = () => {
+      const hash = window.location.hash.replace('#', '');
+      if (hash && availableTabs.some(tab => tab.id === hash)) {
+        setActiveTab(hash);
+      }
+    };
+    window.addEventListener('hashchange', syncTabFromHash);
+    return () => window.removeEventListener('hashchange', syncTabFromHash);
+  }, [availableTabs]);
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
+    if (showWizard) {
+      const url = new URL(window.location.href);
+      if (url.searchParams.has('baca_open_wizard')) {
+        url.searchParams.delete('baca_open_wizard');
+        window.history.replaceState({}, '', url.toString());
+      }
+    }
+  }, [showWizard]);
+  const handleTabClick = tabId => () => {
+    setActiveTab(tabId);
+    window.location.hash = tabId;
+  };
+  return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-dashboard-wrapper"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_SetupWizard__WEBPACK_IMPORTED_MODULE_10__["default"], {
+    open: showWizard,
+    settings: settings,
+    onSave: updateSettingsData,
+    onClose: () => setShowWizard(false),
+    showNotice: showNotice
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("header", {
+    className: "baca-dashboard-header"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-brand"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "dashicons dashicons-format-chat",
+    "aria-hidden": "true"
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Botisst', 'botisst-ai-chat-assistant'))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("nav", {
+    className: "baca-tabs",
+    role: "tablist",
+    "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Settings sections', 'botisst-ai-chat-assistant')
+  }, NAV_GROUPS.map(group => (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-nav-group",
+    key: group.label
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "baca-nav-group__label"
+  }, group.label), group.items.map(tabId => {
+    const tab = availableTabs.find(t => t.id === tabId);
+    if (!tab) {
+      return null;
+    }
+    return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+      key: tab.id,
+      type: "button",
+      role: "tab",
+      title: tab.label,
+      "aria-selected": activeTab === tab.id,
+      tabIndex: activeTab === tab.id ? 0 : -1,
+      className: `baca-tab ${activeTab === tab.id ? 'active' : ''}`,
+      onClick: handleTabClick(tab.id)
+    }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+      className: `dashicons ${tab.icon}`,
+      "aria-hidden": "true"
+    }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+      className: "baca-tab-label"
+    }, tab.label));
+  }))))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("main", {
+    className: "baca-content"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("header", {
+    className: "baca-content-header"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("h1", {
+    id: "baca-tab-title"
+  }, activeTabData?.label), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    id: "baca-tab-desc"
+  }, activeTabData?.desc)), notice && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: `baca-toast baca-toast-${notice.type}`
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: `dashicons ${notice.type === 'success' ? 'dashicons-yes-alt' : 'dashicons-warning'}`
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "baca-toast-message"
+  }, notice.message), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    type: "button",
+    className: "baca-toast-close",
+    onClick: () => setNotice(null),
+    "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Close notice', 'botisst-ai-chat-assistant')
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "dashicons dashicons-no-alt"
+  }))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-tab-panel active"
+  }, ActiveComponent && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(ActiveComponent, {
+    settings: settings,
+    onSave: updateSettingsData,
+    showNotice: showNotice
+  }))));
+}
+
+/***/ },
+
+/***/ "./src/admin/components/ApiKeysTab.jsx"
+/*!*********************************************!*\
+  !*** ./src/admin/components/ApiKeysTab.jsx ***!
+  \*********************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ ApiKeysTab)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/api-fetch */ "@wordpress/api-fetch");
+/* harmony import */ var _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _ui__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./ui */ "./src/admin/components/ui.jsx");
+
+
+
+
+
+const PROVIDERS = {
+  openai: {
+    name: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('OpenAI', 'botisst-ai-chat-assistant'),
+    link: 'https://platform.openai.com/settings/organization/api-keys'
+  },
+  google: {
+    name: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Google Gemini', 'botisst-ai-chat-assistant'),
+    link: 'https://aistudio.google.com/api-keys'
+  }
+};
+function ApiKeysTab({
+  settings,
+  onSave,
+  showNotice
+}) {
+  const [saving, setSaving] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
+  const [resetting, setResetting] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)({});
+  const [confirmingProvider, setConfirmingProvider] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(null);
+  const [modelsList, setModelsList] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(() => window.baca_data?.models_list || {});
+  const [formData, setFormData] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)({
+    openai_key: '',
+    google_key: '',
+    models: settings?.models || {},
+    default_provider: settings?.chatbot?.default_provider || 'openai'
+  });
+  const isConnected = id => !!settings.api_keys?.[id];
+  const getMaskedKey = id => settings.api_keys?.[id] || '';
+  const handleModelChange = (id, value) => {
+    setFormData(prev => ({
+      ...prev,
+      models: {
+        ...prev.models,
+        [id]: value
+      }
+    }));
+  };
+  const handleKeyChange = (id, value) => {
+    setFormData(prev => ({
+      ...prev,
+      [`${id}_key`]: value
+    }));
+  };
+  const handleReset = async provider => {
+    setResetting(prev => ({
+      ...prev,
+      [provider]: true
+    }));
+    try {
+      const response = await _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_3___default()({
+        path: '/baca/v1/reset-key',
+        method: 'POST',
+        data: {
+          provider
+        }
+      });
+      showNotice((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Key reset successfully!', 'botisst-ai-chat-assistant'), 'success');
+      const updatedApiKeys = {
+        ...settings?.api_keys
+      };
+      delete updatedApiKeys[provider];
+      const updatedModels = {
+        ...settings?.models
+      };
+      delete updatedModels[provider];
+      onSave({
+        api_keys: updatedApiKeys,
+        models: updatedModels,
+        chatbot: response.chatbot || settings?.chatbot
+      });
+      setFormData(prev => ({
+        ...prev,
+        [`${provider}_key`]: '',
+        default_provider: response.chatbot?.default_provider || '',
+        models: {
+          ...prev.models,
+          [provider]: ''
+        }
+      }));
+    } catch (error) {
+      showNotice(error.message || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Failed to reset key', 'botisst-ai-chat-assistant'), 'error');
+    } finally {
+      setResetting(prev => ({
+        ...prev,
+        [provider]: false
+      }));
+    }
+  };
+  const handleSubmit = async e => {
+    e.preventDefault();
+    setSaving(true);
+    try {
+      const response = await _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_3___default()({
+        path: '/baca/v1/save-settings',
+        method: 'POST',
+        data: formData
+      });
+      showNotice(response.message || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Settings saved successfully!', 'botisst-ai-chat-assistant'), 'success');
+      onSave({
+        api_keys: response.api_keys || {},
+        chatbot: response.chatbot || {}
+      });
+      if (response.models_list) {
+        setModelsList(response.models_list);
+      }
+      setFormData(prev => {
+        const updated = {
+          ...prev
+        };
+        Object.keys(PROVIDERS).forEach(id => {
+          updated[`${id}_key`] = '';
+        });
+        if (response.chatbot?.default_provider) {
+          updated.default_provider = response.chatbot.default_provider;
+        }
+        return updated;
+      });
+    } catch (error) {
+      let errorMsg = error.message;
+      if (error.errors && typeof error.errors === 'object') {
+        errorMsg = Object.values(error.errors).join(' | ');
+      }
+      showNotice(errorMsg || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Failed to save settings', 'botisst-ai-chat-assistant'), 'error');
+    } finally {
+      setSaving(false);
+    }
+  };
+  return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-api-keys"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("form", {
+    onSubmit: handleSubmit
+  }, Object.entries(PROVIDERS).map(([id, providerData]) => (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("article", {
+    key: id,
+    className: "baca-api-provider-card"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("header", {
+    className: "baca-api-provider-card__header",
+    style: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center'
+    }
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("h3", null, providerData.name), isConnected(id) && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-api-provider-toggle",
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '8px'
+    }
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    style: {
+      fontSize: '12px',
+      fontWeight: '500',
+      color: formData.default_provider === id ? 'var(--baca-success, #10b981)' : '#6b7280'
+    }
+  }, formData.default_provider === id ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Active', 'botisst-ai-chat-assistant') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Inactive', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    className: "baca-toggle",
+    htmlFor: `toggle_${id}`
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+    id: `toggle_${id}`,
+    type: "checkbox",
+    checked: formData.default_provider === id,
+    onChange: e => {
+      const checked = e.target.checked;
+      if (checked) {
+        setFormData(prev => ({
+          ...prev,
+          default_provider: id
+        }));
+      } else {
+        const other = Object.keys(PROVIDERS).find(pId => pId !== id && isConnected(pId));
+        setFormData(prev => ({
+          ...prev,
+          default_provider: other || ''
+        }));
+      }
+    }
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "baca-toggle-slider",
+    "aria-hidden": "true"
+  })))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-api-provider-card__body"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-api-field"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-api-field__label-row"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    htmlFor: `${id}_key`
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('API Key', 'botisst-ai-chat-assistant')), isConnected(id) && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    type: "button",
+    className: "baca-api-btn-reset",
+    onClick: () => setConfirmingProvider(id),
+    disabled: resetting[id]
+  }, resetting[id] ? (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "baca-spinner",
+    "aria-hidden": "true"
+  }) : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Reset Key', 'botisst-ai-chat-assistant'))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+    type: "text",
+    id: `${id}_key`,
+    className: `baca-api-input${isConnected(id) ? ' baca-api-input--masked' : ''}`,
+    value: isConnected(id) ? getMaskedKey(id) : formData[`${id}_key`],
+    onChange: e => handleKeyChange(id, e.target.value),
+    placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)(`Enter your ${providerData.name} API key`, 'botisst-ai-chat-assistant'),
+    disabled: isConnected(id)
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
+    href: providerData.link,
+    className: "baca-api-help-link",
+    target: "_blank",
+    rel: "noopener noreferrer"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)(`Generate your ${providerData.name} API key here`, 'botisst-ai-chat-assistant'), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "dashicons dashicons-external",
+    "aria-hidden": "true"
+  }))), isConnected(id) && modelsList[id] && Object.keys(modelsList[id]).length > 0 && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-api-field"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    htmlFor: `models_${id}`
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Select Model', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("select", {
+    id: `models_${id}`,
+    className: "baca-api-select",
+    value: formData.models[id] || '',
+    onChange: e => handleModelChange(id, e.target.value)
+  }, Object.entries(modelsList[id]).map(([modelId, modelName]) => (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
+    key: modelId,
+    value: modelId
+  }, modelName))))))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("footer", {
+    className: "baca-api-keys-footer"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    type: "submit",
+    className: "baca-btn baca-btn-primary",
+    disabled: saving
+  }, saving ? (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "baca-spinner",
+    "aria-hidden": "true"
+  }), " ", (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Saving…', 'botisst-ai-chat-assistant')) : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Save', 'botisst-ai-chat-assistant')))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ui__WEBPACK_IMPORTED_MODULE_4__.ConfirmDialog, {
+    open: !!confirmingProvider,
+    title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Reset API key', 'botisst-ai-chat-assistant'),
+    message: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)(`Are you sure you want to reset the ${PROVIDERS[confirmingProvider]?.name || ''} API key? This cannot be undone.`, 'botisst-ai-chat-assistant'),
+    confirmLabel: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Reset Key', 'botisst-ai-chat-assistant'),
+    busy: resetting[confirmingProvider],
+    onCancel: () => setConfirmingProvider(null),
+    onConfirm: () => {
+      const provider = confirmingProvider;
+      setConfirmingProvider(null);
+      handleReset(provider);
+    }
+  }));
+}
+
+/***/ },
+
+/***/ "./src/admin/components/ChatPreviewTab.jsx"
+/*!*************************************************!*\
+  !*** ./src/admin/components/ChatPreviewTab.jsx ***!
+  \*************************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ ChatPreviewTab)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
+
+
+const PREVIEW_FEATURES = [(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Header & User Message colors', 'botisst-ai-chat-assistant'), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Assistant Name & Greeting', 'botisst-ai-chat-assistant'), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Bot Avatar updates', 'botisst-ai-chat-assistant'), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Message bubble styling', 'botisst-ai-chat-assistant'), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Chat Launcher visibility', 'botisst-ai-chat-assistant')];
+const SAMPLE_USER_MSG = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('How do I customize this chat window?', 'botisst-ai-chat-assistant');
+const SAMPLE_BOT_REPLY = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)("It's easy! Just use the settings in the dashboard to change the name, colors, and more.", 'botisst-ai-chat-assistant');
+function ChatPreviewTab({
+  settings
+}) {
+  const botSettings = settings?.chatbot || {};
+  const primaryColor = botSettings.primary_color || '#6366f1';
+  const botName = botSettings.bot_name || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Botisst', 'botisst-ai-chat-assistant');
+  const greetingMsg = botSettings.greeting_msg || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Hello! I am your AI assistant. How can I help you today?', 'botisst-ai-chat-assistant');
+  const bubbleClass = `baca-preview-widget--${botSettings.bubble_style || 'rounded'}`;
+  const avatarSrc = botSettings.bot_avatar || '';
+  const avatarInitial = botName.trim().charAt(0).toUpperCase() || 'B';
+  return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-preview"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-preview__stage"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: `baca-preview-widget ${bubbleClass}`,
+    style: {
+      '--baca-preview-primary': primaryColor
+    }
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("header", {
+    className: "baca-preview-widget__header"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-preview-widget__header-main"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-preview-widget__avatar",
+    "aria-hidden": "true"
+  }, avatarSrc ? (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("img", {
+    src: avatarSrc,
+    alt: ""
+  }) : (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, avatarInitial)), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-preview-widget__info"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("strong", null, botName), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "baca-preview-widget__status"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "baca-preview-widget__status-dot",
+    "aria-hidden": "true"
+  }), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Online', 'botisst-ai-chat-assistant')))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    type: "button",
+    className: "baca-preview-widget__close",
+    "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Close chat', 'botisst-ai-chat-assistant'),
+    tabIndex: -1
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "dashicons dashicons-no-alt",
+    "aria-hidden": "true"
+  }))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-preview-widget__messages"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-preview-widget__row baca-preview-widget__row--bot"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-preview-widget__bot-avatar",
+    "aria-hidden": "true"
+  }, avatarSrc ? (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("img", {
+    src: avatarSrc,
+    alt: ""
+  }) : (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "dashicons dashicons-admin-users",
+    "aria-hidden": "true"
+  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-preview-widget__bubble baca-preview-widget__bubble--bot"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, greetingMsg))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-preview-widget__row baca-preview-widget__row--user"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-preview-widget__bubble baca-preview-widget__bubble--user"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, SAMPLE_USER_MSG))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-preview-widget__row baca-preview-widget__row--bot"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-preview-widget__bot-avatar",
+    "aria-hidden": "true"
+  }, avatarSrc ? (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("img", {
+    src: avatarSrc,
+    alt: ""
+  }) : (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "dashicons dashicons-admin-users",
+    "aria-hidden": "true"
+  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-preview-widget__bubble baca-preview-widget__bubble--bot"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, SAMPLE_BOT_REPLY)))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("footer", {
+    className: "baca-preview-widget__footer"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+    type: "text",
+    className: "baca-preview-widget__input",
+    placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Type a message…', 'botisst-ai-chat-assistant'),
+    disabled: true,
+    "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Message input', 'botisst-ai-chat-assistant')
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    type: "button",
+    className: "baca-preview-widget__send",
+    disabled: true,
+    "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Send', 'botisst-ai-chat-assistant'),
+    tabIndex: -1
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("svg", {
+    width: "18",
+    height: "18",
+    viewBox: "0 0 24 24",
+    fill: "none",
+    "aria-hidden": "true"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
+    d: "M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round"
+  }))))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-preview__launcher",
+    style: {
+      background: primaryColor
+    },
+    "aria-hidden": "true"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "dashicons dashicons-format-chat"
+  }))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("aside", {
+    className: "baca-preview__panel"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-preview__panel-icon",
+    "aria-hidden": "true"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "dashicons dashicons-visibility"
+  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("h3", {
+    className: "baca-preview__panel-title"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Live Preview', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "baca-preview__panel-desc"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Any changes you make in the Chatbot Settings will immediately reflect here. Test your user experience before going live.', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("ul", {
+    className: "baca-preview__features"
+  }, PREVIEW_FEATURES.map(feature => (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", {
+    key: feature
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "baca-preview__check",
+    "aria-hidden": "true"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "dashicons dashicons-yes"
+  })), feature)))));
+}
+
+/***/ },
+
+/***/ "./src/admin/components/ChatSessionsTab.jsx"
+/*!**************************************************!*\
+  !*** ./src/admin/components/ChatSessionsTab.jsx ***!
+  \**************************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ ChatSessionsTab)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/api-fetch */ "@wordpress/api-fetch");
+/* harmony import */ var _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _ui__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./ui */ "./src/admin/components/ui.jsx");
+
+
+
+
+
+function parseMessages(content) {
+  if (!content) {
+    return [];
+  }
+  try {
+    const msgs = typeof content === 'string' ? JSON.parse(content) : content;
+    return Array.isArray(msgs) ? msgs : [];
+  } catch {
+    return [];
+  }
+}
+function getDisplayUser(session) {
+  if (session.email) {
+    return session.email;
+  }
+  return (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Guest User', 'botisst-ai-chat-assistant');
+}
+function formatProviderLabel(provider) {
+  if (!provider) {
+    return (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Unknown', 'botisst-ai-chat-assistant');
+  }
+  const labels = {
+    openai: 'OpenAI',
+    google: 'Google'
+  };
+  return labels[provider.toLowerCase()] || provider.charAt(0).toUpperCase() + provider.slice(1);
+}
+function getSessionMeta(session) {
+  return {
+    provider: session?.provider ? formatProviderLabel(session.provider) : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Unknown', 'botisst-ai-chat-assistant'),
+    model: session?.model || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Unknown', 'botisst-ai-chat-assistant')
+  };
+}
+function escapeHtml(value) {
+  return String(value !== null && value !== void 0 ? value : '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+function getLastMessageSnippet(session) {
+  const msgs = parseMessages(session.content);
+  if (!msgs.length) {
+    return '';
+  }
+  const last = msgs[msgs.length - 1];
+  const text = (last?.content || '').replace(/\s+/g, ' ').trim();
+  if (!text) {
+    return '';
+  }
+  const max = 72;
+  const clipped = text.length > max ? `${text.slice(0, max)}…` : text;
+  return `"${clipped}"`;
+}
+function formatMessageTime(value) {
+  if (!value) {
+    return '';
+  }
+  const normalized = String(value).includes('T') ? value : String(value).replace(' ', 'T');
+  const date = new Date(normalized);
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+  const now = new Date();
+  const timeOpts = {
+    hour: 'numeric',
+    minute: '2-digit'
+  };
+  const dateOpts = {
+    month: 'short',
+    day: 'numeric',
+    ...(date.getFullYear() !== now.getFullYear() ? {
+      year: 'numeric'
+    } : {})
+  };
+  return `${date.toLocaleDateString(undefined, dateOpts)} · ${date.toLocaleTimeString(undefined, timeOpts)}`;
+}
+function sessionMatchesSearch(session, query) {
+  if (!query) {
+    return true;
+  }
+  const q = query.toLowerCase();
+  const name = getDisplayUser(session);
+  const lastMsg = getLastMessageSnippet(session).toLowerCase();
+  return session.session_id?.toLowerCase().includes(q) || name.toLowerCase().includes(q) || (session.provider || '').toLowerCase().includes(q) || (session.model || '').toLowerCase().includes(q) || lastMsg.includes(q);
+}
+function buildPageNumbers(current, total) {
+  if (total <= 7) {
+    return Array.from({
+      length: total
+    }, (_, i) => i + 1);
+  }
+  const pages = new Set([1, total, current]);
+  if (current > 2) {
+    pages.add(current - 1);
+  }
+  if (current < total - 1) {
+    pages.add(current + 1);
+  }
+  const sorted = [...pages].sort((a, b) => a - b);
+  const result = [];
+  for (let i = 0; i < sorted.length; i++) {
+    if (i > 0 && sorted[i] - sorted[i - 1] > 1) {
+      result.push('…');
+    }
+    result.push(sorted[i]);
+  }
+  return result;
+}
+function ChatSessionsTab({
+  showNotice
+}) {
+  const [sessionsList, setSessionsList] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)([]);
+  const [loadingSessions, setLoadingSessions] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(true);
+  const [searchQuery, setSearchQuery] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)('');
+  const [providerFilter, setProviderFilter] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)('all');
+  const [currentPage, setCurrentPage] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(1);
+  const [perPage, setPerPage] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(10);
+  const [selectedSession, setSelectedSession] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(null);
+  const [modalOpen, setModalOpen] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
+  const [deletingId, setDeletingId] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(null);
+  const [confirmingSession, setConfirmingSession] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(null);
+  const [filterOpen, setFilterOpen] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
+  const filterRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useRef)(null);
+  const [loadLimit, setLoadLimit] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(window.baca_data?.load_limit || '100');
+  const [localLimit, setLocalLimit] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(loadLimit);
+  const [sortOrder, setSortOrder] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(window.baca_data?.sort_order || 'desc');
+  const [localPerPage, setLocalPerPage] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(String(perPage));
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
+    setLocalLimit(loadLimit);
+  }, [loadLimit]);
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
+    setLocalPerPage(String(perPage));
+  }, [perPage]);
+  const handleLimitCommit = val => {
+    const parsed = val.trim();
+    if (parsed === '') {
+      setLoadLimit('all');
+    } else {
+      const num = parseInt(parsed, 10);
+      if (!isNaN(num) && num > 0) {
+        setLoadLimit(String(num));
+      } else {
+        setLocalLimit(loadLimit); // Reset to valid value.
+      }
+    }
+  };
+  const handlePerPageCommit = val => {
+    const parsed = val.trim();
+    const num = parseInt(parsed, 10);
+    if (!isNaN(num) && num > 0) {
+      setPerPage(num);
+    } else {
+      setLocalPerPage(String(perPage)); // Reset to valid value.
+    }
+  };
+  const providers = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useMemo)(() => {
+    const set = new Set();
+    sessionsList.forEach(s => {
+      if (s.provider) {
+        set.add(s.provider);
+      }
+    });
+    return [...set].sort();
+  }, [sessionsList]);
+  const filteredSessions = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useMemo)(() => {
+    return sessionsList.filter(session => {
+      if (providerFilter !== 'all' && (session.provider || '') !== providerFilter) {
+        return false;
+      }
+      return sessionMatchesSearch(session, searchQuery.trim());
+    });
+  }, [sessionsList, searchQuery, providerFilter]);
+  const totalPages = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useMemo)(() => Math.max(1, Math.ceil(filteredSessions.length / perPage)), [filteredSessions.length, perPage]);
+  const paginatedSessions = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useMemo)(() => {
+    const page = Math.min(currentPage, totalPages);
+    const start = (page - 1) * perPage;
+    return filteredSessions.slice(start, start + perPage);
+  }, [filteredSessions, currentPage, totalPages, perPage]);
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
+    let cancelled = false;
+    const loadSessions = async () => {
+      setLoadingSessions(true);
+      try {
+        const response = await _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_3___default()({
+          path: `/baca/v1/sessions?limit=${loadLimit}&order=${sortOrder}`
+        });
+        if (!cancelled) {
+          setSessionsList(Array.isArray(response?.sessions) ? response.sessions : []);
+          if (response?.load_limit) {
+            setLoadLimit(response.load_limit);
+          }
+          if (response?.sort_order) {
+            setSortOrder(response.sort_order);
+          }
+        }
+      } catch {
+        if (!cancelled) {
+          setSessionsList([]);
+          showNotice?.((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Could not load chat sessions. Please refresh the page.', 'botisst-ai-chat-assistant'), 'error');
+        }
+      } finally {
+        if (!cancelled) {
+          setLoadingSessions(false);
+        }
+      }
+    };
+    loadSessions();
+    return () => {
+      cancelled = true;
+    };
+  }, [showNotice, loadLimit, sortOrder]);
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
+    setCurrentPage(1);
+  }, [searchQuery, providerFilter, perPage, loadLimit, sortOrder]);
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
+    if (!filterOpen) {
+      return undefined;
+    }
+    const handlePointerDown = event => {
+      if (filterRef.current && !filterRef.current.contains(event.target)) {
+        setFilterOpen(false);
+      }
+    };
+    const handleKeyDown = event => {
+      if (event.key === 'Escape') {
+        setFilterOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handlePointerDown);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', handlePointerDown);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [filterOpen]);
+  const filterOptions = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useMemo)(() => [{
+    value: 'all',
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('All providers', 'botisst-ai-chat-assistant')
+  }, ...providers.map(provider => ({
+    value: provider,
+    label: formatProviderLabel(provider)
+  }))], [providers]);
+  const activeFilterLabel = filterOptions.find(option => option.value === providerFilter)?.label || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('All providers', 'botisst-ai-chat-assistant');
+  const selectProvider = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useCallback)(value => {
+    setProviderFilter(value);
+    setFilterOpen(false);
+  }, []);
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
+    if (selectedSession) {
+      setModalOpen(true);
+      document.body.classList.add('baca-modal-open');
+    } else {
+      setModalOpen(false);
+      document.body.classList.remove('baca-modal-open');
+    }
+    return () => document.body.classList.remove('baca-modal-open');
+  }, [selectedSession]);
+  const openSession = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useCallback)(session => {
+    setSelectedSession(session);
+  }, []);
+  const closeModal = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useCallback)(() => {
+    setSelectedSession(null);
+  }, []);
+  const handleDelete = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useCallback)(async session => {
+    setDeletingId(session.session_id);
+    try {
+      await _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_3___default()({
+        path: '/baca/v1/delete-session',
+        method: 'POST',
+        data: {
+          session_id: session.session_id
+        }
+      });
+      setSessionsList(prev => prev.filter(s => s.session_id !== session.session_id));
+      if (selectedSession?.session_id === session.session_id) {
+        closeModal();
+      }
+      showNotice?.((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Session deleted.', 'botisst-ai-chat-assistant'), 'success');
+    } catch {
+      showNotice?.((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Could not delete this session. Please try again.', 'botisst-ai-chat-assistant'), 'error');
+    } finally {
+      setDeletingId(null);
+    }
+  }, [selectedSession, closeModal, showNotice]);
+  const handleExportCsv = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useCallback)(() => {
+    if (!filteredSessions.length) {
+      showNotice?.((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('No sessions to export.', 'botisst-ai-chat-assistant'), 'error');
+      return;
+    }
+    const escape = val => `"${String(val !== null && val !== void 0 ? val : '').replace(/"/g, '""')}"`;
+    const header = ['Email', 'Provider', 'Model', 'Last Message', 'Created', 'Updated'];
+    const rows = filteredSessions.map(session => {
+      const name = getDisplayUser(session);
+      return [name, session.provider || '', session.model || '', getLastMessageSnippet(session).replace(/^"|"$/g, ''), session.created_at || '', session.updated_at || ''].map(escape).join(',');
+    });
+    const csv = [header.map(escape).join(','), ...rows].join('\n');
+    const blob = new Blob([csv], {
+      type: 'text/csv;charset=utf-8;'
+    });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `botisst-chat-sessions-${new Date().toISOString().slice(0, 10)}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+  }, [filteredSessions, showNotice]);
+  const handlePrintTranscript = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useCallback)(() => {
+    if (!selectedSession) {
+      return;
+    }
+    const name = getDisplayUser(selectedSession);
+    const meta = getSessionMeta(selectedSession);
+    const msgs = parseMessages(selectedSession.content);
+    const printWindow = window.open('', '_blank', 'width=720,height=900');
+    if (!printWindow) {
+      showNotice?.((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Allow pop-ups to download or print the transcript.', 'botisst-ai-chat-assistant'), 'error');
+      return;
+    }
+    printWindow.document.write(`<!DOCTYPE html><html><head><title>${(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Session Transcript', 'botisst-ai-chat-assistant')}</title>
+			<style>
+				body { font-family: system-ui, sans-serif; padding: 2rem; color: #111827; line-height: 1.5; }
+				h1 { font-size: 1.25rem; margin-bottom: 0.25rem; }
+				.meta { color: #6b7280; font-size: 0.875rem; margin-bottom: 2rem; }
+				.msg { margin-bottom: 1.25rem; }
+				.role { font-weight: 600; font-size: 0.8125rem; text-transform: uppercase; letter-spacing: 0.04em; color: #6366f1; }
+				.time { color: #9ca3af; font-size: 0.75rem; font-weight: 400; margin-left: 0.5rem; }
+				.body { margin-top: 0.35rem; white-space: pre-wrap; }
+			</style></head><body>
+			<h1>${(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Session Transcript', 'botisst-ai-chat-assistant')}</h1>
+			<p class="meta">${escapeHtml(name)}</p>
+			<p class="meta"><strong>${(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Provider', 'botisst-ai-chat-assistant')}:</strong> ${escapeHtml(meta.provider)} · <strong>${(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Model', 'botisst-ai-chat-assistant')}:</strong> ${escapeHtml(meta.model)}</p>
+			${msgs.map(msg => {
+      const role = msg.role === 'user' ? name : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Assistant', 'botisst-ai-chat-assistant');
+      return `<div class="msg"><div class="role">${role}<span class="time">${formatMessageTime(msg.created_at)}</span></div><div class="body">${msg.content.replace(/</g, '&lt;')}</div></div>`;
+    }).join('')}
+			</body></html>`);
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+  }, [selectedSession, showNotice]);
+  const pageNumbers = buildPageNumbers(Math.min(currentPage, totalPages), totalPages);
+  const showingFrom = filteredSessions.length ? (Math.min(currentPage, totalPages) - 1) * perPage + 1 : 0;
+  const showingTo = Math.min(Math.min(currentPage, totalPages) * perPage, filteredSessions.length);
+  return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-sessions"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-sessions-toolbar"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-sessions-toolbar__left"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-sessions-search"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "dashicons dashicons-search",
+    "aria-hidden": "true"
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+    type: "search",
+    className: "baca-sessions-search__input",
+    placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Search sessions…', 'botisst-ai-chat-assistant'),
+    value: searchQuery,
+    onChange: e => setSearchQuery(e.target.value),
+    "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Search sessions', 'botisst-ai-chat-assistant')
+  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    ref: filterRef,
+    className: `baca-sessions-filter ${filterOpen ? 'is-open' : ''}`
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    type: "button",
+    className: "baca-sessions-filter__trigger",
+    onClick: () => setFilterOpen(open => !open),
+    "aria-expanded": filterOpen,
+    "aria-haspopup": "listbox",
+    "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Filter by provider', 'botisst-ai-chat-assistant')
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "dashicons dashicons-filter",
+    "aria-hidden": "true"
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "baca-sessions-filter__label"
+  }, activeFilterLabel), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: `dashicons dashicons-arrow-down-alt2 baca-sessions-filter__chevron ${filterOpen ? 'is-open' : ''}`,
+    "aria-hidden": "true"
+  })), filterOpen && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("ul", {
+    className: "baca-sessions-filter__menu",
+    role: "listbox",
+    "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Providers', 'botisst-ai-chat-assistant')
+  }, filterOptions.map(option => (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", {
+    key: option.value,
+    role: "presentation"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    type: "button",
+    role: "option",
+    "aria-selected": providerFilter === option.value,
+    className: `baca-sessions-filter__option ${providerFilter === option.value ? 'is-selected' : ''}`,
+    onClick: () => selectProvider(option.value)
+  }, option.label))))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-sessions-limit"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "dashicons dashicons-database",
+    "aria-hidden": "true"
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "baca-sessions-limit__label"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Limit:', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+    type: "text",
+    pattern: "[0-9]*",
+    inputMode: "numeric",
+    className: "baca-sessions-limit__input",
+    placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('All', 'botisst-ai-chat-assistant'),
+    value: localLimit === 'all' ? '' : localLimit,
+    onChange: e => setLocalLimit(e.target.value),
+    onBlur: () => handleLimitCommit(localLimit),
+    onKeyDown: e => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        handleLimitCommit(localLimit);
+        e.target.blur();
+      }
+    },
+    title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Sessions load limit (empty for all)', 'botisst-ai-chat-assistant'),
+    "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Sessions load limit', 'botisst-ai-chat-assistant')
+  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-sessions-switcher"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    type: "button",
+    className: `baca-sessions-switcher__btn ${sortOrder === 'desc' ? 'is-active' : ''}`,
+    onClick: () => setSortOrder('desc'),
+    "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Sort by newest first', 'botisst-ai-chat-assistant')
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Newest', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    type: "button",
+    className: `baca-sessions-switcher__btn ${sortOrder === 'asc' ? 'is-active' : ''}`,
+    onClick: () => setSortOrder('asc'),
+    "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Sort by oldest first', 'botisst-ai-chat-assistant')
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Oldest', 'botisst-ai-chat-assistant')))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-sessions-toolbar__right"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    type: "button",
+    className: "baca-sessions-export",
+    onClick: handleExportCsv
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Export CSV', 'botisst-ai-chat-assistant')))), loadingSessions ? (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-sessions-empty"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "baca-spinner baca-spinner--muted",
+    "aria-hidden": "true"
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("h3", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Loading sessions…', 'botisst-ai-chat-assistant'))) : sessionsList.length === 0 ? (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-sessions-empty"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "dashicons dashicons-format-chat",
+    "aria-hidden": "true"
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("h3", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('No sessions yet', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Conversations will show up here once visitors start chatting with your bot.', 'botisst-ai-chat-assistant'))) : filteredSessions.length === 0 ? (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-sessions-empty baca-sessions-empty--compact"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "dashicons dashicons-search",
+    "aria-hidden": "true"
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("h3", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('No matching sessions', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Try a different search term or filter.', 'botisst-ai-chat-assistant'))) : (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-sessions-table-wrap"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("table", {
+    className: "baca-sessions-table"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("thead", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("tr", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("th", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Email', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("th", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Provider', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("th", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Created', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("th", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Last message', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("th", {
+    className: "baca-sessions-table__actions-col"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Actions', 'botisst-ai-chat-assistant')))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("tbody", null, paginatedSessions.map(session => {
+    const name = getDisplayUser(session);
+    const snippet = getLastMessageSnippet(session);
+    const isDeleting = deletingId === session.session_id;
+    return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("tr", {
+      key: session.session_id
+    }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+      className: "baca-sessions-user__name"
+    }, name)), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", {
+      className: "baca-sessions-provider"
+    }, session.provider ? (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+      className: "baca-sessions-provider__badge"
+    }, formatProviderLabel(session.provider)) : (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+      className: "baca-sessions-last-msg--empty"
+    }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Unknown', 'botisst-ai-chat-assistant'))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", {
+      className: "baca-sessions-date"
+    }, session.created_at ? (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, formatMessageTime(session.created_at)) : (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+      className: "baca-sessions-last-msg--empty"
+    }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Unknown', 'botisst-ai-chat-assistant'))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", {
+      className: "baca-sessions-last-msg"
+    }, snippet || (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+      className: "baca-sessions-last-msg--empty"
+    }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('No messages', 'botisst-ai-chat-assistant'))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", {
+      className: "baca-sessions-table__actions"
+    }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+      type: "button",
+      className: "baca-sessions-icon-btn",
+      onClick: () => openSession(session),
+      title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('View session', 'botisst-ai-chat-assistant'),
+      "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('View session', 'botisst-ai-chat-assistant')
+    }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+      className: "dashicons dashicons-visibility",
+      "aria-hidden": "true"
+    })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+      type: "button",
+      className: "baca-sessions-icon-btn baca-sessions-icon-btn--danger",
+      onClick: e => {
+        e.stopPropagation();
+        setConfirmingSession(session);
+      },
+      disabled: isDeleting,
+      title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Delete session', 'botisst-ai-chat-assistant'),
+      "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Delete session', 'botisst-ai-chat-assistant')
+    }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+      className: "dashicons dashicons-trash",
+      "aria-hidden": "true"
+    }))));
+  })))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("footer", {
+    className: "baca-sessions-footer"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "baca-sessions-footer__count"
+  }, filteredSessions.length ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.sprintf)(/* translators: 1: start index, 2: end index, 3: total count */
+  (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Showing %1$d–%2$d of %3$d sessions', 'botisst-ai-chat-assistant'), showingFrom, showingTo, filteredSessions.length) : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('No sessions', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-sessions-footer__right"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-sessions-per-page-input-wrap"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "baca-sessions-per-page-input__label"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Rows per page:', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+    type: "text",
+    pattern: "[0-9]*",
+    inputMode: "numeric",
+    className: "baca-sessions-per-page-input__field",
+    value: localPerPage,
+    onChange: e => setLocalPerPage(e.target.value),
+    onBlur: () => handlePerPageCommit(localPerPage),
+    onKeyDown: e => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        handlePerPageCommit(localPerPage);
+        e.target.blur();
+      }
+    },
+    "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Sessions per page', 'botisst-ai-chat-assistant')
+  })), totalPages > 1 && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("nav", {
+    className: "baca-sessions-pagination",
+    "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Sessions pagination', 'botisst-ai-chat-assistant')
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    type: "button",
+    className: "baca-sessions-page-btn",
+    disabled: currentPage <= 1,
+    onClick: () => setCurrentPage(p => Math.max(1, p - 1)),
+    "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Previous page', 'botisst-ai-chat-assistant')
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "dashicons dashicons-arrow-left-alt2",
+    "aria-hidden": "true"
+  })), pageNumbers.map((page, idx) => page === '…' ? (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    key: `ellipsis-${idx}`,
+    className: "baca-sessions-page-ellipsis"
+  }, "\u2026") : (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    key: page,
+    type: "button",
+    className: `baca-sessions-page-num ${currentPage === page ? 'is-active' : ''}`,
+    onClick: () => setCurrentPage(page),
+    "aria-current": currentPage === page ? 'page' : undefined
+  }, page)), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    type: "button",
+    className: "baca-sessions-page-btn",
+    disabled: currentPage >= totalPages,
+    onClick: () => setCurrentPage(p => Math.min(totalPages, p + 1)),
+    "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Next page', 'botisst-ai-chat-assistant')
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "dashicons dashicons-arrow-right-alt2",
+    "aria-hidden": "true"
+  })))))), selectedSession && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: `baca-modal baca-sessions-modal ${modalOpen ? 'is-visible' : ''}`,
+    role: "dialog",
+    "aria-modal": "true",
+    "aria-labelledby": "baca-session-modal-title"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-modal-overlay",
+    onClick: closeModal
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-modal-content"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-modal-header"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-modal-title"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "baca-modal-title-icon",
+    "aria-hidden": "true"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "dashicons dashicons-format-chat"
+  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("h3", {
+    id: "baca-session-modal-title"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Session Transcript', 'botisst-ai-chat-assistant'))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    type: "button",
+    className: "baca-modal-close",
+    onClick: closeModal,
+    "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Close', 'botisst-ai-chat-assistant')
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "dashicons dashicons-no-alt",
+    "aria-hidden": "true"
+  }))), (() => {
+    const meta = getSessionMeta(selectedSession);
+    return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "baca-sessions-modal-meta"
+    }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "baca-sessions-modal-meta__item"
+    }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+      className: "baca-sessions-modal-meta__label"
+    }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Provider', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+      className: "baca-sessions-modal-meta__value"
+    }, meta.provider)), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "baca-sessions-modal-meta__item"
+    }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+      className: "baca-sessions-modal-meta__label"
+    }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Model', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+      className: "baca-sessions-modal-meta__value"
+    }, meta.model)));
+  })(), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-modal-body"
+  }, (() => {
+    const msgs = parseMessages(selectedSession.content);
+    if (!msgs.length) {
+      return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+        className: "baca-text-muted"
+      }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('No messages in this session.', 'botisst-ai-chat-assistant'));
+    }
+    return msgs.map((msg, i) => (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      key: i,
+      className: `baca-modal-msg ${msg.role === 'user' ? 'baca-modal-msg-user' : 'baca-modal-msg-assistant'}`
+    }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "baca-modal-msg-content"
+    }, msg.content), msg.created_at && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "baca-modal-msg-time"
+    }, formatMessageTime(msg.created_at))));
+  })()), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-modal-footer"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    type: "button",
+    className: "baca-modal-footer-link",
+    onClick: handlePrintTranscript
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Print Chat Transcript', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    type: "button",
+    className: "baca-btn baca-btn-primary",
+    onClick: closeModal
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Return to Sessions', 'botisst-ai-chat-assistant'))))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ui__WEBPACK_IMPORTED_MODULE_4__.ConfirmDialog, {
+    open: !!confirmingSession,
+    title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Delete chat session', 'botisst-ai-chat-assistant'),
+    message: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Delete this chat session permanently? This cannot be undone.', 'botisst-ai-chat-assistant'),
+    confirmLabel: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Delete Session', 'botisst-ai-chat-assistant'),
+    busy: !!deletingId && confirmingSession?.session_id === deletingId,
+    onCancel: () => setConfirmingSession(null),
+    onConfirm: () => {
+      const session = confirmingSession;
+      setConfirmingSession(null);
+      handleDelete(session);
+    }
+  }));
+}
+
+/***/ },
+
+/***/ "./src/admin/components/ChatbotSettingsTab.jsx"
+/*!*****************************************************!*\
+  !*** ./src/admin/components/ChatbotSettingsTab.jsx ***!
+  \*****************************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ ChatbotSettingsTab)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/api-fetch */ "@wordpress/api-fetch");
+/* harmony import */ var _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_3__);
+
+
+
+
+const PROVIDER_LABELS = {
+  openai: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('OpenAI', 'botisst-ai-chat-assistant'),
+  google: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Google Gemini', 'botisst-ai-chat-assistant')
+};
+const SUB_TABS = [{
+  id: 'general',
+  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('General', 'botisst-ai-chat-assistant')
+}, {
+  id: 'advanced',
+  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Advance', 'botisst-ai-chat-assistant')
+}, {
+  id: 'style',
+  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Style', 'botisst-ai-chat-assistant')
+}];
+function ChatbotSettingsTab({
+  settings,
+  onSave,
+  showNotice
+}) {
+  var _botSettings$save_cha, _botSettings$ask_emai, _botSettings$enable_p, _botSettings$rate_lim, _formData$ask_email;
+  const botSettings = settings?.chatbot || {};
+  const [activeSubTab, setActiveSubTab] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)('general');
+  const [saving, setSaving] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
+  const [formData, setFormData] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)({
+    bot_name: botSettings.bot_name || '',
+    primary_color: botSettings.primary_color || '#6366f1',
+    greeting_msg: botSettings.greeting_msg || '',
+    api_error_msg: botSettings.api_error_msg || '',
+    support_url: botSettings.support_url || '',
+    pre_question_1: botSettings.pre_question_1 || '',
+    pre_question_2: botSettings.pre_question_2 || '',
+    pre_question_3: botSettings.pre_question_3 || '',
+    pre_question_4: botSettings.pre_question_4 || '',
+    pre_questions_bg_color: botSettings.pre_questions_bg_color || '#ffffff',
+    pre_questions_text_color: botSettings.pre_questions_text_color || '#475569',
+    pre_questions_border_color: botSettings.pre_questions_border_color || '#e2e8f0',
+    pre_questions_border_radius: botSettings.pre_questions_border_radius || 'rounded',
+    bot_avatar: botSettings.bot_avatar || '',
+    bubble_style: botSettings.bubble_style || 'rounded',
+    save_chat: (_botSettings$save_cha = botSettings.save_chat) !== null && _botSettings$save_cha !== void 0 ? _botSettings$save_cha : false,
+    ask_email: (_botSettings$ask_emai = botSettings.ask_email) !== null && _botSettings$ask_emai !== void 0 ? _botSettings$ask_emai : false,
+    enable_pre_questions: (_botSettings$enable_p = botSettings.enable_pre_questions) !== null && _botSettings$enable_p !== void 0 ? _botSettings$enable_p : false,
+    rate_limit_per_minute: (_botSettings$rate_lim = botSettings.rate_limit_per_minute) !== null && _botSettings$rate_lim !== void 0 ? _botSettings$rate_lim : 20
+  });
+  const handleChange = (name, value) => {
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+  const handleUploadImage = () => {
+    if (!window.wp?.media) {
+      showNotice((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('WordPress media modal is not available.', 'botisst-ai-chat-assistant'), 'error');
+      return;
+    }
+    const frame = window.wp.media({
+      title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Select Bot Avatar', 'botisst-ai-chat-assistant'),
+      button: {
+        text: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Use as Avatar', 'botisst-ai-chat-assistant')
+      },
+      multiple: false
+    });
+    frame.on('select', () => {
+      const attachment = frame.state().get('selection').first().toJSON();
+      handleChange('bot_avatar', attachment.url);
+    });
+    frame.open();
+  };
+  const handleSubmit = async e => {
+    e.preventDefault();
+    setSaving(true);
+    try {
+      await _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_3___default()({
+        path: '/baca/v1/save-bot-settings',
+        method: 'POST',
+        data: formData
+      });
+      onSave({
+        chatbot: {
+          ...botSettings,
+          ...formData
+        }
+      });
+      showNotice((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Bot settings saved successfully!', 'botisst-ai-chat-assistant'));
+    } catch (error) {
+      showNotice(error.message || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Failed to save settings', 'botisst-ai-chat-assistant'), 'error');
+    } finally {
+      setSaving(false);
+    }
+  };
+  const avatarInitial = (formData.bot_name || 'B').charAt(0).toUpperCase();
+  const renderToggleCard = (id, title, description, checked, onChange) => (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-bot-setting-card"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-bot-setting-card__text"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("strong", null, title), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, description)), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    className: "baca-toggle",
+    htmlFor: id
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+    id: id,
+    type: "checkbox",
+    checked: checked,
+    onChange: e => onChange(e.target.checked)
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "baca-toggle-slider",
+    "aria-hidden": "true"
+  })));
+  return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-bot-settings"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("nav", {
+    className: "baca-kb-subnav",
+    role: "tablist",
+    "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Chatbot settings sections', 'botisst-ai-chat-assistant')
+  }, SUB_TABS.map(tab => (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    key: tab.id,
+    type: "button",
+    role: "tab",
+    "aria-selected": activeSubTab === tab.id,
+    className: `baca-kb-subtab ${activeSubTab === tab.id ? 'active' : ''}`,
+    onClick: () => setActiveSubTab(tab.id)
+  }, tab.label))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("form", {
+    onSubmit: handleSubmit
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: `baca-bot-panel ${activeSubTab === 'general' ? '' : 'baca-kb-panel--hidden'}`
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("section", {
+    className: "baca-bot-section"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("h2", {
+    className: "baca-bot-section__title"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Bot Identity', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-bot-col--stack"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-bot-field"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    htmlFor: "bot_name"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('AI Assistant Name', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+    type: "text",
+    id: "bot_name",
+    className: "baca-bot-input",
+    value: formData.bot_name,
+    onChange: e => handleChange('bot_name', e.target.value),
+    placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Botisst', 'botisst-ai-chat-assistant')
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "baca-bot-hint"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('This name will appear in the chat window header for your users.', 'botisst-ai-chat-assistant'))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-bot-field"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    htmlFor: "greeting_msg"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Greeting Message', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("textarea", {
+    id: "greeting_msg",
+    className: "baca-bot-input baca-bot-textarea",
+    rows: "4",
+    value: formData.greeting_msg,
+    onChange: e => handleChange('greeting_msg', e.target.value),
+    placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Hello! I am your AI assistant. How can I help you today?', 'botisst-ai-chat-assistant')
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "baca-bot-hint"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('The first message your chatbot sends to initiate a conversation.', 'botisst-ai-chat-assistant'))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-bot-field"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    htmlFor: "support_url"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Support System URL', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+    type: "text",
+    id: "support_url",
+    className: "baca-bot-input",
+    value: formData.support_url,
+    onChange: e => handleChange('support_url', e.target.value),
+    placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('https://example.com/support', 'botisst-ai-chat-assistant')
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "baca-bot-hint"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('The link users will be redirected to when they click "support agent" in case of errors.', 'botisst-ai-chat-assistant'))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-bot-field"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    htmlFor: "api_error_msg"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('API/Server Error Message', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("textarea", {
+    id: "api_error_msg",
+    className: "baca-bot-input baca-bot-textarea",
+    rows: "3",
+    value: formData.api_error_msg,
+    onChange: e => handleChange('api_error_msg', e.target.value),
+    placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('There is some error on server, please contact our [support agent]({support_url}).', 'botisst-ai-chat-assistant')
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "baca-bot-hint"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('The message shown when a connection or API error occurs. You can use the {support_url} placeholder to insert the Support URL link.', 'botisst-ai-chat-assistant')))))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: `baca-bot-panel ${activeSubTab === 'advanced' ? '' : 'baca-kb-panel--hidden'}`
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("section", {
+    className: "baca-bot-section"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("h2", {
+    className: "baca-bot-section__title"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Security', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-bot-field"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    htmlFor: "rate_limit_per_minute"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Chat Rate Limit (requests per minute per visitor)', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+    type: "number",
+    id: "rate_limit_per_minute",
+    className: "baca-bot-input",
+    min: "1",
+    max: "300",
+    value: formData.rate_limit_per_minute,
+    onChange: e => handleChange('rate_limit_per_minute', parseInt(e.target.value, 10) || 1)
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "baca-bot-hint"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('The public chat endpoint is throttled per visitor IP to stop it being used to run up your AI provider bill. Lower this if you\'re seeing abuse, or raise it if legitimate users are being blocked.', 'botisst-ai-chat-assistant')))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("section", {
+    className: "baca-bot-section"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("h2", {
+    className: "baca-bot-section__title"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Conversation Features', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-bot-features"
+  }, renderToggleCard('save_chat', (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Save Chat History', 'botisst-ai-chat-assistant'), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Enable user session continuity', 'botisst-ai-chat-assistant'), formData.save_chat, v => handleChange('save_chat', v)), formData.save_chat && renderToggleCard('ask_email', (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Ask User Email', 'botisst-ai-chat-assistant'), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Prompt user to enter their email to save chat continuity', 'botisst-ai-chat-assistant'), (_formData$ask_email = formData.ask_email) !== null && _formData$ask_email !== void 0 ? _formData$ask_email : false, v => handleChange('ask_email', v)), renderToggleCard('enable_pre_questions', (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Enable Suggested Questions', 'botisst-ai-chat-assistant'), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Provide quick suggestion questions to start a conversation', 'botisst-ai-chat-assistant'), formData.enable_pre_questions, v => handleChange('enable_pre_questions', v)))), formData.enable_pre_questions && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("section", {
+    className: "baca-bot-section"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("h2", {
+    className: "baca-bot-section__title"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Suggested Questions', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "baca-bot-hint",
+    style: {
+      marginBottom: '1.25rem'
+    }
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Provide up to 4 suggested questions that users can click to instantly start a conversation.', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-bot-grid"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-bot-col"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-bot-field"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    htmlFor: "pre_question_1"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Suggested Question 1', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+    type: "text",
+    id: "pre_question_1",
+    className: "baca-bot-input",
+    value: formData.pre_question_1,
+    onChange: e => handleChange('pre_question_1', e.target.value),
+    placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('e.g. What services do you offer?', 'botisst-ai-chat-assistant')
+  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-bot-field"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    htmlFor: "pre_question_2"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Suggested Question 2', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+    type: "text",
+    id: "pre_question_2",
+    className: "baca-bot-input",
+    value: formData.pre_question_2,
+    onChange: e => handleChange('pre_question_2', e.target.value),
+    placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('e.g. How can I contact support?', 'botisst-ai-chat-assistant')
+  }))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-bot-col"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-bot-field"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    htmlFor: "pre_question_3"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Suggested Question 3', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+    type: "text",
+    id: "pre_question_3",
+    className: "baca-bot-input",
+    value: formData.pre_question_3,
+    onChange: e => handleChange('pre_question_3', e.target.value),
+    placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('e.g. What are your pricing plans?', 'botisst-ai-chat-assistant')
+  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-bot-field"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    htmlFor: "pre_question_4"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Suggested Question 4', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+    type: "text",
+    id: "pre_question_4",
+    className: "baca-bot-input",
+    value: formData.pre_question_4,
+    onChange: e => handleChange('pre_question_4', e.target.value),
+    placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('e.g. Tell me about your company.', 'botisst-ai-chat-assistant')
+  }))))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("section", {
+    className: "baca-bot-section"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("h2", {
+    className: "baca-bot-section__title"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Suggested Questions Styling', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-bot-grid"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-bot-col"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-bot-field"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    htmlFor: "pre_questions_bg_color"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Background Color', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-bot-color-field"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+    type: "color",
+    id: "pre_questions_bg_color",
+    className: "baca-bot-color-picker",
+    value: formData.pre_questions_bg_color,
+    onChange: e => handleChange('pre_questions_bg_color', e.target.value)
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "baca-bot-color-value"
+  }, formData.pre_questions_bg_color))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-bot-field"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    htmlFor: "pre_questions_text_color"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Text Color', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-bot-color-field"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+    type: "color",
+    id: "pre_questions_text_color",
+    className: "baca-bot-color-picker",
+    value: formData.pre_questions_text_color,
+    onChange: e => handleChange('pre_questions_text_color', e.target.value)
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "baca-bot-color-value"
+  }, formData.pre_questions_text_color)))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-bot-col"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-bot-field"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    htmlFor: "pre_questions_border_color"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Border Color', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-bot-color-field"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+    type: "color",
+    id: "pre_questions_border_color",
+    className: "baca-bot-color-picker",
+    value: formData.pre_questions_border_color,
+    onChange: e => handleChange('pre_questions_border_color', e.target.value)
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "baca-bot-color-value"
+  }, formData.pre_questions_border_color))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-bot-field"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    htmlFor: "pre_questions_border_radius"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Border Radius Style', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("select", {
+    id: "pre_questions_border_radius",
+    className: "baca-bot-select",
+    value: formData.pre_questions_border_radius,
+    onChange: e => handleChange('pre_questions_border_radius', e.target.value)
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
+    value: "rounded"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Rounded (Default)', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
+    value: "square"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Square', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
+    value: "pill"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Pill', 'botisst-ai-chat-assistant'))))))))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: `baca-bot-panel ${activeSubTab === 'style' ? '' : 'baca-kb-panel--hidden'}`
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-bot-grid"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("section", {
+    className: "baca-bot-section"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("h2", {
+    className: "baca-bot-section__title"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Bot Avatar', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-bot-avatar-card",
+    style: {
+      margin: '0 auto'
+    }
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-bot-avatar-preview"
+  }, formData.bot_avatar ? (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("img", {
+    src: formData.bot_avatar,
+    alt: ""
+  }) : (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, avatarInitial)), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    type: "button",
+    className: "baca-btn baca-btn-primary baca-bot-upload-btn",
+    onClick: handleUploadImage
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "dashicons dashicons-upload",
+    "aria-hidden": "true"
+  }), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Upload New', 'botisst-ai-chat-assistant')), !!formData.bot_avatar && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    type: "button",
+    className: "baca-bot-remove-avatar",
+    onClick: () => handleChange('bot_avatar', '')
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Remove', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "baca-bot-hint baca-bot-hint--center"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('JPG, PNG or SVG. Max size 2MB.', 'botisst-ai-chat-assistant')))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("section", {
+    className: "baca-bot-section"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("h2", {
+    className: "baca-bot-section__title"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Branding & Styles', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-bot-col--stack"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-bot-field"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    htmlFor: "primary_color"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Primary Color', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-bot-color-field"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+    type: "color",
+    id: "primary_color",
+    className: "baca-bot-color-picker",
+    value: formData.primary_color,
+    onChange: e => handleChange('primary_color', e.target.value),
+    "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Primary color', 'botisst-ai-chat-assistant')
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "baca-bot-color-value"
+  }, formData.primary_color)), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "baca-bot-hint"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Used for the chat header, launcher button, and your messages.', 'botisst-ai-chat-assistant'))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-bot-field"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    htmlFor: "bubble_style"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Chat Bubble Style', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("select", {
+    id: "bubble_style",
+    className: "baca-bot-select",
+    value: formData.bubble_style,
+    onChange: e => handleChange('bubble_style', e.target.value)
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
+    value: "rounded"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Rounded (Default)', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
+    value: "square"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Square', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
+    value: "pill"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Pill', 'botisst-ai-chat-assistant'))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "baca-bot-hint"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Controls the corner rounding of chat message bubbles.', 'botisst-ai-chat-assistant'))))))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("footer", {
+    className: "baca-bot-footer"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    type: "submit",
+    className: "baca-btn baca-btn-primary",
+    disabled: saving
+  }, saving ? (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "baca-spinner",
+    "aria-hidden": "true"
+  }), " ", (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Saving…', 'botisst-ai-chat-assistant')) : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Save', 'botisst-ai-chat-assistant')))));
+}
+
+/***/ },
+
+/***/ "./src/admin/components/DisplaySettingsTab.jsx"
+/*!*****************************************************!*\
+  !*** ./src/admin/components/DisplaySettingsTab.jsx ***!
+  \*****************************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ DisplaySettingsTab)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/api-fetch */ "@wordpress/api-fetch");
+/* harmony import */ var _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_3__);
+
+
+
+
+function DisplaySettingsTab({
+  settings,
+  onSave,
+  showNotice
+}) {
+  var _display$entire_site, _display$show_on_mobi, _display$trigger_dela;
+  const [saving, setSaving] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
+  const display = settings?.display || {};
+  const [formData, setFormData] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)({
+    entire_site: (_display$entire_site = display.entire_site) !== null && _display$entire_site !== void 0 ? _display$entire_site : false,
+    show_on_mobile: (_display$show_on_mobi = display.show_on_mobile) !== null && _display$show_on_mobi !== void 0 ? _display$show_on_mobi : true,
+    exclude_pages: display.exclude_pages || '',
+    position: display.position || 'bottom-right',
+    launcher_text: display.launcher_text || '',
+    trigger_type: display.trigger_type || 'click',
+    trigger_delay: (_display$trigger_dela = display.trigger_delay) !== null && _display$trigger_dela !== void 0 ? _display$trigger_dela : 5
+  });
+  const handleChange = (name, value) => {
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+  const handleSubmit = async e => {
+    e.preventDefault();
+    setSaving(true);
+    try {
+      await _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_3___default()({
+        path: '/baca/v1/save-display-settings',
+        method: 'POST',
+        data: formData
+      });
+      onSave({
+        display: {
+          ...display,
+          ...formData
+        }
+      });
+      showNotice((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Display settings saved successfully!', 'botisst-ai-chat-assistant'));
+    } catch (error) {
+      showNotice(error.message || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Failed to save settings', 'botisst-ai-chat-assistant'), 'error');
+    } finally {
+      setSaving(false);
+    }
+  };
+  const renderToggleCard = (id, title, description, checked, onChange, icon = null) => (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-bot-setting-card"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-bot-setting-card__main"
+  }, icon, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-bot-setting-card__text"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("strong", null, title), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, description))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    className: "baca-toggle",
+    htmlFor: id
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+    id: id,
+    type: "checkbox",
+    checked: checked,
+    onChange: e => onChange(e.target.checked)
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "baca-toggle-slider",
+    "aria-hidden": "true"
+  })));
+  return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-display-settings"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("form", {
+    onSubmit: handleSubmit
+  }, renderToggleCard('entire_site', (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Enable Site-wide Chatbot', 'botisst-ai-chat-assistant'), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Activate the chatbot across all pages of your website', 'botisst-ai-chat-assistant'), formData.entire_site, v => handleChange('entire_site', v)), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-display-grid"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-bot-field"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    htmlFor: "launcher_text"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Chat Button Text', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+    type: "text",
+    id: "launcher_text",
+    className: "baca-bot-input",
+    value: formData.launcher_text,
+    onChange: e => handleChange('launcher_text', e.target.value),
+    placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('How can we help?', 'botisst-ai-chat-assistant')
+  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-bot-field"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    htmlFor: "exclude_pages"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Exclude Pages (comma-separated page IDs)', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+    type: "text",
+    id: "exclude_pages",
+    className: "baca-bot-input",
+    value: formData.exclude_pages,
+    onChange: e => handleChange('exclude_pages', e.target.value),
+    placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('e.g. 12, 45, 103', 'botisst-ai-chat-assistant')
+  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-bot-field"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    htmlFor: "trigger_type"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Auto-Open Trigger', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("select", {
+    id: "trigger_type",
+    className: "baca-bot-select",
+    value: formData.trigger_type,
+    onChange: e => handleChange('trigger_type', e.target.value)
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
+    value: "delay"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('On Page Load', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
+    value: "click"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Wait for Click', 'botisst-ai-chat-assistant')))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-bot-field"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    htmlFor: "position"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Widget Position on Screen', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("select", {
+    id: "position",
+    className: "baca-bot-select",
+    value: formData.position,
+    onChange: e => handleChange('position', e.target.value)
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
+    value: "bottom-right"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Bottom Right', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
+    value: "bottom-left"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Bottom Left', 'botisst-ai-chat-assistant'))))), formData.trigger_type === 'delay' && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-bot-field baca-display-delay-field"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    htmlFor: "trigger_delay"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Delay (seconds)', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+    type: "number",
+    id: "trigger_delay",
+    className: "baca-bot-input",
+    min: "1",
+    max: "60",
+    value: formData.trigger_delay,
+    onChange: e => handleChange('trigger_delay', e.target.value)
+  })), renderToggleCard('show_on_mobile', (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Show on Mobile', 'botisst-ai-chat-assistant'), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Optimize interface for mobile devices', 'botisst-ai-chat-assistant'), formData.show_on_mobile, v => handleChange('show_on_mobile', v), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "baca-display-mobile-icon",
+    "aria-hidden": "true"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "dashicons dashicons-smartphone"
+  }))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("footer", {
+    className: "baca-display-footer"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    type: "submit",
+    className: "baca-btn baca-btn-primary",
+    disabled: saving
+  }, saving ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Saving…', 'botisst-ai-chat-assistant') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Save', 'botisst-ai-chat-assistant')))));
+}
+
+/***/ },
+
+/***/ "./src/admin/components/InstructionsTab.jsx"
+/*!**************************************************!*\
+  !*** ./src/admin/components/InstructionsTab.jsx ***!
+  \**************************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ InstructionsTab)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/api-fetch */ "@wordpress/api-fetch");
+/* harmony import */ var _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_3__);
+
+
+
+
+const SYSTEM_PROMPT_HELP = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Explain how your chatbot should sound and behave—its tone, what it helps with, and any rules it should follow.', 'botisst-ai-chat-assistant');
+function InstructionsTab({
+  settings,
+  onSave,
+  showNotice
+}) {
+  var _botSettings$temperat, _botSettings$max_toke;
+  const [saving, setSaving] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
+  const botSettings = settings?.chatbot || {};
+  const [formData, setFormData] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)({
+    system_prompt: botSettings.system_prompt || '',
+    temperature: (_botSettings$temperat = botSettings.temperature) !== null && _botSettings$temperat !== void 0 ? _botSettings$temperat : 0.7,
+    max_tokens: (_botSettings$max_toke = botSettings.max_tokens) !== null && _botSettings$max_toke !== void 0 ? _botSettings$max_toke : 500
+  });
+  const handleChange = (name, value) => {
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+  const handleSubmit = async e => {
+    e.preventDefault();
+    setSaving(true);
+    try {
+      await _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_3___default()({
+        path: '/baca/v1/save-bot-settings',
+        method: 'POST',
+        data: formData
+      });
+      onSave({
+        chatbot: {
+          ...botSettings,
+          ...formData
+        }
+      });
+      showNotice((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Instructions saved successfully!', 'botisst-ai-chat-assistant'));
+    } catch (error) {
+      showNotice(error.message || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Failed to save instructions', 'botisst-ai-chat-assistant'), 'error');
+    } finally {
+      setSaving(false);
+    }
+  };
+  const temperatureValue = Number(formData.temperature);
+  return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-instructions-settings"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("form", {
+    onSubmit: handleSubmit
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("article", {
+    className: "baca-instructions-card"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("header", {
+    className: "baca-instructions-card__header"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "baca-instructions-card__icon",
+    "aria-hidden": "true"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "dashicons dashicons-edit"
+  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("h3", {
+    className: "baca-instructions-card__title"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('System Instructions', 'botisst-ai-chat-assistant'))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-instructions-card__body"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    htmlFor: "system_prompt",
+    className: "baca-instructions-label"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Custom ChatBot Prompt', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("textarea", {
+    id: "system_prompt",
+    className: "baca-instructions-textarea",
+    rows: "6",
+    value: formData.system_prompt,
+    onChange: e => handleChange('system_prompt', e.target.value),
+    placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("For example: You're a friendly assistant on our site. Answer clearly, stay helpful, and keep replies short.", 'botisst-ai-chat-assistant')
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "baca-bot-hint"
+  }, SYSTEM_PROMPT_HELP))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("article", {
+    className: "baca-instructions-card"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("header", {
+    className: "baca-instructions-card__header"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "baca-instructions-card__icon",
+    "aria-hidden": "true"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "dashicons dashicons-admin-settings"
+  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("h3", {
+    className: "baca-instructions-card__title"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Model Parameters', 'botisst-ai-chat-assistant'))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-instructions-card__body"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-instructions-params-grid"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-instructions-param"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-instructions-param__head"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    htmlFor: "temperature"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Chat Accuracy', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "baca-instructions-value-badge"
+  }, temperatureValue.toFixed(1))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+    type: "range",
+    id: "temperature",
+    className: "baca-instructions-range",
+    min: "0",
+    max: "2",
+    step: "0.1",
+    value: formData.temperature,
+    onChange: e => handleChange('temperature', e.target.value)
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-instructions-range-labels"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Focused/Deterministic', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Creative', 'botisst-ai-chat-assistant'))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "baca-bot-hint"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Turn it up for more creative replies; turn it down for shorter, more predictable answers. Values above 1.0 make replies noticeably more random and are rarely needed.', 'botisst-ai-chat-assistant'))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-instructions-param"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    htmlFor: "max_tokens",
+    className: "baca-instructions-label"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Max Tokens', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+    type: "number",
+    id: "max_tokens",
+    className: "baca-bot-input",
+    value: formData.max_tokens,
+    onChange: e => handleChange('max_tokens', e.target.value),
+    min: "100",
+    max: "8192"
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "baca-bot-hint"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Sets the longest reply the chatbot can send in one message.', 'botisst-ai-chat-assistant')))))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("footer", {
+    className: "baca-instructions-footer"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    type: "submit",
+    className: "baca-btn baca-btn-primary",
+    disabled: saving
+  }, saving ? (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "baca-spinner",
+    "aria-hidden": "true"
+  }), " ", (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Saving…', 'botisst-ai-chat-assistant')) : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Save', 'botisst-ai-chat-assistant')))));
+}
+
+/***/ },
+
+/***/ "./src/admin/components/KnowledgeBaseTab.jsx"
+/*!***************************************************!*\
+  !*** ./src/admin/components/KnowledgeBaseTab.jsx ***!
+  \***************************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ KnowledgeBaseTab)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/api-fetch */ "@wordpress/api-fetch");
+/* harmony import */ var _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _ui__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./ui */ "./src/admin/components/ui.jsx");
+
+
+
+
+
+const SUB_TABS = [{
+  id: 'sources',
+  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Sources', 'botisst-ai-chat-assistant')
+}, {
+  id: 'vector-db',
+  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Database', 'botisst-ai-chat-assistant')
+}, {
+  id: 'indexing',
+  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Indexing Rules', 'botisst-ai-chat-assistant')
+}];
+const TEXT_KNOWLEDGE_HINT = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Add facts, FAQs, or company info you want the chatbot to rely on when answering.', 'botisst-ai-chat-assistant');
+const URLS_HINT = (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('We will read these pages from time to time and use what we find in replies.', 'botisst-ai-chat-assistant');
+function KnowledgeBaseTab({
+  settings,
+  onSave,
+  showNotice
+}) {
+  const [saving, setSaving] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
+  const [indexing, setIndexing] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
+  const [indexProgress, setIndexProgress] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(null);
+  const [stats, setStats] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(null);
+  const [postTypes, setPostTypes] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)([]);
+  const [activeSubTab, setActiveSubTab] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)('sources');
+  const [confirmingPineconeReset, setConfirmingPineconeReset] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
+  const botSettings = settings?.chatbot || {};
+  const ragSettings = settings?.rag || {};
+  const hasPineconeSavedSettings = !!(ragSettings.vector_db?.api_key || ragSettings.vector_db?.host || ragSettings.vector_db?.index_name);
+  const [knowledgeText, setKnowledgeText] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(botSettings.knowledge_text || '');
+  const [urls, setUrls] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(Array.isArray(botSettings.knowledge_urls) && botSettings.knowledge_urls.length ? botSettings.knowledge_urls : []);
+  const [trainingFiles, setTrainingFiles] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(Array.isArray(botSettings.training_files) ? botSettings.training_files : []);
+  const [selectedPostTypes, setSelectedPostTypes] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(ragSettings.post_types || ['post', 'page']);
+  const [maxChunkSize, setMaxChunkSize] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(ragSettings.chunk_size || 1000);
+  const [maxResults, setMaxResults] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(ragSettings.max_results || 5);
+  const [vectorDb, setVectorDb] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(ragSettings.vector_db?.provider || 'sqlite');
+  const [requireIndexedData, setRequireIndexedData] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(ragSettings.require_indexed_data || false);
+  const [noDataMessage, setNoDataMessage] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(ragSettings.no_data_message || 'I don\'t have information about your question in my knowledge base. Please rephrase or ask about topics I have knowledge of.');
+  const [pineconeApiKey, setPineconeApiKey] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(ragSettings.vector_db?.api_key || '');
+  const [pineconeHost, setPineconeHost] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(ragSettings.vector_db?.host || '');
+  const [pineconeIndexName, setPineconeIndexName] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(ragSettings.vector_db?.index_name || '');
+  const [embeddingProviderName, setEmbeddingProviderName] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(ragSettings.embeddings?.provider || 'openai');
+
+  // Get dimensions and model based on explicit selection
+  const getEmbeddingProviderInfo = () => {
+    const allSettings = settings || {};
+    const apiKeys = allSettings.api_keys || {};
+    if (embeddingProviderName === 'google') {
+      const hasKey = !!apiKeys.google; // Only check Google key
+      return {
+        provider: 'Google Gemini',
+        model: 'gemini-embedding-001',
+        key: hasKey ? 'google' : null,
+        dimensions: 768
+      };
+    }
+
+    // Default to OpenAI
+    return {
+      provider: 'OpenAI',
+      model: 'text-embedding-3-small',
+      key: apiKeys.openai ? 'openai' : null,
+      dimensions: 1536
+    };
+  };
+  const embeddingProvider = getEmbeddingProviderInfo();
+
+  // Index what to include checkboxes. "website" is derived from whether any
+  // post type is selected below, instead of being a separate toggle, since
+  // the two controls previously had to be set in sync to take effect.
+  const [indexWhat, setIndexWhat] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)({
+    knowledge_text: true,
+    urls: true,
+    files: true
+  });
+  const vectorDatabaseOptions = [{
+    value: 'sqlite',
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('SQLite (Local)', 'botisst-ai-chat-assistant'),
+    desc: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Local vector storage - no setup needed', 'botisst-ai-chat-assistant')
+  }, {
+    value: 'pinecone',
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Pinecone (Cloud)', 'botisst-ai-chat-assistant'),
+    desc: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Managed cloud service - requires API key', 'botisst-ai-chat-assistant')
+  }
+  // { value: 'weaviate', label: __('Weaviate', 'botisst-ai-chat-assistant'), desc: __('Self-hosted or cloud - requires host URL', 'botisst-ai-chat-assistant') },
+  // { value: 'milvus', label: __('Milvus', 'botisst-ai-chat-assistant'), desc: __('Open-source - requires host and port', 'botisst-ai-chat-assistant') },
+  ];
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
+    fetchPostTypes();
+    fetchRAGStats();
+  }, []);
+  const fetchPostTypes = async () => {
+    try {
+      const response = await _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_3___default()({
+        path: '/baca/v1/rag/post-types',
+        method: 'GET'
+      });
+      setPostTypes(response.types || []);
+    } catch (error) {
+      console.error('Failed to fetch post types:', error);
+    }
+  };
+  const fetchRAGStats = async () => {
+    try {
+      const response = await _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_3___default()({
+        path: '/baca/v1/rag/stats',
+        method: 'GET'
+      });
+      setStats(response);
+    } catch (error) {
+      console.error('Failed to fetch RAG stats:', error);
+    }
+  };
+  const updateUrl = (index, value) => {
+    setUrls(prev => {
+      const next = [...prev];
+      next[index] = value;
+      return next;
+    });
+  };
+  const removeUrl = index => {
+    setUrls(prev => prev.filter((_, idx) => idx !== index));
+  };
+  const handleTogglePostType = postType => {
+    setSelectedPostTypes(prev => {
+      if (prev.includes(postType)) {
+        return prev.filter(pt => pt !== postType);
+      }
+      return [...prev, postType];
+    });
+  };
+
+  // Indexing and embedding now run in background batches on the server
+  // (see baca_index_rag_content), so the REST call returns immediately
+  // with status "queued" and we poll for progress instead of assuming
+  // the work is done when the request resolves.
+  const pollIndexStatus = () => {
+    const poll = async () => {
+      let response;
+      try {
+        response = await _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_3___default()({
+          path: '/baca/v1/rag/index/status',
+          method: 'GET'
+        });
+        setIndexProgress(response);
+      } catch (error) {
+        console.error('Failed to fetch indexing status:', error);
+        setIndexing(false);
+        return;
+      }
+      if (response.status === 'indexing' || response.status === 'embedding') {
+        setTimeout(poll, 2000);
+        return;
+      }
+      setIndexing(false);
+      fetchRAGStats();
+    };
+    poll();
+  };
+  const handleIndexContent = async () => {
+    const indexWebsite = selectedPostTypes.length > 0;
+    const typesToIndex = indexWebsite ? [...selectedPostTypes] : [];
+    const indexSources = {
+      knowledge_text: indexWhat.knowledge_text,
+      urls: indexWhat.urls,
+      files: indexWhat.files,
+      website: indexWebsite
+    };
+    if (typesToIndex.length === 0) {
+      showNotice((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Please select at least one content type to index or enable website indexing', 'botisst-ai-chat-assistant'), 'error');
+      return;
+    }
+    setIndexing(true);
+    setIndexProgress(null);
+    try {
+      const response = await _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_3___default()({
+        path: '/baca/v1/rag/index',
+        method: 'POST',
+        data: {
+          post_types: typesToIndex,
+          index_sources: indexSources
+        }
+      });
+      if (!response.success) {
+        showNotice(response.message || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Failed to start indexing', 'botisst-ai-chat-assistant'), 'error');
+        setIndexing(false);
+        return;
+      }
+      showNotice(response.message || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Content indexing started!', 'botisst-ai-chat-assistant'));
+      if (response.status === 'queued') {
+        pollIndexStatus();
+      } else {
+        setIndexing(false);
+        fetchRAGStats();
+      }
+    } catch (error) {
+      console.error('Indexing error:', error);
+      showNotice(error.message || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Failed to index content', 'botisst-ai-chat-assistant'), 'error');
+      setIndexing(false);
+    }
+  };
+  const indexProgressPercent = (() => {
+    if (!indexProgress) {
+      return 0;
+    }
+    if (indexProgress.status === 'indexing' && indexProgress.docs_total > 0) {
+      return Math.round(indexProgress.docs_processed / indexProgress.docs_total * 100);
+    }
+    if (indexProgress.status === 'embedding' && indexProgress.embed_total > 0) {
+      return Math.round(indexProgress.embed_processed / indexProgress.embed_total * 100);
+    }
+    if (indexProgress.status === 'completed') {
+      return 100;
+    }
+    return 0;
+  })();
+  const indexProgressLabel = (() => {
+    if (!indexProgress) {
+      return '';
+    }
+    if (indexProgress.status === 'indexing') {
+      return (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.sprintf)((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Indexing documents… %1$d/%2$d', 'botisst-ai-chat-assistant'), indexProgress.docs_processed, indexProgress.docs_total);
+    }
+    if (indexProgress.status === 'embedding') {
+      return indexProgress.embed_total > 0 ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.sprintf)((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Generating embeddings… %1$d/%2$d', 'botisst-ai-chat-assistant'), indexProgress.embed_processed, indexProgress.embed_total) : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Generating embeddings…', 'botisst-ai-chat-assistant');
+    }
+    return '';
+  })();
+  const handleSubmit = async e => {
+    e.preventDefault();
+    setSaving(true);
+    const fileIds = trainingFiles.map(f => typeof f === 'object' ? f.id : parseInt(f, 10));
+    const filteredUrls = urls.filter(u => !!u.trim());
+    const botPayload = {
+      knowledge_text: knowledgeText,
+      knowledge_urls: filteredUrls,
+      training_files: fileIds
+    };
+    const ragPayload = {
+      post_types: selectedPostTypes,
+      chunk_size: parseInt(maxChunkSize, 10),
+      max_results: parseInt(maxResults, 10),
+      require_indexed_data: requireIndexedData,
+      no_data_message: noDataMessage,
+      vector_db: {
+        provider: vectorDb,
+        api_key: vectorDb === 'pinecone' ? pineconeApiKey : '',
+        host: vectorDb === 'pinecone' ? pineconeHost : '',
+        index_name: vectorDb === 'pinecone' ? pineconeIndexName : ''
+      },
+      embeddings: {
+        provider: embeddingProviderName
+      }
+    };
+    try {
+      // Save bot settings
+      await _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_3___default()({
+        path: '/baca/v1/save-bot-settings',
+        method: 'POST',
+        data: botPayload
+      });
+
+      // Save RAG settings
+      await _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_3___default()({
+        path: '/baca/v1/rag/settings',
+        method: 'POST',
+        data: ragPayload
+      });
+      onSave({
+        chatbot: {
+          ...botSettings,
+          ...botPayload
+        },
+        rag: {
+          ...ragSettings,
+          ...ragPayload
+        }
+      });
+      showNotice((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Knowledge base and RAG settings saved successfully!', 'botisst-ai-chat-assistant'));
+    } catch (error) {
+      console.error('Save error:', error);
+      showNotice(error.message || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Failed to save settings', 'botisst-ai-chat-assistant'), 'error');
+    } finally {
+      setSaving(false);
+    }
+  };
+  return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-kb-settings"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("nav", {
+    className: "baca-kb-subnav",
+    role: "tablist",
+    "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Knowledge base sections', 'botisst-ai-chat-assistant')
+  }, SUB_TABS.map(tab => (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    key: tab.id,
+    type: "button",
+    role: "tab",
+    "aria-selected": activeSubTab === tab.id,
+    className: `baca-kb-subtab ${activeSubTab === tab.id ? 'active' : ''}`,
+    onClick: () => setActiveSubTab(tab.id)
+  }, tab.label))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("form", {
+    onSubmit: handleSubmit
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: activeSubTab === 'sources' ? '' : 'baca-kb-panel--hidden'
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("article", {
+    className: "baca-kb-card"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("header", {
+    className: "baca-kb-card__header"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "baca-kb-card__icon",
+    "aria-hidden": "true"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "dashicons dashicons-media-text"
+  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-kb-card__heading"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("h3", {
+    className: "baca-kb-card__title"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Direct Text Knowledge', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "baca-kb-card__desc"
+  }, TEXT_KNOWLEDGE_HINT))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-kb-card__body"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("textarea", {
+    className: "baca-kb-textarea",
+    rows: "8",
+    value: knowledgeText,
+    onChange: e => setKnowledgeText(e.target.value),
+    placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Enter factual information directly…', 'botisst-ai-chat-assistant')
+  }))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("article", {
+    className: "baca-kb-card"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("header", {
+    className: "baca-kb-card__header"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "baca-kb-card__icon",
+    "aria-hidden": "true"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "dashicons dashicons-admin-site-alt3"
+  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-kb-card__heading"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("h3", {
+    className: "baca-kb-card__title"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Web Pages (URLs)', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "baca-kb-card__desc"
+  }, URLS_HINT))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-kb-card__body"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-kb-url-list"
+  }, urls.map((url, i) => (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    key: i,
+    className: "baca-kb-url-item"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "baca-kb-url-item__icon dashicons dashicons-admin-links",
+    "aria-hidden": "true"
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+    type: "url",
+    className: "baca-kb-url-input",
+    value: url,
+    onChange: e => updateUrl(i, e.target.value),
+    placeholder: "https://example.com/page"
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    type: "button",
+    className: "baca-kb-url-remove",
+    onClick: () => removeUrl(i),
+    "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Remove URL', 'botisst-ai-chat-assistant')
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "dashicons dashicons-trash",
+    "aria-hidden": "true"
+  }))))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    type: "button",
+    className: "baca-kb-add-url",
+    onClick: () => setUrls([...urls, ''])
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('+ Add URL', 'botisst-ai-chat-assistant'))))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: activeSubTab === 'vector-db' ? '' : 'baca-kb-panel--hidden'
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("article", {
+    className: "baca-kb-card"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("header", {
+    className: "baca-kb-card__header"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "baca-kb-card__icon",
+    "aria-hidden": "true"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "dashicons dashicons-database"
+  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-kb-card__heading"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("h3", {
+    className: "baca-kb-card__title"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Database', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "baca-kb-card__desc"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Choose where to store your document embeddings for semantic search.', 'botisst-ai-chat-assistant')))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-kb-card__body"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-kb-db-options"
+  }, vectorDatabaseOptions.map(option => (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    key: option.value,
+    className: "baca-radio-card"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+    type: "radio",
+    name: "vector_db",
+    value: option.value,
+    checked: vectorDb === option.value,
+    onChange: e => setVectorDb(e.target.value)
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "baca-radio-card__label"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("strong", null, option.label), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("br", null), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("small", null, option.desc))))))), vectorDb === 'pinecone' && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("article", {
+    className: "baca-kb-card"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("header", {
+    className: "baca-kb-card__header",
+    style: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      flexWrap: 'wrap',
+      gap: '1rem'
+    }
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    style: {
+      display: 'flex',
+      gap: '0.75rem',
+      alignItems: 'center',
+      minWidth: 0,
+      flex: 1
+    }
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "baca-kb-card__icon",
+    "aria-hidden": "true",
+    style: {
+      flexShrink: 0
+    }
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "dashicons dashicons-cloud"
+  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-kb-card__heading",
+    style: {
+      minWidth: 0
+    }
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("h3", {
+    className: "baca-kb-card__title"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Pinecone Configuration', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "baca-kb-card__desc",
+    style: {
+      margin: 0,
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap'
+    }
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Connect your Pinecone cloud vector database.', 'botisst-ai-chat-assistant'), ' ', (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
+    href: "https://app.pinecone.io/",
+    target: "_blank",
+    rel: "noopener noreferrer",
+    style: {
+      fontWeight: '500'
+    }
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Open Pinecone Console', 'botisst-ai-chat-assistant'), " \u2192")))), hasPineconeSavedSettings && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    type: "button",
+    className: "baca-btn baca-btn-secondary baca-btn-sm",
+    onClick: () => setConfirmingPineconeReset(true),
+    style: {
+      fontSize: '0.8125rem',
+      padding: '0.5rem 0.875rem',
+      flexShrink: 0
+    }
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Reset Settings', 'botisst-ai-chat-assistant'))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-kb-card__body"
+  }, embeddingProvider.dimensions && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-kb-info-block"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("strong", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Important:', 'botisst-ai-chat-assistant')), ' ', (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Because you are using', 'botisst-ai-chat-assistant'), " ", (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("strong", null, embeddingProvider.provider), ", ", (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('you must create your Pinecone index with exactly', 'botisst-ai-chat-assistant'), " ", (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("strong", null, embeddingProvider.dimensions, " ", (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('dimensions', 'botisst-ai-chat-assistant')), "."), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("em", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Note: If you change your API provider later, you must delete your Pinecone index, create a new one with the new dimensions, and click "Index Content" again.', 'botisst-ai-chat-assistant')))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-kb-form-group"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    className: "baca-label"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Pinecone API Key', 'botisst-ai-chat-assistant'), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+    type: "password",
+    className: "baca-input",
+    value: pineconeApiKey,
+    onChange: e => setPineconeApiKey(e.target.value),
+    placeholder: "pcsk_..."
+  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "baca-hint"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('You can generate an API key from the "API Keys" section in your Pinecone dashboard.', 'botisst-ai-chat-assistant'))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-kb-form-group"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    className: "baca-label"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Pinecone Host', 'botisst-ai-chat-assistant'), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+    type: "text",
+    className: "baca-input",
+    value: pineconeHost,
+    onChange: e => setPineconeHost(e.target.value),
+    placeholder: "https://index-xxxxx.svc.aped-4627-b74a.pinecone.io"
+  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "baca-hint"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('The host URL for your index. Find this by clicking on your index in the Pinecone dashboard.', 'botisst-ai-chat-assistant'))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-kb-form-group"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    className: "baca-label"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Index Name', 'botisst-ai-chat-assistant'), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+    type: "text",
+    className: "baca-input",
+    value: pineconeIndexName,
+    onChange: e => setPineconeIndexName(e.target.value),
+    placeholder: "e.g. botisst-index"
+  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "baca-hint"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('The exact name of the index you created.', 'botisst-ai-chat-assistant'))), hasPineconeSavedSettings && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-kb-pinecone-reset"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    type: "button",
+    className: "baca-btn baca-btn-secondary",
+    onClick: () => setConfirmingPineconeReset(true)
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Reset Pinecone Settings', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "baca-hint"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Click this to clear your Pinecone API Key, Host, and Index Name.', 'botisst-ai-chat-assistant'))))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("article", {
+    className: "baca-kb-card"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("header", {
+    className: "baca-kb-card__header"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "baca-kb-card__icon",
+    "aria-hidden": "true"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "dashicons dashicons-lightbulb"
+  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-kb-card__heading"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("h3", {
+    className: "baca-kb-card__title"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Embedding Configuration', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "baca-kb-card__desc"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Select the AI provider to generate vector embeddings.', 'botisst-ai-chat-assistant')))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-kb-card__body"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-kb-form-group"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    className: "baca-label"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Embedding Provider', 'botisst-ai-chat-assistant'), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("select", {
+    className: "baca-select baca-kb-embedding-select",
+    value: embeddingProviderName,
+    onChange: e => setEmbeddingProviderName(e.target.value)
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
+    value: "openai"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('OpenAI (text-embedding-3-small)', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
+    value: "google"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Google Gemini (gemini-embedding-001)', 'botisst-ai-chat-assistant')))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "baca-hint"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Select the provider to use for processing your knowledge base into vectors.', 'botisst-ai-chat-assistant'))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-kb-info-block"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("strong", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Status:', 'botisst-ai-chat-assistant')), embeddingProvider.key ? (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "baca-kb-status baca-kb-status--ok"
+  }, "\u2713 ", (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('API Key Configured', 'botisst-ai-chat-assistant')) : (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "baca-kb-status baca-kb-status--missing"
+  }, "\u2717 ", (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('API Key Missing', 'botisst-ai-chat-assistant'))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("strong", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Required Index Dimensions:', 'botisst-ai-chat-assistant')), " ", embeddingProvider.dimensions), !embeddingProvider.key && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "baca-kb-warning"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('⚠️ No AI API key found for the selected provider. Please add an API key in the API Keys tab to enable RAG indexing.', 'botisst-ai-chat-assistant')))))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: activeSubTab === 'indexing' ? '' : 'baca-kb-panel--hidden'
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("article", {
+    className: "baca-kb-card"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("header", {
+    className: "baca-kb-card__header"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "baca-kb-card__icon",
+    "aria-hidden": "true"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "dashicons dashicons-media-text"
+  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-kb-card__heading"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("h3", {
+    className: "baca-kb-card__title"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Website Content to Index', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "baca-kb-card__desc"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Select which post types to include. Leave all unchecked to skip indexing your website content.', 'botisst-ai-chat-assistant')))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-kb-card__body"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-kb-post-types"
+  }, postTypes.length > 0 ? postTypes.map(pt => (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    key: pt.value,
+    className: "baca-checkbox"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+    type: "checkbox",
+    checked: selectedPostTypes.includes(pt.value),
+    onChange: () => handleTogglePostType(pt.value)
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "baca-checkbox__label"
+  }, pt.label, " (", pt.count, ")"))) : (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "baca-hint"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('No post types available.', 'botisst-ai-chat-assistant'))), indexing && indexProgress && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-kb-index-progress",
+    role: "status"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-kb-index-progress__bar"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-kb-index-progress__fill",
+    style: {
+      width: `${indexProgressPercent}%`
+    }
+  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "baca-kb-index-progress__label"
+  }, indexProgressLabel))))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("footer", {
+    className: "baca-kb-footer"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    type: "submit",
+    className: "baca-btn baca-btn-primary",
+    disabled: saving
+  }, saving ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Saving…', 'botisst-ai-chat-assistant') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Save', 'botisst-ai-chat-assistant')), activeSubTab === 'indexing' && selectedPostTypes.length > 0 && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    type: "button",
+    className: "baca-btn baca-btn-secondary",
+    onClick: handleIndexContent,
+    disabled: indexing
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "dashicons dashicons-update",
+    "aria-hidden": "true"
+  }), indexing ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Indexing…', 'botisst-ai-chat-assistant') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Index Content Now', 'botisst-ai-chat-assistant')))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_ui__WEBPACK_IMPORTED_MODULE_4__.ConfirmDialog, {
+    open: confirmingPineconeReset,
+    title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Reset Pinecone settings', 'botisst-ai-chat-assistant'),
+    message: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Are you sure you want to clear your Pinecone API Key, Host, and Index Name?', 'botisst-ai-chat-assistant'),
+    confirmLabel: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Reset Pinecone Settings', 'botisst-ai-chat-assistant'),
+    onCancel: () => setConfirmingPineconeReset(false),
+    onConfirm: async () => {
+      setConfirmingPineconeReset(false);
+      setSaving(true);
+      try {
+        const resetRagPayload = {
+          ...ragSettings,
+          vector_db: {
+            provider: vectorDb,
+            api_key: '',
+            host: '',
+            index_name: ''
+          }
+        };
+        await _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_3___default()({
+          path: '/baca/v1/rag/settings',
+          method: 'POST',
+          data: resetRagPayload
+        });
+        setPineconeApiKey('');
+        setPineconeHost('');
+        setPineconeIndexName('');
+        onSave({
+          rag: {
+            ...ragSettings,
+            vector_db: {
+              ...ragSettings.vector_db,
+              api_key: '',
+              host: '',
+              index_name: ''
+            }
+          }
+        });
+        showNotice((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Pinecone settings reset successfully!', 'botisst-ai-chat-assistant'));
+      } catch (error) {
+        showNotice(error.message || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Failed to reset Pinecone settings', 'botisst-ai-chat-assistant'), 'error');
+      } finally {
+        setSaving(false);
+      }
+    }
+  }));
+}
+
+/***/ },
+
+/***/ "./src/admin/components/SetupWizard.jsx"
+/*!**********************************************!*\
+  !*** ./src/admin/components/SetupWizard.jsx ***!
+  \**********************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ SetupWizard)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/api-fetch */ "@wordpress/api-fetch");
+/* harmony import */ var _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_3__);
+
+
+
+
+const PROVIDERS = {
+  openai: {
+    name: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('OpenAI', 'botisst-ai-chat-assistant'),
+    link: 'https://platform.openai.com/settings/organization/api-keys'
+  },
+  google: {
+    name: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Google Gemini', 'botisst-ai-chat-assistant'),
+    link: 'https://aistudio.google.com/api-keys'
+  }
+};
+const VECTOR_DB_OPTIONS = [{
+  value: 'sqlite',
+  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('SQLite (Local)', 'botisst-ai-chat-assistant'),
+  desc: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Local vector storage - no setup needed', 'botisst-ai-chat-assistant')
+}, {
+  value: 'pinecone',
+  label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Pinecone (Cloud)', 'botisst-ai-chat-assistant'),
+  desc: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Managed cloud service - requires API key', 'botisst-ai-chat-assistant')
+}];
+async function updateWizardStatus(status) {
+  try {
+    await _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_3___default()({
+      path: '/baca/v1/setup-wizard',
+      method: 'POST',
+      data: {
+        status
+      }
+    });
+  } catch (e) {
+    // Non-fatal — worst case the wizard offers to run again next visit.
+  }
+}
+function SetupWizard({
+  open,
+  settings,
+  onSave,
+  onClose,
+  showNotice
+}) {
+  const [step, setStep] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(1);
+  const [busy, setBusy] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
+  const getInitialProvider = () => {
+    if (settings?.api_keys?.openai) return 'openai';
+    if (settings?.api_keys?.google) return 'google';
+    return settings?.chatbot?.default_provider || 'openai';
+  };
+  const [selectedProvider, setSelectedProvider] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(getInitialProvider);
+  const hasSavedApiKey = !!settings?.api_keys?.[selectedProvider];
+  const [apiKey, setApiKey] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(() => settings?.api_keys?.[getInitialProvider()] || '');
+  const [vectorDb, setVectorDb] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(() => settings?.rag?.vector_db?.provider || 'sqlite');
+  const [embeddingProvider, setEmbeddingProvider] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(() => settings?.rag?.embeddings?.provider || 'openai');
+  const [pineconeApiKey, setPineconeApiKey] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(() => settings?.rag?.vector_db?.api_key || '');
+  const [pineconeHost, setPineconeHost] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(() => settings?.rag?.vector_db?.host || '');
+  const [pineconeIndexName, setPineconeIndexName] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(() => settings?.rag?.vector_db?.index_name || '');
+  const [knowledgeText, setKnowledgeText] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)('');
+  const [availablePostTypes, setAvailablePostTypes] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)([]);
+  const [selectedPostTypes, setSelectedPostTypes] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(() => settings?.rag?.post_types || ['post', 'page']);
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
+    if (!open) {
+      return undefined;
+    }
+    document.body.classList.add('baca-modal-open');
+    const initialProvider = getInitialProvider();
+    setSelectedProvider(initialProvider);
+    setApiKey(settings?.api_keys?.[initialProvider] || '');
+    setVectorDb(settings?.rag?.vector_db?.provider || 'sqlite');
+    setEmbeddingProvider(settings?.rag?.embeddings?.provider || 'openai');
+    setPineconeApiKey(settings?.rag?.vector_db?.api_key || '');
+    setPineconeHost(settings?.rag?.vector_db?.host || '');
+    setPineconeIndexName(settings?.rag?.vector_db?.index_name || '');
+    setSelectedPostTypes(settings?.rag?.post_types || ['post', 'page']);
+    _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_3___default()({
+      path: '/baca/v1/rag/post-types'
+    }).then(res => setAvailablePostTypes(res.types || [])).catch(() => {});
+    return () => document.body.classList.remove('baca-modal-open');
+  }, [open, settings]);
+  if (!open) {
+    return null;
+  }
+  const changeStep = next => {
+    setStep(next);
+  };
+  const handleClose = async status => {
+    setBusy(true);
+    await updateWizardStatus(status);
+    setBusy(false);
+    onClose();
+  };
+  const handleProviderNext = async () => {
+    if (!apiKey.trim()) {
+      showNotice((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('An API key is required to continue.', 'botisst-ai-chat-assistant'), 'error');
+      return;
+    }
+    if (settings?.api_keys?.[selectedProvider] && apiKey === settings.api_keys[selectedProvider]) {
+      changeStep(2);
+      return;
+    }
+    setBusy(true);
+    try {
+      await _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_3___default()({
+        path: '/baca/v1/save-settings',
+        method: 'POST',
+        data: {
+          [`${selectedProvider}_key`]: apiKey
+        }
+      });
+      const maskedKey = apiKey.length < 8 ? '********' : apiKey.slice(0, 4) + '...' + apiKey.slice(-4);
+      onSave({
+        api_keys: {
+          ...settings?.api_keys,
+          [selectedProvider]: maskedKey
+        }
+      });
+      changeStep(2);
+    } catch (error) {
+      const message = error?.errors?.[selectedProvider] || error?.message || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Could not validate this API key. Please try again.', 'botisst-ai-chat-assistant');
+      showNotice(message, 'error');
+    } finally {
+      setBusy(false);
+    }
+  };
+  const handleVectorDbNext = async () => {
+    setBusy(true);
+    try {
+      const vectorDbConfig = vectorDb === 'pinecone' ? {
+        provider: 'pinecone',
+        api_key: pineconeApiKey,
+        host: pineconeHost,
+        index_name: pineconeIndexName
+      } : {
+        provider: 'sqlite'
+      };
+      const embeddingsConfig = {
+        provider: embeddingProvider
+      };
+      await _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_3___default()({
+        path: '/baca/v1/rag/settings',
+        method: 'POST',
+        data: {
+          vector_db: vectorDbConfig,
+          embeddings: embeddingsConfig
+        }
+      });
+      onSave({
+        rag: {
+          ...settings?.rag,
+          vector_db: vectorDbConfig,
+          embeddings: {
+            ...settings?.rag?.embeddings,
+            ...embeddingsConfig
+          }
+        }
+      });
+      changeStep(vectorDb === 'pinecone' ? 4 : 3);
+    } catch (error) {
+      showNotice(error?.message || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Could not connect to this vector database. Please check your details.', 'botisst-ai-chat-assistant'), 'error');
+    } finally {
+      setBusy(false);
+    }
+  };
+  const handlePostTypesNext = async () => {
+    setBusy(true);
+    try {
+      await _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_3___default()({
+        path: '/baca/v1/rag/settings',
+        method: 'POST',
+        data: {
+          post_types: selectedPostTypes
+        }
+      });
+      onSave({
+        rag: {
+          ...settings?.rag,
+          post_types: selectedPostTypes
+        }
+      });
+
+      // Trigger RAG indexing for website content of selected post types immediately
+      const indexResponse = await _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_3___default()({
+        path: '/baca/v1/rag/index',
+        method: 'POST',
+        data: {
+          post_types: selectedPostTypes,
+          index_sources: {
+            knowledge_text: false,
+            urls: false,
+            files: false,
+            website: selectedPostTypes.length > 0
+          }
+        }
+      });
+      if (indexResponse && indexResponse.success === false) {
+        throw new Error(indexResponse.message || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Embedding generation failed.', 'botisst-ai-chat-assistant'));
+      }
+      changeStep(vectorDb === 'pinecone' ? 5 : 4);
+    } catch (error) {
+      showNotice(error.message || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Could not save post types.', 'botisst-ai-chat-assistant'), 'error');
+    } finally {
+      setBusy(false);
+    }
+  };
+  const handleFinish = async () => {
+    setBusy(true);
+    try {
+      await _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_3___default()({
+        path: '/baca/v1/save-bot-settings',
+        method: 'POST',
+        data: {
+          knowledge_text: knowledgeText
+        }
+      });
+      onSave({
+        chatbot: {
+          ...settings?.chatbot,
+          knowledge_text: knowledgeText
+        }
+      });
+
+      // Trigger RAG indexing for manual knowledge text only if provided
+      if (knowledgeText.trim()) {
+        const indexResponse = await _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_3___default()({
+          path: '/baca/v1/rag/index',
+          method: 'POST',
+          data: {
+            post_types: selectedPostTypes,
+            index_sources: {
+              knowledge_text: true,
+              urls: false,
+              files: false,
+              website: false
+            }
+          }
+        });
+        if (indexResponse && indexResponse.success === false) {
+          throw new Error(indexResponse.message || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Embedding generation failed.', 'botisst-ai-chat-assistant'));
+        }
+      }
+      showNotice((0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Embedding generation and setup completed successfully!', 'botisst-ai-chat-assistant'));
+      await updateWizardStatus('completed');
+      changeStep('done');
+    } catch (error) {
+      showNotice(error?.message || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Could not complete the setup process. Please try again.', 'botisst-ai-chat-assistant'), 'error');
+    } finally {
+      setBusy(false);
+    }
+  };
+  const stepsCount = vectorDb === 'pinecone' ? 5 : 4;
+  const stepLabels = vectorDb === 'pinecone' ? [(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Connect an AI provider', 'botisst-ai-chat-assistant'), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Choose vector database', 'botisst-ai-chat-assistant'), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Pinecone settings', 'botisst-ai-chat-assistant'), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Content for Your Chatbot', 'botisst-ai-chat-assistant'), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Add chatbot knowledge', 'botisst-ai-chat-assistant')] : [(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Connect an AI provider', 'botisst-ai-chat-assistant'), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Choose vector database', 'botisst-ai-chat-assistant'), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Content for Your Chatbot', 'botisst-ai-chat-assistant'), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Add chatbot knowledge', 'botisst-ai-chat-assistant')];
+  const renderProgress = () => {
+    if (step === 'done') {
+      return null;
+    }
+    return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "baca-wizard-progress"
+    }, Array.from({
+      length: stepsCount
+    }, (_, i) => i + 1).map(n => (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+      key: n,
+      type: "button",
+      className: `baca-wizard-progress__dot ${n === step ? 'is-active' : ''} ${n < step ? 'is-done' : ''}`,
+      onClick: () => n < step && changeStep(n),
+      disabled: n >= step || busy,
+      "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Go back to step', 'botisst-ai-chat-assistant') + ': ' + stepLabels[n - 1],
+      "aria-current": n === step ? 'step' : undefined
+    })));
+  };
+  const renderStepOne = () => (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("h2", {
+    className: "baca-wizard-step-title"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Connect an AI provider', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "baca-wizard-step-desc"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Choose an AI provider and enter your API key to continue.', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-bot-field"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    htmlFor: "wizard_provider"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('AI Provider', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("select", {
+    id: "wizard_provider",
+    className: "baca-bot-select",
+    value: selectedProvider,
+    onChange: e => {
+      const newProvider = e.target.value;
+      setSelectedProvider(newProvider);
+      setApiKey(settings?.api_keys?.[newProvider] || '');
+    }
+  }, Object.entries(PROVIDERS).map(([id, provider]) => (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
+    key: id,
+    value: id
+  }, provider.name)))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-bot-field"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    htmlFor: "wizard_api_key"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('API Key', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+    type: "text",
+    id: "wizard_api_key",
+    className: "baca-bot-input",
+    value: apiKey,
+    onChange: e => setApiKey(e.target.value),
+    placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Paste your API key here', 'botisst-ai-chat-assistant'),
+    disabled: hasSavedApiKey
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
+    href: PROVIDERS[selectedProvider].link,
+    className: "baca-api-help-link",
+    target: "_blank",
+    rel: "noopener noreferrer"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Generate your API key here', 'botisst-ai-chat-assistant'), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "dashicons dashicons-external",
+    "aria-hidden": "true"
+  }))));
+  const renderStepTwo = () => {
+    const isKeyConfigured = !!settings?.api_keys?.[embeddingProvider];
+    return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("h2", {
+      className: "baca-wizard-step-title"
+    }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Choose your database', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+      className: "baca-wizard-step-desc"
+    }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Your knowledge base is stored here so the AI can quickly search and use it when answering questions.', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "baca-kb-db-options"
+    }, VECTOR_DB_OPTIONS.map(option => (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      key: option.value,
+      className: "baca-radio-card",
+      style: {
+        margin: 0
+      }
+    }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+      type: "radio",
+      name: "wizard_vector_db",
+      value: option.value,
+      checked: vectorDb === option.value,
+      onChange: () => setVectorDb(option.value)
+    }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+      className: "baca-radio-card__label"
+    }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("strong", null, option.label), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("br", null), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("small", null, option.desc))))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "baca-bot-field",
+      style: {
+        marginTop: '1.5rem'
+      }
+    }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+      htmlFor: "wizard_embedding_provider"
+    }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Embedding Provider', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("select", {
+      id: "wizard_embedding_provider",
+      className: "baca-bot-select",
+      value: embeddingProvider,
+      onChange: e => setEmbeddingProvider(e.target.value)
+    }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
+      value: "openai"
+    }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('OpenAI (text-embedding-3-small)', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
+      value: "google"
+    }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Google Gemini (gemini-embedding-001)', 'botisst-ai-chat-assistant'))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+      className: "baca-bot-hint",
+      style: {
+        marginTop: '0.375rem'
+      }
+    }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Select the AI provider to generate vector embeddings.', 'botisst-ai-chat-assistant')), !isKeyConfigured && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "baca-bot-warning",
+      style: {
+        marginTop: '0.75rem',
+        padding: '0.75rem 1rem',
+        background: '#fef2f2',
+        border: '1px solid #fee2e2',
+        borderRadius: '8px',
+        fontSize: '0.8125rem',
+        color: '#b91c1c',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.5rem',
+        flexWrap: 'wrap'
+      }
+    }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('You need to add an API key to generate embeddings.', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+      type: "button",
+      className: "baca-bot-link",
+      style: {
+        display: 'inline-flex',
+        padding: 0,
+        border: 'none',
+        background: 'none',
+        color: '#2563eb',
+        textDecoration: 'underline',
+        cursor: 'pointer',
+        fontSize: 'inherit',
+        fontWeight: '600'
+      },
+      onClick: () => changeStep(1)
+    }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Go back to Step 1 to add the API key', 'botisst-ai-chat-assistant')))));
+  };
+  const renderPineconeStep = () => (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("h2", {
+    className: "baca-wizard-step-title"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Pinecone Settings', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "baca-wizard-step-desc"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Configure your Pinecone connection details below.', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-bot-field"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    htmlFor: "wizard_pinecone_key"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Pinecone API Key', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+    type: "password",
+    id: "wizard_pinecone_key",
+    className: "baca-bot-input",
+    value: pineconeApiKey,
+    onChange: e => setPineconeApiKey(e.target.value),
+    placeholder: "pcsk_..."
+  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-bot-field"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    htmlFor: "wizard_pinecone_host"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Pinecone Host', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+    type: "text",
+    id: "wizard_pinecone_host",
+    className: "baca-bot-input",
+    value: pineconeHost,
+    onChange: e => setPineconeHost(e.target.value),
+    placeholder: "https://index-xxxxx.svc.aped-4627-b74a.pinecone.io"
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
+    href: "https://app.pinecone.io/",
+    className: "baca-api-help-link",
+    target: "_blank",
+    rel: "noopener noreferrer"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Find your Pinecone API details and host URL here', 'botisst-ai-chat-assistant'), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "dashicons dashicons-external",
+    "aria-hidden": "true"
+  }))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-bot-field"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    htmlFor: "wizard_pinecone_index"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Index Name', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+    type: "text",
+    id: "wizard_pinecone_index",
+    className: "baca-bot-input",
+    value: pineconeIndexName,
+    onChange: e => setPineconeIndexName(e.target.value),
+    placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('e.g. botisst-index', 'botisst-ai-chat-assistant')
+  })));
+  const renderStepThree = () => (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("h2", {
+    className: "baca-wizard-step-title"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Add what your bot should know', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "baca-wizard-step-desc"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Add facts, FAQs, or company information for your chatbot. You can add more content later in the Knowledge Base.', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-bot-field"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    htmlFor: "wizard_knowledge_text"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Knowledge Base Text', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("textarea", {
+    id: "wizard_knowledge_text",
+    className: "baca-bot-input baca-bot-textarea",
+    rows: "6",
+    value: knowledgeText,
+    onChange: e => setKnowledgeText(e.target.value),
+    placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('e.g. We are open Monday-Friday, 9am-5pm. Our return policy is...', 'botisst-ai-chat-assistant')
+  })));
+  const renderPostTypesStep = () => (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("h2", {
+    className: "baca-wizard-step-title"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Content for Your Chatbot', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "baca-wizard-step-desc"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Choose which WordPress content the chatbot can use to answer questions.', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-kb-post-types",
+    style: {
+      marginTop: '1.5rem',
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '0.75rem'
+    }
+  }, availablePostTypes.length > 0 ? availablePostTypes.map(pt => (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    key: pt.value,
+    className: "baca-checkbox",
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '0.5rem',
+      fontSize: '0.875rem',
+      color: '#374151',
+      cursor: 'pointer'
+    }
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+    type: "checkbox",
+    checked: selectedPostTypes.includes(pt.value),
+    onChange: () => {
+      setSelectedPostTypes(prev => prev.includes(pt.value) ? prev.filter(v => v !== pt.value) : [...prev, pt.value]);
+    }
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "baca-checkbox__label"
+  }, pt.label, " (", pt.count, ")"))) : (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "baca-hint",
+    style: {
+      fontSize: '0.8125rem',
+      color: '#6b7280'
+    }
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Fetching available content types...', 'botisst-ai-chat-assistant'))));
+  const renderDone = () => (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-wizard-done"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "baca-wizard-done__icon dashicons dashicons-yes-alt",
+    "aria-hidden": "true"
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("h2", {
+    className: "baca-wizard-step-title"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)("You're all set!", 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "baca-wizard-step-desc"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Your chatbot is ready to go. You can fine-tune everything else from the dashboard at any time.', 'botisst-ai-chat-assistant')));
+  const isLastStep = vectorDb === 'pinecone' ? step === 5 : step === 4;
+  const handleSkip = () => {
+    const total = vectorDb === 'pinecone' ? 5 : 4;
+    if (step === total) {
+      handleClose('skipped');
+    } else {
+      changeStep(step + 1);
+    }
+  };
+  const handleNextClick = () => {
+    if (step === 1) {
+      handleProviderNext();
+    } else if (step === 2) {
+      if (vectorDb === 'pinecone') {
+        changeStep(3);
+      } else {
+        handleVectorDbNext();
+      }
+    } else if (step === 3) {
+      if (vectorDb === 'pinecone') {
+        handleVectorDbNext();
+      } else {
+        handlePostTypesNext();
+      }
+    } else if (step === 4) {
+      if (vectorDb === 'pinecone') {
+        handlePostTypesNext();
+      } else {
+        handleFinish();
+      }
+    } else if (step === 5) {
+      handleFinish();
+    }
+  };
+  return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-modal baca-wizard-modal is-visible",
+    role: "dialog",
+    "aria-modal": "true",
+    "aria-labelledby": "baca-wizard-title"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-modal-overlay"
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-modal-content baca-wizard-modal__content"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-modal-header"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-modal-title"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "baca-modal-title-icon",
+    "aria-hidden": "true"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "dashicons dashicons-format-chat"
+  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("h3", {
+    id: "baca-wizard-title"
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Welcome to Botisst — quick setup', 'botisst-ai-chat-assistant'))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    type: "button",
+    className: "baca-modal-close",
+    onClick: () => handleClose('skipped'),
+    "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Close', 'botisst-ai-chat-assistant'),
+    disabled: busy
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "dashicons dashicons-no-alt",
+    "aria-hidden": "true"
+  }))), renderProgress(), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-modal-body baca-wizard-modal__body"
+  }, step === 1 && renderStepOne(), step === 2 && renderStepTwo(), vectorDb === 'pinecone' ? (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, step === 3 && renderPineconeStep(), step === 4 && renderPostTypesStep(), step === 5 && renderStepThree()) : (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, step === 3 && renderPostTypesStep(), step === 4 && renderStepThree()), step === 'done' && renderDone()), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-modal-footer baca-wizard-modal__footer"
+  }, step === 'done' ? (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    type: "button",
+    className: "baca-btn baca-btn-primary",
+    onClick: () => {
+      if (window.location.href.includes('page=baca')) {
+        onClose();
+      } else {
+        window.location.href = 'admin.php?page=baca';
+      }
+    }
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Go to Settings', 'botisst-ai-chat-assistant'))) : (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, step === 1 ? (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null) : (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    type: "button",
+    className: "baca-bot-link baca-wizard-skip",
+    onClick: handleSkip,
+    disabled: busy
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Skip for now', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    type: "button",
+    className: "baca-btn baca-btn-primary",
+    onClick: handleNextClick,
+    disabled: busy || step === 2 && !settings?.api_keys?.[embeddingProvider]
+  }, busy ? (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "baca-spinner",
+    "aria-hidden": "true"
+  }) : isLastStep ? (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Finish', 'botisst-ai-chat-assistant') : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Next', 'botisst-ai-chat-assistant'))))));
+}
+
+/***/ },
+
+/***/ "./src/admin/components/ui.jsx"
+/*!*************************************!*\
+  !*** ./src/admin/components/ui.jsx ***!
+  \*************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ConfirmDialog: () => (/* binding */ ConfirmDialog)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__);
+
+
+
+
+/**
+ * Shared confirmation dialog, replacing native window.confirm() calls so
+ * destructive actions look consistent with the rest of the dashboard.
+ */
+function ConfirmDialog({
+  open,
+  title,
+  message,
+  confirmLabel,
+  danger = true,
+  busy = false,
+  onConfirm,
+  onCancel
+}) {
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
+    if (!open) {
+      return undefined;
+    }
+    document.body.classList.add('baca-modal-open');
+    const handleKeyDown = event => {
+      if (event.key === 'Escape') {
+        onCancel();
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.body.classList.remove('baca-modal-open');
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [open, onCancel]);
+  if (!open) {
+    return null;
+  }
+  return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-modal baca-confirm-modal is-visible",
+    role: "dialog",
+    "aria-modal": "true",
+    "aria-labelledby": "baca-confirm-title"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-modal-overlay",
+    onClick: onCancel
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-modal-content baca-confirm-modal__content"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-modal-header"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-modal-title"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "baca-modal-title-icon",
+    "aria-hidden": "true"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "dashicons dashicons-warning"
+  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("h3", {
+    id: "baca-confirm-title"
+  }, title)), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    type: "button",
+    className: "baca-modal-close",
+    onClick: onCancel,
+    "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Close', 'botisst-ai-chat-assistant')
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "dashicons dashicons-no-alt",
+    "aria-hidden": "true"
+  }))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-modal-body baca-confirm-modal__body"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, message)), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "baca-modal-footer baca-confirm-modal__footer"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    type: "button",
+    className: "baca-btn baca-btn-secondary",
+    onClick: onCancel,
+    disabled: busy
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Cancel', 'botisst-ai-chat-assistant')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    type: "button",
+    className: `baca-btn ${danger ? 'baca-btn-danger' : 'baca-btn-primary'}`,
+    onClick: onConfirm,
+    disabled: busy
+  }, busy ? (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "baca-spinner",
+    "aria-hidden": "true"
+  }) : confirmLabel || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__.__)('Confirm', 'botisst-ai-chat-assistant')))));
+}
+
+/***/ },
+
+/***/ "./src/admin/baca-dashboard.css"
+/*!**************************************!*\
+  !*** ./src/admin/baca-dashboard.css ***!
+  \**************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ },
+
+/***/ "react"
+/*!************************!*\
+  !*** external "React" ***!
+  \************************/
+(module) {
+
+module.exports = window["React"];
+
+/***/ },
+
+/***/ "@wordpress/api-fetch"
+/*!**********************************!*\
+  !*** external ["wp","apiFetch"] ***!
+  \**********************************/
+(module) {
+
+module.exports = window["wp"]["apiFetch"];
+
+/***/ },
+
+/***/ "@wordpress/element"
+/*!*********************************!*\
+  !*** external ["wp","element"] ***!
+  \*********************************/
+(module) {
+
+module.exports = window["wp"]["element"];
+
+/***/ },
+
+/***/ "@wordpress/i18n"
+/*!******************************!*\
+  !*** external ["wp","i18n"] ***!
+  \******************************/
+(module) {
+
+module.exports = window["wp"]["i18n"];
+
+/***/ }
+
+/******/ 	});
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	var __webpack_module_cache__ = {};
+/******/ 	
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = __webpack_module_cache__[moduleId] = {
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
+/******/ 			exports: {}
+/******/ 		};
+/******/ 	
+/******/ 		// Execute the module function
+/******/ 		if (!(moduleId in __webpack_modules__)) {
+/******/ 			delete __webpack_module_cache__[moduleId];
+/******/ 			var e = new Error("Cannot find module '" + moduleId + "'");
+/******/ 			e.code = 'MODULE_NOT_FOUND';
+/******/ 			throw e;
+/******/ 		}
+/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/ 	
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/ 	
+/************************************************************************/
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	(() => {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__webpack_require__.n = (module) => {
+/******/ 			var getter = module && module.__esModule ?
+/******/ 				() => (module['default']) :
+/******/ 				() => (module);
+/******/ 			__webpack_require__.d(getter, { a: getter });
+/******/ 			return getter;
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__webpack_require__.d = (exports, definition) => {
+/******/ 			for(var key in definition) {
+/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = (exports) => {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/************************************************************************/
+var __webpack_exports__ = {};
+// This entry needs to be wrapped in an IIFE because it needs to be isolated against other modules in the chunk.
+(() => {
+/*!****************************!*\
+  !*** ./src/admin/index.js ***!
+  \****************************/
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _baca_dashboard_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./baca-dashboard.css */ "./src/admin/baca-dashboard.css");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _Dashboard__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Dashboard */ "./src/admin/Dashboard.jsx");
+/* harmony import */ var _components_SetupWizard__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/SetupWizard */ "./src/admin/components/SetupWizard.jsx");
+
+
+
+
+
+function StandaloneWizard() {
+  const [open, setOpen] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(false);
+  const [settings, setSettings] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(() => window.baca_data?.settings);
+  const [notice, setNotice] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(null);
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useEffect)(() => {
+    const handleTrigger = e => {
+      if (e.target.classList.contains('baca-run-wizard-trigger') || e.target.closest('.baca-run-wizard-trigger')) {
+        e.preventDefault();
+        setOpen(true);
+      }
+    };
+    document.addEventListener('click', handleTrigger);
+    return () => document.removeEventListener('click', handleTrigger);
+  }, []);
+  const showNotice = (message, type = 'success') => {
+    setNotice({
+      message,
+      type
+    });
+    setTimeout(() => setNotice(null), 10000);
+  };
+  if (!open) {
+    return null;
+  }
+  return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_components_SetupWizard__WEBPACK_IMPORTED_MODULE_4__["default"], {
+    open: open,
+    settings: settings,
+    onSave: updatedSettings => {
+      if (window.baca_data) {
+        window.baca_data.settings = {
+          ...window.baca_data.settings,
+          ...updatedSettings
+        };
+      }
+      setSettings(prev => ({
+        ...prev,
+        ...updatedSettings
+      }));
+    },
+    onClose: () => {
+      setOpen(false);
+      const noticeEl = document.querySelector('.baca-setup-notice');
+      if (noticeEl) {
+        noticeEl.style.display = 'none';
+      }
+    },
+    showNotice: showNotice
+  }), notice && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: `baca-toast baca-toast-${notice.type}`,
+    style: {
+      zIndex: 9999999
+    }
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: `dashicons ${notice.type === 'success' ? 'dashicons-yes-alt' : 'dashicons-warning'}`
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "baca-toast-message"
+  }, notice.message), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    type: "button",
+    className: "baca-toast-close",
+    onClick: () => setNotice(null),
+    "aria-label": "Close notice"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "dashicons dashicons-no-alt"
+  }))));
+}
+document.addEventListener('DOMContentLoaded', () => {
+  const root = document.getElementById('baca-admin-root');
+  if (root) {
+    (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.render)((0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_Dashboard__WEBPACK_IMPORTED_MODULE_3__["default"], {
+      settings: window.baca_data.settings
+    }), root);
+  }
+  const standaloneRoot = document.getElementById('baca-wizard-standalone-root');
+  if (standaloneRoot) {
+    (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.render)((0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(StandaloneWizard, null), standaloneRoot);
+  }
+});
+})();
+
+/******/ })()
+;
+//# sourceMappingURL=baca-dashboard.js.map

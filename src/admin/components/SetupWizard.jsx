@@ -45,6 +45,7 @@ export default function SetupWizard({ open, settings, onSave, onClose, showNotic
 	};
 
 	const [selectedProvider, setSelectedProvider] = useState(getInitialProvider);
+	const hasSavedApiKey = !!settings?.api_keys?.[selectedProvider];
 	const [apiKey, setApiKey] = useState(() => settings?.api_keys?.[getInitialProvider()] || '');
 
 	const [vectorDb, setVectorDb] = useState(() => settings?.rag?.vector_db?.provider || 'sqlite');
@@ -337,6 +338,7 @@ export default function SetupWizard({ open, settings, onSave, onClose, showNotic
 					value={apiKey}
 					onChange={(e) => setApiKey(e.target.value)}
 					placeholder={__('Paste your API key here', 'botisst-ai-chat-assistant')}
+					disabled={hasSavedApiKey}
 				/>
 				<a
 					href={PROVIDERS[selectedProvider].link}
