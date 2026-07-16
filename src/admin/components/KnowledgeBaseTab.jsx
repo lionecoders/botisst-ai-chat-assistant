@@ -6,7 +6,6 @@ import { ConfirmDialog } from './ui';
 const SUB_TABS = [
 	{ id: 'sources', label: __( 'Sources', 'botisst-ai-chat-assistant' ) },
 	{ id: 'vector-db', label: __( 'Database', 'botisst-ai-chat-assistant' ) },
-	{ id: 'indexing', label: __( 'Indexing Rules', 'botisst-ai-chat-assistant' ) },
 ];
 
 const TEXT_KNOWLEDGE_HINT = __(
@@ -429,6 +428,55 @@ export default function KnowledgeBaseTab({ settings, onSave, showNotice }) {
 						/>
 					</div>
 				</article>
+				<article className="baca-kb-card">
+						<header className="baca-kb-card__header">
+							<span className="baca-kb-card__icon" aria-hidden="true">
+								<span className="dashicons dashicons-media-text" />
+							</span>
+							<div className="baca-kb-card__heading">
+								<h3 className="baca-kb-card__title">
+									{__('Website Content to Index', 'botisst-ai-chat-assistant')}
+								</h3>
+								<p className="baca-kb-card__desc">
+									{__('Select which post types to include. Leave all unchecked to skip indexing your website content.', 'botisst-ai-chat-assistant')}
+								</p>
+							</div>
+						</header>
+						<div className="baca-kb-card__body">
+							<div className="baca-kb-post-types">
+								{postTypes.length > 0 ? (
+									postTypes.map((pt) => (
+										<label key={pt.value} className="baca-checkbox">
+											<input
+												type="checkbox"
+												checked={selectedPostTypes.includes(pt.value)}
+												onChange={() => handleTogglePostType(pt.value)}
+											/>
+											<span className="baca-checkbox__label">
+												{pt.label} ({pt.count})
+											</span>
+										</label>
+									))
+								) : (
+									<p className="baca-hint">{__('No post types available.', 'botisst-ai-chat-assistant')}</p>
+								)}
+							</div>
+
+							{indexing && indexProgress && (
+								<div className="baca-kb-index-progress" role="status">
+									<div className="baca-kb-index-progress__bar">
+										<div
+											className="baca-kb-index-progress__fill"
+											style={{ width: `${indexProgressPercent}%` }}
+										/>
+									</div>
+									<p className="baca-kb-index-progress__label">
+										{indexProgressLabel}
+									</p>
+								</div>
+							)}
+						</div>
+					</article>
 
 				<article className="baca-kb-card">
 					<header className="baca-kb-card__header">
@@ -691,60 +739,6 @@ export default function KnowledgeBaseTab({ settings, onSave, showNotice }) {
 				</article>
 				</div>
 
-				<div className={activeSubTab === 'indexing' ? '' : 'baca-kb-panel--hidden'}>
-
-				{/* RAG Content to Index */}
-				<article className="baca-kb-card">
-						<header className="baca-kb-card__header">
-							<span className="baca-kb-card__icon" aria-hidden="true">
-								<span className="dashicons dashicons-media-text" />
-							</span>
-							<div className="baca-kb-card__heading">
-								<h3 className="baca-kb-card__title">
-									{__('Website Content to Index', 'botisst-ai-chat-assistant')}
-								</h3>
-								<p className="baca-kb-card__desc">
-									{__('Select which post types to include. Leave all unchecked to skip indexing your website content.', 'botisst-ai-chat-assistant')}
-								</p>
-							</div>
-						</header>
-						<div className="baca-kb-card__body">
-							<div className="baca-kb-post-types">
-								{postTypes.length > 0 ? (
-									postTypes.map((pt) => (
-										<label key={pt.value} className="baca-checkbox">
-											<input
-												type="checkbox"
-												checked={selectedPostTypes.includes(pt.value)}
-												onChange={() => handleTogglePostType(pt.value)}
-											/>
-											<span className="baca-checkbox__label">
-												{pt.label} ({pt.count})
-											</span>
-										</label>
-									))
-								) : (
-									<p className="baca-hint">{__('No post types available.', 'botisst-ai-chat-assistant')}</p>
-								)}
-							</div>
-
-							{indexing && indexProgress && (
-								<div className="baca-kb-index-progress" role="status">
-									<div className="baca-kb-index-progress__bar">
-										<div
-											className="baca-kb-index-progress__fill"
-											style={{ width: `${indexProgressPercent}%` }}
-										/>
-									</div>
-									<p className="baca-kb-index-progress__label">
-										{indexProgressLabel}
-									</p>
-								</div>
-							)}
-						</div>
-					</article>
-				</div>
-
 				<footer className="baca-kb-footer">
 					<button type="submit" className="baca-btn baca-btn-primary" disabled={saving}>
 						{saving
@@ -752,7 +746,7 @@ export default function KnowledgeBaseTab({ settings, onSave, showNotice }) {
 							: __('Save', 'botisst-ai-chat-assistant')}
 					</button>
 
-					{activeSubTab === 'indexing' && selectedPostTypes.length > 0 && (
+					{activeSubTab === 'vector-db' && selectedPostTypes.length > 0 && (
 						<button
 							type="button"
 							className="baca-btn baca-btn-secondary"
