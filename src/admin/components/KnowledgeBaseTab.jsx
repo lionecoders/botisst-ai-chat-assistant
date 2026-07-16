@@ -65,9 +65,36 @@ export default function KnowledgeBaseTab({ settings, onSave, showNotice }) {
 		ragSettings.vector_db?.index_name || ''
 	);
 
-	const [embeddingProviderName, setEmbeddingProviderName] = useState(
-		ragSettings.embeddings?.provider || 'openai'
-	);
+	const getPreferredEmbeddingProvider = (allSettings = {}) => {
+		const apiKeys = allSettings.api_keys || {};
+		const savedEmbeddingProvider = allSettings.rag?.embeddings?.provider;
+
+		if (savedEmbeddingProvider) {
+			return savedEmbeddingProvider;
+		}
+
+		if (allSettings.chatbot?.default_provider) {
+			return allSettings.chatbot.default_provider;
+		}
+
+		if (apiKeys.google && !apiKeys.openai) {
+			return 'google';
+		}
+
+		if (apiKeys.openai && !apiKeys.google) {
+			return 'openai';
+		}
+
+		return 'openai';
+	};
+
+	const [embeddingProviderName, setEmbeddingProviderName] = useState(() => getPreferredEmbeddingProvider(settings));
+
+	useEffect(() => {
+		if (!ragSettings.embeddings?.provider) {
+			setEmbeddingProviderName(getPreferredEmbeddingProvider(settings));
+		}
+	}, [settings?.api_keys?.openai, settings?.api_keys?.google, settings?.chatbot?.default_provider, ragSettings.embeddings?.provider]);
 
 	// Get dimensions and model based on explicit selection
 	const getEmbeddingProviderInfo = () => {

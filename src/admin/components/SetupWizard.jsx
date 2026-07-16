@@ -48,8 +48,31 @@ export default function SetupWizard({ open, settings, onSave, onClose, showNotic
 	const hasSavedApiKey = !!settings?.api_keys?.[selectedProvider];
 	const [apiKey, setApiKey] = useState(() => settings?.api_keys?.[getInitialProvider()] || '');
 
+	const getPreferredEmbeddingProvider = (currentSettings = settings) => {
+		const apiKeys = currentSettings?.api_keys || {};
+		const savedEmbeddingProvider = currentSettings?.rag?.embeddings?.provider;
+
+		if (savedEmbeddingProvider) {
+			return savedEmbeddingProvider;
+		}
+
+		if (currentSettings?.chatbot?.default_provider) {
+			return currentSettings.chatbot.default_provider;
+		}
+
+		if (apiKeys.google && !apiKeys.openai) {
+			return 'google';
+		}
+
+		if (apiKeys.openai && !apiKeys.google) {
+			return 'openai';
+		}
+
+		return 'openai';
+	};
+
 	const [vectorDb, setVectorDb] = useState(() => settings?.rag?.vector_db?.provider || 'sqlite');
-	const [embeddingProvider, setEmbeddingProvider] = useState(() => settings?.rag?.embeddings?.provider || 'openai');
+	const [embeddingProvider, setEmbeddingProvider] = useState(() => getPreferredEmbeddingProvider(settings));
 	const [pineconeApiKey, setPineconeApiKey] = useState(() => settings?.rag?.vector_db?.api_key || '');
 	const [pineconeHost, setPineconeHost] = useState(() => settings?.rag?.vector_db?.host || '');
 	const [pineconeIndexName, setPineconeIndexName] = useState(() => settings?.rag?.vector_db?.index_name || '');
@@ -70,7 +93,7 @@ export default function SetupWizard({ open, settings, onSave, onClose, showNotic
 		setApiKey(settings?.api_keys?.[initialProvider] || '');
 
 		setVectorDb(settings?.rag?.vector_db?.provider || 'sqlite');
-		setEmbeddingProvider(settings?.rag?.embeddings?.provider || 'openai');
+		setEmbeddingProvider(getPreferredEmbeddingProvider(settings));
 		setPineconeApiKey(settings?.rag?.vector_db?.api_key || '');
 		setPineconeHost(settings?.rag?.vector_db?.host || '');
 		setPineconeIndexName(settings?.rag?.vector_db?.index_name || '');
