@@ -29,6 +29,7 @@ export default function Dashboard({ settings: initialSettings }) {
 	const [settings, setSettings] = useState(initialSettings);
 	const [notice, setNotice] = useState(null);
 	const [showWizard, setShowWizard] = useState(!!window.baca_data?.show_setup_wizard);
+	const [wizardSessionKey, setWizardSessionKey] = useState(0);
 
 	const isSaveChatEnabled = !!settings?.chatbot?.save_chat;
 	const availableTabs = TABS.filter((tab) => {
@@ -106,7 +107,10 @@ export default function Dashboard({ settings: initialSettings }) {
 				open={showWizard}
 				settings={settings}
 				onSave={updateSettingsData}
-				onClose={() => setShowWizard(false)}
+				onClose={() => {
+					setShowWizard(false);
+					setWizardSessionKey(prev => prev + 1);
+				}}
 				showNotice={showNotice}
 			/>
 			<header className="baca-dashboard-header">
@@ -163,7 +167,7 @@ export default function Dashboard({ settings: initialSettings }) {
 				)}
 
 				<div className="baca-tab-panel active">
-					{ActiveComponent && <ActiveComponent settings={settings} onSave={updateSettingsData} showNotice={showNotice} />}
+					{ActiveComponent && <ActiveComponent key={`${activeTab}-${wizardSessionKey}`} settings={settings} onSave={updateSettingsData} showNotice={showNotice} />}
 				</div>
 			</main>
 		</div>

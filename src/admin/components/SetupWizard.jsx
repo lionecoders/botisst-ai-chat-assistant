@@ -39,9 +39,12 @@ export default function SetupWizard({ open, settings, onSave, onClose, showNotic
 	const [busy, setBusy] = useState(false);
 
 	const getInitialProvider = () => {
+		if (settings?.chatbot?.default_provider) {
+			return settings.chatbot.default_provider;
+		}
 		if (settings?.api_keys?.openai) return 'openai';
 		if (settings?.api_keys?.google) return 'google';
-		return settings?.chatbot?.default_provider || 'openai';
+		return 'openai';
 	};
 
 	const [selectedProvider, setSelectedProvider] = useState(getInitialProvider);
@@ -128,24 +131,30 @@ export default function SetupWizard({ open, settings, onSave, onClose, showNotic
 		}
 
 		if (settings?.api_keys?.[selectedProvider] && apiKey === settings.api_keys[selectedProvider]) {
-			changeStep(2);
-			return;
+			if (settings?.chatbot?.default_provider === selectedProvider) {
+				changeStep(2);
+				return;
+			}
 		}
 
 		setBusy(true);
 		try {
-			await apiFetch({
+			const data = {
+				default_provider: selectedProvider,
+			};
+			if (apiKey !== settings?.api_keys?.[selectedProvider]) {
+				data[`${selectedProvider}_key`] = apiKey;
+			}
+
+			const response = await apiFetch({
 				path: '/baca/v1/save-settings',
 				method: 'POST',
-				data: { [`${selectedProvider}_key`]: apiKey },
+				data,
 			});
 
-			const maskedKey = apiKey.length < 8
-				? '********'
-				: apiKey.slice(0, 4) + '...' + apiKey.slice(-4);
-
 			onSave({
-				api_keys: { ...settings?.api_keys, [selectedProvider]: maskedKey },
+				api_keys: response.api_keys || {},
+				chatbot: response.chatbot || {},
 			});
 			changeStep(2);
 		} catch (error) {
