@@ -26,6 +26,7 @@ export default function KnowledgeBaseTab({ settings, onSave, showNotice }) {
 	const [postTypes, setPostTypes] = useState([]);
 	const [activeSubTab, setActiveSubTab] = useState('sources');
 	const [confirmingPineconeReset, setConfirmingPineconeReset] = useState(false);
+	const [showReindexNotice, setShowReindexNotice] = useState(false);
 
 	const botSettings = settings?.chatbot || {};
 	const ragSettings = settings?.rag || {};
@@ -47,6 +48,10 @@ export default function KnowledgeBaseTab({ settings, onSave, showNotice }) {
 	const [selectedPostTypes, setSelectedPostTypes] = useState(
 		ragSettings.post_types || ['post', 'page']
 	);
+	const [savedPostTypes, setSavedPostTypes] = useState(
+		ragSettings.post_types || ['post', 'page']
+	);
+	const [needsIndexing, setNeedsIndexing] = useState(false);
 	const [maxChunkSize, setMaxChunkSize] = useState(ragSettings.chunk_size || 1000);
 	const [maxResults, setMaxResults] = useState(ragSettings.max_results || 5);
 	const [vectorDb, setVectorDb] = useState(ragSettings.vector_db?.provider || 'sqlite');
@@ -216,6 +221,8 @@ export default function KnowledgeBaseTab({ settings, onSave, showNotice }) {
 	};
 
 	const handleIndexContent = async () => {
+		setShowReindexNotice(false);
+		setNeedsIndexing(false);
 		const indexWebsite = selectedPostTypes.length > 0;
 		const typesToIndex = indexWebsite ? [...selectedPostTypes] : [];
 
@@ -379,7 +386,20 @@ export default function KnowledgeBaseTab({ settings, onSave, showNotice }) {
 				chatbot: { ...botSettings, ...botPayload },
 				rag: { ...ragSettings, ...ragPayload }
 			});
-			showNotice(__('Knowledge base and RAG settings saved successfully!', 'botisst-ai-chat-assistant'));
+
+			const postTypesChanged =
+				selectedPostTypes.length !== savedPostTypes.length ||
+				!selectedPostTypes.every((val) => savedPostTypes.includes(val));
+
+			if (postTypesChanged) {
+				setNeedsIndexing(true);
+				setShowReindexNotice(true);
+				showNotice(__('Settings saved! Post type selection was changed. Please click "Index Content Now" to re-index your content.', 'botisst-ai-chat-assistant'));
+			} else {
+				showNotice(__('Knowledge base and RAG settings saved successfully!', 'botisst-ai-chat-assistant'));
+			}
+
+			setSavedPostTypes([...selectedPostTypes]);
 		} catch (error) {
 			console.error('Save error:', error);
 			showNotice(error.message || __('Failed to save settings', 'botisst-ai-chat-assistant'), 'error');
@@ -404,6 +424,45 @@ export default function KnowledgeBaseTab({ settings, onSave, showNotice }) {
 					</button>
 				))}
 			</nav>
+			{showReindexNotice && (
+				<div
+					className="baca-notice baca-notice-info"
+					style={{
+						display: 'flex',
+						alignItems: 'center',
+						justifyContent: 'space-between',
+						gap: '1rem',
+						padding: '0.875rem 1.25rem',
+						marginTop: '1rem',
+						marginBottom: '1rem',
+						backgroundColor: 'hsl(var(--baca-primary-h), 100%, 97%)',
+						border: '1px solid hsl(var(--baca-primary-h), 80%, 85%)',
+						borderLeft: '4px solid var(--baca-primary)',
+						borderRadius: 'var(--baca-radius-sm)',
+						color: 'var(--baca-text)',
+					}}
+				>
+					<div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
+						<span className="dashicons dashicons-info" style={{ color: 'var(--baca-primary)', fontSize: '1.25rem', width: '1.25rem', height: '1.25rem' }} aria-hidden="true" />
+						<span>
+							<strong>{__('Settings saved!', 'botisst-ai-chat-assistant')}</strong>{' '}
+							{__('Please re-index your knowledge base content for the changes to take effect in your chatbot.', 'botisst-ai-chat-assistant')}
+						</span>
+					</div>
+					<button
+						type="button"
+						className="baca-btn baca-btn-secondary baca-btn-sm"
+						onClick={handleIndexContent}
+						disabled={indexing}
+						style={{ flexShrink: 0 }}
+					>
+						<span className="dashicons dashicons-update" aria-hidden="true" />
+						{indexing
+							? __('Indexing…', 'botisst-ai-chat-assistant')
+							: __('Index Content Now', 'botisst-ai-chat-assistant')}
+					</button>
+				</div>
+			)}
 			<form onSubmit={handleSubmit}>
 				<div className={activeSubTab === 'sources' ? '' : 'baca-kb-panel--hidden'}>
 				<article className="baca-kb-card">
@@ -746,7 +805,7 @@ export default function KnowledgeBaseTab({ settings, onSave, showNotice }) {
 							: __('Save', 'botisst-ai-chat-assistant')}
 					</button>
 
-					{activeSubTab === 'vector-db' && selectedPostTypes.length > 0 && (
+					{(activeSubTab === 'vector-db' || needsIndexing) && selectedPostTypes.length > 0 && (
 						<button
 							type="button"
 							className="baca-btn baca-btn-secondary"
