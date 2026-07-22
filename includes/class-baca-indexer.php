@@ -1097,11 +1097,10 @@ class BACA_Indexer
 	 * indexing happens in small batches via process_index_batch(), so a
 	 * full-site index never runs inside a single request.
 	 *
-	 * @param array $post_types    Post types to index.
-	 * @param bool  $force_reindex Whether to force re-indexing of all posts.
+	 * @param array $post_types Post types to index.
 	 * @return array Queue summary, e.g. ['total' => 42].
 	 */
-	public function queue_index_job($post_types = [], $force_reindex = false)
+	public function queue_index_job($post_types = [])
 	{
 		global $wpdb;
 
@@ -1112,7 +1111,6 @@ class BACA_Indexer
 		$registered_types = get_post_types();
 		$valid_post_types = array_intersect($post_types, $registered_types);
 		$docs_table = esc_sql($wpdb->prefix . 'baca_rag_documents');
-		$chunks_table = esc_sql($wpdb->prefix . 'baca_rag_chunks');
 
 		/*
 		 * Clean up post types that are not selected or no longer registered
@@ -1137,31 +1135,21 @@ class BACA_Indexer
 			}
 		}
 
-		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-		$incomplete_doc_ids = $wpdb->get_col(
-			"SELECT DISTINCT document_id FROM {$chunks_table} WHERE embedding_status != 'completed'"
-		);
-		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-		$incomplete_doc_ids = is_array($incomplete_doc_ids) ? $incomplete_doc_ids : [];
-
-		$post_ids_to_queue = [];
+		$post_ids = [];
 
 		foreach ($valid_post_types as $post_type) {
 
-			$active_posts = get_posts(
+			$active_ids = get_posts(
 				[
 					'post_type' => sanitize_text_field($post_type),
 					'post_status' => 'publish',
 					'posts_per_page' => -1,
 					'orderby' => 'ID',
 					'order' => 'ASC',
+					'fields' => 'ids',
 					'suppress_filters' => false,
 				]
 			);
-
-			$active_ids = array_map(function ($p) {
-				return intval($p->ID);
-			}, $active_posts);
 
 			/*
 			 * Clean up stale or deleted/unpublished posts of this post type
@@ -1182,44 +1170,10 @@ class BACA_Indexer
 				$this->remove_document('post_' . $stale_id);
 			}
 
-			// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-			$indexed_rows = $wpdb->get_results(
-				$wpdb->prepare(
-					"SELECT post_id, hash FROM {$docs_table} WHERE post_type = %s",
-					$post_type
-				),
-				OBJECT_K
-			);
-			// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-
-			foreach ($active_posts as $post) {
-				$pid = intval($post->ID);
-				$doc_id = 'post_' . $pid;
-
-				if ($force_reindex) {
-					$post_ids_to_queue[] = $pid;
-					continue;
-				}
-
-				if (in_array($doc_id, $incomplete_doc_ids, true)) {
-					$post_ids_to_queue[] = $pid;
-					continue;
-				}
-
-				if (!isset($indexed_rows[$pid])) {
-					$post_ids_to_queue[] = $pid;
-					continue;
-				}
-
-				$current_hash = md5($post->post_title . $post->post_content);
-				if ($indexed_rows[$pid]->hash !== $current_hash) {
-					$post_ids_to_queue[] = $pid;
-					continue;
-				}
-			}
+			$post_ids = array_merge($post_ids, $active_ids);
 		}
 
-		$post_ids = array_values(array_unique(array_map('intval', $post_ids_to_queue)));
+		$post_ids = array_values(array_unique(array_map('intval', $post_ids)));
 
 		$this->update_metadata('index_queue', wp_json_encode($post_ids));
 		$this->update_metadata('index_status', empty($post_ids) ? 'embedding' : 'indexing');

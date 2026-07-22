@@ -96,12 +96,11 @@ class BACA_RAG_Engine {
 	 * wp_schedule_single_event calls, so callers (e.g. the REST handler)
 	 * never block on a per-chunk embedding API call.
 	 *
-	 * @param array $post_types    Post types to index.
-	 * @param bool  $force_reindex Whether to force re-indexing all posts.
+	 * @param array $post_types Post types to index.
 	 * @return array Queue summary, e.g. ['total' => 42].
 	 */
-	public function start_index_job( $post_types, $force_reindex = false ) {
-		$result = $this->indexer->queue_index_job( $post_types, $force_reindex );
+	public function start_index_job( $post_types ) {
+		$result = $this->indexer->queue_index_job( $post_types );
 
 		wp_schedule_single_event( time(), 'baca_rag_process_index_batch' );
 

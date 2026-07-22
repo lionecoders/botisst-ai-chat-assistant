@@ -345,11 +345,10 @@ class BACA_RAG_Controller
 				$index_sources['website']
 			)
 			) {
-				$force_reindex = !empty($params['force_reindex']);
+
 				$queue_result =
 					$rag_engine->start_index_job(
-						$post_types,
-						$force_reindex
+						$post_types
 					);
 
 				$website_queued = true;
