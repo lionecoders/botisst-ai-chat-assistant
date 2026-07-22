@@ -87,12 +87,37 @@ export default function KnowledgeBaseTab({ settings, onSave, showNotice }) {
 		return 'openai';
 	};
 
+	// Snapshot of the last-saved (or just-loaded) form state, used to decide
+	// whether the Save button should be enabled — it stays disabled until
+	// something actually differs from this baseline.
+	const [baseline, setBaseline] = useState({
+		knowledgeText: botSettings.knowledge_text || '',
+		urls: Array.isArray(botSettings.knowledge_urls) && botSettings.knowledge_urls.length ? botSettings.knowledge_urls : [],
+		trainingFiles: Array.isArray(botSettings.training_files) ? botSettings.training_files : [],
+		selectedPostTypes: ragSettings.post_types || ['post', 'page'],
+		maxChunkSize: ragSettings.chunk_size || 1000,
+		maxResults: ragSettings.max_results || 5,
+		vectorDb: ragSettings.vector_db?.provider || 'sqlite',
+		requireIndexedData: ragSettings.require_indexed_data || false,
+		noDataMessage: ragSettings.no_data_message || 'I don\'t have information about your question in my knowledge base. Please rephrase or ask about topics I have knowledge of.',
+		pineconeApiKey: ragSettings.vector_db?.api_key || '',
+		pineconeHost: ragSettings.vector_db?.host || '',
+		pineconeIndexName: ragSettings.vector_db?.index_name || '',
+		embeddingProviderName: getPreferredEmbeddingProvider(settings),
+	});
+
 	const [embeddingProviderName, setEmbeddingProviderName] = useState(() => getPreferredEmbeddingProvider(settings));
 
 	useEffect(() => {
 		if (!ragSettings.embeddings?.provider) {
-			setEmbeddingProviderName(getPreferredEmbeddingProvider(settings));
+			const derived = getPreferredEmbeddingProvider(settings);
+			setEmbeddingProviderName(derived);
+			// This is an automatic re-derivation, not a user edit, so keep
+			// the dirty-check baseline in lockstep instead of it looking
+			// like an unsaved change.
+			setBaseline((prev) => ({ ...prev, embeddingProviderName: derived }));
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [settings?.api_keys?.openai, settings?.api_keys?.google, settings?.chatbot?.default_provider, ragSettings.embeddings?.provider]);
 
 	// Get dimensions and model based on explicit selection
@@ -120,6 +145,37 @@ export default function KnowledgeBaseTab({ settings, onSave, showNotice }) {
 	};
 
 	const embeddingProvider = getEmbeddingProviderInfo();
+
+	// Combined snapshot of every field the Save button persists, compared
+	// against `baseline` to decide whether Save should be enabled.
+	const currentSnapshot = {
+		knowledgeText,
+		urls,
+		trainingFiles: trainingFiles.map((f) => (typeof f === 'object' ? f.id : f)),
+		selectedPostTypes,
+		maxChunkSize,
+		maxResults,
+		vectorDb,
+		requireIndexedData,
+		noDataMessage,
+		pineconeApiKey,
+		pineconeHost,
+		pineconeIndexName,
+		embeddingProviderName,
+	};
+	const isDirty = JSON.stringify(currentSnapshot) !== JSON.stringify(baseline);
+
+	// Whether the currently selected post types differ from what's actually
+	// indexed right now (as reported by the server) — e.g. a type was just
+	// checked/unchecked and saved but "Index Content Now" hasn't run yet.
+	const indexedPostTypes = stats?.indexed_post_types || [];
+	const postTypesNeedReindex = !!stats && (() => {
+		if (selectedPostTypes.length !== indexedPostTypes.length) {
+			return true;
+		}
+		const indexedSet = new Set(indexedPostTypes);
+		return selectedPostTypes.some((pt) => !indexedSet.has(pt));
+	})();
 
 	// Index what to include checkboxes. "website" is derived from whether any
 	// post type is selected below, instead of being a separate toggle, since
@@ -379,7 +435,12 @@ export default function KnowledgeBaseTab({ settings, onSave, showNotice }) {
 				chatbot: { ...botSettings, ...botPayload },
 				rag: { ...ragSettings, ...ragPayload }
 			});
-			showNotice(__('Knowledge base and RAG settings saved successfully!', 'botisst-ai-chat-assistant'));
+			setBaseline(currentSnapshot);
+			showNotice(
+				postTypesNeedReindex
+					? __('Settings saved! Please re-index your content to apply the changes.', 'botisst-ai-chat-assistant')
+					: __('Knowledge base and RAG settings saved successfully!', 'botisst-ai-chat-assistant')
+			);
 		} catch (error) {
 			console.error('Save error:', error);
 			showNotice(error.message || __('Failed to save settings', 'botisst-ai-chat-assistant'), 'error');
@@ -428,55 +489,6 @@ export default function KnowledgeBaseTab({ settings, onSave, showNotice }) {
 						/>
 					</div>
 				</article>
-				<article className="baca-kb-card">
-						<header className="baca-kb-card__header">
-							<span className="baca-kb-card__icon" aria-hidden="true">
-								<span className="dashicons dashicons-media-text" />
-							</span>
-							<div className="baca-kb-card__heading">
-								<h3 className="baca-kb-card__title">
-									{__('Website Content to Index', 'botisst-ai-chat-assistant')}
-								</h3>
-								<p className="baca-kb-card__desc">
-									{__('Select which post types to include. Leave all unchecked to skip indexing your website content.', 'botisst-ai-chat-assistant')}
-								</p>
-							</div>
-						</header>
-						<div className="baca-kb-card__body">
-							<div className="baca-kb-post-types">
-								{postTypes.length > 0 ? (
-									postTypes.map((pt) => (
-										<label key={pt.value} className="baca-checkbox">
-											<input
-												type="checkbox"
-												checked={selectedPostTypes.includes(pt.value)}
-												onChange={() => handleTogglePostType(pt.value)}
-											/>
-											<span className="baca-checkbox__label">
-												{pt.label} ({pt.count})
-											</span>
-										</label>
-									))
-								) : (
-									<p className="baca-hint">{__('No post types available.', 'botisst-ai-chat-assistant')}</p>
-								)}
-							</div>
-
-							{indexing && indexProgress && (
-								<div className="baca-kb-index-progress" role="status">
-									<div className="baca-kb-index-progress__bar">
-										<div
-											className="baca-kb-index-progress__fill"
-											style={{ width: `${indexProgressPercent}%` }}
-										/>
-									</div>
-									<p className="baca-kb-index-progress__label">
-										{indexProgressLabel}
-									</p>
-								</div>
-							)}
-						</div>
-					</article>
 
 				<article className="baca-kb-card">
 					<header className="baca-kb-card__header">
@@ -527,6 +539,55 @@ export default function KnowledgeBaseTab({ settings, onSave, showNotice }) {
 
 				<div className={activeSubTab === 'vector-db' ? '' : 'baca-kb-panel--hidden'}>
 				{/* Vector Database Selection */}
+				<article className="baca-kb-card">
+						<header className="baca-kb-card__header">
+							<span className="baca-kb-card__icon" aria-hidden="true">
+								<span className="dashicons dashicons-media-text" />
+							</span>
+							<div className="baca-kb-card__heading">
+								<h3 className="baca-kb-card__title">
+									{__('Website Content to Index', 'botisst-ai-chat-assistant')}
+								</h3>
+								<p className="baca-kb-card__desc">
+									{__('Select which post types to include. Leave all unchecked to skip indexing your website content.', 'botisst-ai-chat-assistant')}
+								</p>
+							</div>
+						</header>
+						<div className="baca-kb-card__body">
+							<div className="baca-kb-post-types">
+								{postTypes.length > 0 ? (
+									postTypes.map((pt) => (
+										<label key={pt.value} className="baca-checkbox">
+											<input
+												type="checkbox"
+												checked={selectedPostTypes.includes(pt.value)}
+												onChange={() => handleTogglePostType(pt.value)}
+											/>
+											<span className="baca-checkbox__label">
+												{pt.label} ({pt.count})
+											</span>
+										</label>
+									))
+								) : (
+									<p className="baca-hint">{__('No post types available.', 'botisst-ai-chat-assistant')}</p>
+								)}
+							</div>
+
+							{indexing && indexProgress && (
+								<div className="baca-kb-index-progress" role="status">
+									<div className="baca-kb-index-progress__bar">
+										<div
+											className="baca-kb-index-progress__fill"
+											style={{ width: `${indexProgressPercent}%` }}
+										/>
+									</div>
+									<p className="baca-kb-index-progress__label">
+										{indexProgressLabel}
+									</p>
+								</div>
+							)}
+						</div>
+					</article>
 				<article className="baca-kb-card">
 					<header className="baca-kb-card__header">
 						<span className="baca-kb-card__icon" aria-hidden="true">
@@ -740,7 +801,7 @@ export default function KnowledgeBaseTab({ settings, onSave, showNotice }) {
 				</div>
 
 				<footer className="baca-kb-footer">
-					<button type="submit" className="baca-btn baca-btn-primary" disabled={saving}>
+					<button type="submit" className="baca-btn baca-btn-primary" disabled={saving || !isDirty}>
 						{saving
 							? __('Saving…', 'botisst-ai-chat-assistant')
 							: __('Save', 'botisst-ai-chat-assistant')}
@@ -791,6 +852,9 @@ export default function KnowledgeBaseTab({ settings, onSave, showNotice }) {
 						setPineconeApiKey('');
 						setPineconeHost('');
 						setPineconeIndexName('');
+						// This reset persists immediately (it's not a pending
+						// edit), so keep the dirty-check baseline in sync.
+						setBaseline((prev) => ({ ...prev, pineconeApiKey: '', pineconeHost: '', pineconeIndexName: '' }));
 
 						onSave({
 							rag: {

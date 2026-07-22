@@ -19,12 +19,20 @@ export default function ApiKeysTab({ settings, onSave, showNotice }) {
 	const [ resetting, setResetting ] = useState( {} );
 	const [ confirmingProvider, setConfirmingProvider ] = useState( null );
 	const [ modelsList, setModelsList ] = useState( () => window.baca_data?.models_list || {} );
-	const [ formData, setFormData ] = useState( {
+
+	const getInitialFormData = () => ( {
 		openai_key: '',
 		google_key: '',
 		models: settings?.models || {},
 		default_provider: settings?.chatbot?.default_provider || 'openai',
 	} );
+
+	const [ formData, setFormData ] = useState( getInitialFormData );
+	// Snapshot of the last-saved (or just-loaded) form state, used to decide
+	// whether the Save button should be enabled — it stays disabled until
+	// something actually differs from this baseline.
+	const [ baseline, setBaseline ] = useState( getInitialFormData );
+	const isDirty = JSON.stringify( formData ) !== JSON.stringify( baseline );
 
 	const isConnected = ( id ) => !! settings.api_keys?.[ id ];
 	const getMaskedKey = ( id ) => settings.api_keys?.[ id ] || '';
@@ -59,15 +67,21 @@ export default function ApiKeysTab({ settings, onSave, showNotice }) {
 				chatbot: response.chatbot || settings?.chatbot,
 			} );
 
-			setFormData( ( prev ) => ( {
-				...prev,
-				[ `${ provider }_key` ]: '',
-				default_provider: response.chatbot?.default_provider || '',
-				models: {
-					...prev.models,
-					[ provider ]: '',
-				},
-			} ) );
+			setFormData( ( prev ) => {
+				const updated = {
+					...prev,
+					[ `${ provider }_key` ]: '',
+					default_provider: response.chatbot?.default_provider || '',
+					models: {
+						...prev.models,
+						[ provider ]: '',
+					},
+				};
+				// Resetting a key persists immediately (it's not a pending
+				// edit), so the new state becomes the baseline too.
+				setBaseline( updated );
+				return updated;
+			} );
 		} catch ( error ) {
 			showNotice( error.message || __( 'Failed to reset key', 'botisst-ai-chat-assistant' ), 'error' );
 		} finally {
@@ -103,6 +117,7 @@ export default function ApiKeysTab({ settings, onSave, showNotice }) {
 				if ( response.chatbot?.default_provider ) {
 					updated.default_provider = response.chatbot.default_provider;
 				}
+				setBaseline( updated );
 				return updated;
 			} );
 		} catch ( error ) {
@@ -218,7 +233,7 @@ export default function ApiKeysTab({ settings, onSave, showNotice }) {
 				) ) }
 
 				<footer className="baca-api-keys-footer">
-					<button type="submit" className="baca-btn baca-btn-primary" disabled={ saving }>
+					<button type="submit" className="baca-btn baca-btn-primary" disabled={ saving || ! isDirty }>
 						{ saving
 							? <><span className="baca-spinner" aria-hidden="true" /> { __( 'Saving…', 'botisst-ai-chat-assistant' ) }</>
 							: __( 'Save', 'botisst-ai-chat-assistant' ) }

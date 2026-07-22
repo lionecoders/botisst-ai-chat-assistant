@@ -201,6 +201,7 @@ class BACA_RAG_Controller
 					'pending_embeddings' => 0,
 					'embeddings_completed' => 0,
 					'total_tokens' => 0,
+					'indexed_post_types' => [],
 				],
 				200
 			);
@@ -221,6 +222,7 @@ class BACA_RAG_Controller
 					'pending_embeddings' => 0,
 					'embeddings_completed' => 0,
 					'total_tokens' => 0,
+					'indexed_post_types' => [],
 				],
 				500
 			);

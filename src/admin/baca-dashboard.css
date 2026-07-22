@@ -2112,13 +2112,31 @@ input:checked + .baca-toggle-slider:before {
     box-shadow: 0 4px 12px hsla(var(--baca-primary-h), var(--baca-primary-s), var(--baca-primary-l), 0.3);
 }
 
-.baca-btn-primary:hover {
+.baca-btn-primary:hover:not(:disabled) {
     transform: translateY(-2px);
     box-shadow: 0 6px 16px hsla(var(--baca-primary-h), var(--baca-primary-s), var(--baca-primary-l), 0.4);
 }
 
-.baca-btn-primary:active {
+.baca-btn-primary:active:not(:disabled) {
     transform: translateY(0);
+}
+
+.baca-btn:disabled {
+    cursor: not-allowed;
+}
+
+.baca-btn-primary:disabled {
+    background: hsl(var(--baca-primary-h), var(--baca-primary-s), 88%);
+    color: hsl(var(--baca-primary-h), 25%, 58%);
+    box-shadow: none;
+    transform: none;
+}
+
+.baca-btn-secondary:disabled {
+    color: var(--baca-text-muted);
+    background: var(--baca-bg);
+    border-color: var(--baca-border);
+    box-shadow: none;
 }
 
 .baca-btn-danger {

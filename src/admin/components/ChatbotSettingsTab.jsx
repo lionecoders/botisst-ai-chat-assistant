@@ -19,7 +19,7 @@ export default function ChatbotSettingsTab( { settings, onSave, showNotice } ) {
 	const [ activeSubTab, setActiveSubTab ] = useState( 'general' );
 	const [ saving, setSaving ] = useState( false );
 
-	const [ formData, setFormData ] = useState( {
+	const getInitialFormData = () => ( {
 		bot_name: botSettings.bot_name || '',
 		primary_color: botSettings.primary_color || '#6366f1',
 		greeting_msg: botSettings.greeting_msg || '',
@@ -41,6 +41,12 @@ export default function ChatbotSettingsTab( { settings, onSave, showNotice } ) {
 		enable_pre_questions: botSettings.enable_pre_questions ?? false,
 		rate_limit_per_minute: botSettings.rate_limit_per_minute ?? 20,
 	} );
+
+	const [ formData, setFormData ] = useState( getInitialFormData );
+	// Snapshot of the last-saved form state — the Save button stays
+	// disabled until something differs from this baseline.
+	const [ baseline, setBaseline ] = useState( getInitialFormData );
+	const isDirty = JSON.stringify( formData ) !== JSON.stringify( baseline );
 
 	const handleChange = ( name, value ) => {
 		setFormData( ( prev ) => ( { ...prev, [ name ]: value } ) );
@@ -75,6 +81,7 @@ export default function ChatbotSettingsTab( { settings, onSave, showNotice } ) {
 				data: formData,
 			} );
 			onSave( { chatbot: { ...botSettings, ...formData } } );
+			setBaseline( formData );
 			showNotice( __( 'Bot settings saved successfully!', 'botisst-ai-chat-assistant' ) );
 		} catch ( error ) {
 			showNotice( error.message || __( 'Failed to save settings', 'botisst-ai-chat-assistant' ), 'error' );
@@ -481,7 +488,7 @@ export default function ChatbotSettingsTab( { settings, onSave, showNotice } ) {
 					</div>
 				</div>
 				<footer className="baca-bot-footer">
-					<button type="submit" className="baca-btn baca-btn-primary" disabled={ saving }>
+					<button type="submit" className="baca-btn baca-btn-primary" disabled={ saving || ! isDirty }>
 						{ saving
 							? <><span className="baca-spinner" aria-hidden="true" /> { __( 'Saving…', 'botisst-ai-chat-assistant' ) }</>
 							: __( 'Save', 'botisst-ai-chat-assistant' ) }

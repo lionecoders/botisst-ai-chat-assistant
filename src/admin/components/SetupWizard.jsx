@@ -701,7 +701,12 @@ export default function SetupWizard({ open, settings, onSave, onClose, showNotic
 								type="button"
 								className="baca-btn baca-btn-primary"
 								onClick={handleNextClick}
-								disabled={busy || (step === 2 && !settings?.api_keys?.[embeddingProvider])}
+								disabled={
+									busy ||
+									(step === 1 && !apiKey.trim()) ||
+									(step === 2 && !settings?.api_keys?.[embeddingProvider]) ||
+									(vectorDb === 'pinecone' && step === 3 && (!pineconeApiKey.trim() || !pineconeHost.trim() || !pineconeIndexName.trim()))
+								}
 							>
 								{busy
 									? <span className="baca-spinner" aria-hidden="true" />

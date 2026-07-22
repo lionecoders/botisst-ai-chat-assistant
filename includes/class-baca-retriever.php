@@ -158,6 +158,7 @@ class BACA_Retriever {
 		$pending_chunks = $wpdb->get_var( "SELECT COUNT(*) FROM {$chunks_table} WHERE embedding_status = 'pending'" );
 		$completed_chunks = $wpdb->get_var( "SELECT COUNT(*) FROM {$chunks_table} WHERE embedding_status = 'completed'" );
 		$total_tokens = $wpdb->get_var( "SELECT SUM(tokens_count) FROM {$chunks_table}" );
+		$indexed_post_types = $wpdb->get_col( "SELECT DISTINCT post_type FROM {$documents_table} WHERE post_type != ''" );
 		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
 		return [
@@ -166,6 +167,7 @@ class BACA_Retriever {
 			'pending_embeddings' => $pending_chunks ?? 0,
 			'completed_embeddings' => $completed_chunks ?? 0,
 			'total_tokens'      => $total_tokens ?? 0,
+			'indexed_post_types' => $indexed_post_types ?? [],
 		];
 	}
 }

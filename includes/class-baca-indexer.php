@@ -1175,21 +1175,101 @@ class BACA_Indexer
 
 		$post_ids = array_values(array_unique(array_map('intval', $post_ids)));
 
-		$this->update_metadata('index_queue', wp_json_encode($post_ids));
-		$this->update_metadata('index_status', empty($post_ids) ? 'embedding' : 'indexing');
-		$this->update_metadata('index_total', count($post_ids));
+		/*
+		 * Only queue posts that are actually new or whose content changed
+		 * since the last index (same hash comparison index_post() uses).
+		 * Already-indexed, unchanged posts are skipped entirely instead of
+		 * being counted toward the progress total, so re-indexing after
+		 * adding one more post type reports only the genuinely new items.
+		 */
+		$queue_ids = $this->filter_new_or_changed($post_ids);
+
+		$this->update_metadata('index_queue', wp_json_encode($queue_ids));
+		$this->update_metadata('index_status', empty($queue_ids) ? 'embedding' : 'indexing');
+		$this->update_metadata('index_total', count($queue_ids));
 		$this->update_metadata('index_processed', 0);
 		$this->update_metadata('index_indexed', 0);
 		$this->update_metadata('index_failed', 0);
 		$this->update_metadata('last_index_start', current_time('mysql'));
 
-		if (empty($post_ids)) {
+		if (empty($queue_ids)) {
 			$this->update_metadata('embed_total', $this->count_pending_embeddings());
 			$this->update_metadata('embed_processed', 0);
 			$this->update_metadata('embed_failed', 0);
 		}
 
-		return ['total' => count($post_ids)];
+		return ['total' => count($queue_ids)];
+	}
+
+	/**
+	 * Filter Post IDs Down to New or Changed
+	 *
+	 * Compares each post's current title+content hash against the hash
+	 * already stored for it (if any) and keeps only posts that are new or
+	 * have changed, so unchanged posts are neither re-embedded nor counted
+	 * in the indexing progress total.
+	 *
+	 * @param array $post_ids Candidate post IDs (already filtered to active/published).
+	 * @return array Post IDs that are new or whose content changed.
+	 */
+	private function filter_new_or_changed(array $post_ids)
+	{
+		global $wpdb;
+
+		if (empty($post_ids)) {
+			return [];
+		}
+
+		$id_placeholders = implode(',', array_fill(0, count($post_ids), '%d'));
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct read to compute content hashes for diffing; wp_posts is core.
+		$posts = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT ID, post_title, post_content FROM {$wpdb->posts} WHERE ID IN ({$id_placeholders})", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Placeholders are prepared; table is $wpdb->posts.
+				$post_ids
+			),
+			ARRAY_A
+		);
+
+		if (empty($posts)) {
+			return [];
+		}
+
+		$current_hashes = [];
+		foreach ($posts as $post_row) {
+			$current_hashes['post_' . $post_row['ID']] = md5($post_row['post_title'] . $post_row['post_content']);
+		}
+
+		$document_ids = array_keys($current_hashes);
+		$doc_placeholders = implode(',', array_fill(0, count($document_ids), '%s'));
+		$docs_table = esc_sql($wpdb->prefix . 'baca_rag_documents');
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct read on custom table.
+		$existing_rows = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT document_id, hash FROM {$docs_table} WHERE document_id IN ({$doc_placeholders})", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is dynamic but safe; placeholders are prepared.
+				$document_ids
+			),
+			ARRAY_A
+		);
+
+		$existing_hashes = [];
+		foreach ($existing_rows as $row) {
+			$existing_hashes[$row['document_id']] = $row['hash'];
+		}
+
+		$new_or_changed = [];
+		foreach ($posts as $post_row) {
+			$document_id = 'post_' . $post_row['ID'];
+			if (
+				!isset($existing_hashes[$document_id]) ||
+				$existing_hashes[$document_id] !== $current_hashes[$document_id]
+			) {
+				$new_or_changed[] = (int) $post_row['ID'];
+			}
+		}
+
+		return $new_or_changed;
 	}
 
 	/**

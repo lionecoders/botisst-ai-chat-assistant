@@ -11,11 +11,17 @@ export default function InstructionsTab( { settings, onSave, showNotice } ) {
 	const [ saving, setSaving ] = useState( false );
 	const botSettings = settings?.chatbot || {};
 
-	const [ formData, setFormData ] = useState( {
+	const getInitialFormData = () => ( {
 		system_prompt: botSettings.system_prompt || '',
 		temperature: botSettings.temperature ?? 0.7,
 		max_tokens: botSettings.max_tokens ?? 500,
 	} );
+
+	const [ formData, setFormData ] = useState( getInitialFormData );
+	// Snapshot of the last-saved form state — the Save button stays
+	// disabled until something differs from this baseline.
+	const [ baseline, setBaseline ] = useState( getInitialFormData );
+	const isDirty = JSON.stringify( formData ) !== JSON.stringify( baseline );
 
 	const handleChange = ( name, value ) => {
 		setFormData( ( prev ) => ( { ...prev, [ name ]: value } ) );
@@ -31,6 +37,7 @@ export default function InstructionsTab( { settings, onSave, showNotice } ) {
 				data: formData,
 			} );
 			onSave( { chatbot: { ...botSettings, ...formData } } );
+			setBaseline( formData );
 			showNotice( __( 'Instructions saved successfully!', 'botisst-ai-chat-assistant' ) );
 		} catch ( error ) {
 			showNotice( error.message || __( 'Failed to save instructions', 'botisst-ai-chat-assistant' ), 'error' );
@@ -133,7 +140,7 @@ export default function InstructionsTab( { settings, onSave, showNotice } ) {
 				</article>
 
 				<footer className="baca-instructions-footer">
-					<button type="submit" className="baca-btn baca-btn-primary" disabled={ saving }>
+					<button type="submit" className="baca-btn baca-btn-primary" disabled={ saving || ! isDirty }>
 						{ saving
 							? <><span className="baca-spinner" aria-hidden="true" /> { __( 'Saving…', 'botisst-ai-chat-assistant' ) }</>
 							: __( 'Save', 'botisst-ai-chat-assistant' ) }
