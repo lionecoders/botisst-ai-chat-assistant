@@ -63,6 +63,12 @@ If you'd like to learn more about how OpenAI and Google handle data, check out t
 * [Google Gemini Privacy Policy](https://safety.google/intl/en_in/products/gemini/)
 * [Google Gemini API Terms](https://ai.google.dev/gemini-api/terms)
 
+== Screenshots ==
+
+1. Botisst Setup Wizard.
+2. Botisst Settings Dashboard.
+3. Botisst Chat Widget on front-end.
+
 == Changelog ==
 
 = 1.0.1 =
