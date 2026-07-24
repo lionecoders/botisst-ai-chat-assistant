@@ -249,7 +249,8 @@ body.toplevel_page_baca #baca-admin-root {
     justify-content: flex-end;
 }
 
-@media (max-width: 768px) {
+/* Mobile & tablet nav: single scrollable pill bar (782px matches WP admin fold) */
+@media (max-width: 782px) {
     .baca-dashboard-wrapper {
         flex-direction: column;
     }
@@ -260,21 +261,46 @@ body.toplevel_page_baca #baca-admin-root {
         width: 100%;
         border-right: none;
         border-bottom: 1px solid var(--baca-border);
+        overflow: visible;
+    }
+
+    .baca-brand {
+        padding: 1rem 1rem 0.5rem;
+        font-size: 1.125rem;
     }
 
     .baca-tabs {
         flex-direction: row;
-        flex-wrap: wrap;
-        padding: 0 1rem 1rem;
+        flex-wrap: nowrap;
+        align-items: center;
+        gap: 0.375rem;
+        margin: 0;
+        padding: 0.25rem 1rem 0.875rem;
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
     }
 
+    /* Flatten the groups so every tab sits in one scrollable row */
     .baca-nav-group {
-        flex-direction: row;
-        flex-wrap: wrap;
+        display: contents;
     }
 
     .baca-nav-group__label {
         display: none;
+    }
+
+    .baca-tab {
+        width: auto;
+        flex: 0 0 auto;
+        padding: 0.5rem 0.875rem;
+        font-size: 0.8125rem;
+        background: #f3f4f6;
+    }
+
+    .baca-tab:hover:not(.active) {
+        background: #e5e7eb;
     }
 }
 
@@ -312,26 +338,35 @@ body.toplevel_page_baca #baca-admin-root {
     border-radius: 12px;
     font-weight: 500;
     font-size: 0.9375rem;
+    line-height: 1.4;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 1rem;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.04);
     animation: slideInLeft 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     border: 1px solid transparent;
-    max-width: 380px;
+    max-width: 480px;
+    width: calc(100vw - 64px);
 }
 
 .baca-toast .dashicons {
     font-size: 1.5rem;
     width: 1.5rem;
     height: 1.5rem;
+    margin-top: 2px;
+    flex-shrink: 0;
 }
 
 .baca-toast-message {
     flex-grow: 1;
+    min-width: 0;
+    word-break: break-word;
+    overflow-wrap: anywhere;
 }
 
 .baca-toast-close {
+    flex-shrink: 0;
+    margin-top: 2px !important;
     background: transparent !important;
     border: none !important;
     padding: 0 !important;
@@ -619,7 +654,8 @@ body.toplevel_page_baca #baca-admin-root {
 .baca-bot-input,
 .baca-bot-select {
     display: block;
-    width: 100%;
+    width: 100% !important;
+    max-width: 100% !important;
     padding: 0.625rem 0.875rem;
     border: 1px solid #e5e7eb;
     border-radius: 8px;
@@ -903,7 +939,7 @@ body.toplevel_page_baca #baca-admin-root {
 
 .baca-display-footer {
     display: flex;
-    justify-content: flex-start;
+    justify-content: flex-end;
     padding-top: 0.5rem;
 }
 
@@ -1716,6 +1752,7 @@ body.toplevel_page_baca #baca-admin-root {
 }
 
 .baca-sessions-user__name {
+    word-wrap: break-word;
     font-size: 0.9375rem;
     font-weight: 600;
     color: #111827;
@@ -1908,10 +1945,24 @@ body.baca-modal-open {
 }
 
 @media (max-width: 768px) {
+    .baca-sessions-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
     .baca-sessions-toolbar__left {
-        grid-template-columns: 1fr;
         max-width: none;
         width: 100%;
+    }
+
+    .baca-sessions-search,
+    .baca-sessions-filter {
+        flex: 1 1 100%;
+    }
+
+    .baca-sessions-toolbar__right {
+        justify-content: space-between;
+        flex-wrap: wrap;
     }
 
     .baca-sessions-table-wrap {
@@ -2061,13 +2112,31 @@ input:checked + .baca-toggle-slider:before {
     box-shadow: 0 4px 12px hsla(var(--baca-primary-h), var(--baca-primary-s), var(--baca-primary-l), 0.3);
 }
 
-.baca-btn-primary:hover {
+.baca-btn-primary:hover:not(:disabled) {
     transform: translateY(-2px);
     box-shadow: 0 6px 16px hsla(var(--baca-primary-h), var(--baca-primary-s), var(--baca-primary-l), 0.4);
 }
 
-.baca-btn-primary:active {
+.baca-btn-primary:active:not(:disabled) {
     transform: translateY(0);
+}
+
+.baca-btn:disabled {
+    cursor: not-allowed;
+}
+
+.baca-btn-primary:disabled {
+    background: hsl(var(--baca-primary-h), var(--baca-primary-s), 88%);
+    color: hsl(var(--baca-primary-h), 25%, 58%);
+    box-shadow: none;
+    transform: none;
+}
+
+.baca-btn-secondary:disabled {
+    color: var(--baca-text-muted);
+    background: var(--baca-bg);
+    border-color: var(--baca-border);
+    box-shadow: none;
 }
 
 .baca-btn-danger {
@@ -2492,43 +2561,20 @@ input:checked + .baca-toggle-slider:before {
     }
 }
 
-/* Mobile & Small Tablets (768px) */
-@media (max-width: 768px) {
+/* Mobile & Small Tablets */
+@media (max-width: 782px) {
     .baca-dashboard-wrapper {
         min-height: auto;
     }
 
-    .baca-dashboard-header {
-        position: static;
-        top: auto;
-        z-index: auto;
-    }
-
-    .baca-brand {
-        padding: 1rem 1.25rem 0.5rem;
-        font-size: 1.25rem;
-        justify-content: center;
-    }
-
-    .baca-tabs {
-        flex-wrap: nowrap;
-        margin: 0 1.25rem 1.25rem;
-        padding: 0.3125rem;
-        gap: 0.125rem;
-    }
-
-    .baca-tab {
-        flex: 0 0 auto;
-        padding: 0.5rem 0.75rem;
-        font-size: 0.8125rem;
-    }
-
     .baca-content {
-        padding: 1.5rem 1.25rem 2rem;
+        padding: 1.5rem 1.25rem 2.5rem;
     }
+}
 
+@media (max-width: 768px) {
     .baca-content-header h1 {
-        font-size: 2rem;
+        font-size: 1.375rem;
     }
 
     .baca-btn {
@@ -2546,16 +2592,12 @@ input:checked + .baca-toggle-slider:before {
 
 /* Very Small Devices (480px) */
 @media (max-width: 480px) {
-    .baca-tab {
-        padding: 0.625rem 0.75rem;
-    }
-
-    .baca-tab-label {
-        display: none;
+    .baca-content {
+        padding: 1.25rem 1rem 2rem;
     }
 
     .baca-content-header h1 {
-        font-size: 1.5rem;
+        font-size: 1.25rem;
     }
 
     .baca-toast {
@@ -2567,6 +2609,14 @@ input:checked + .baca-toggle-slider:before {
         top: 16px;
     }
 
+    .baca-kb-subnav {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .baca-kb-subtab {
+        flex: 1 1 auto;
+    }
 }
 
 /* Chat Modal Styles */
@@ -2829,6 +2879,49 @@ input:checked + .baca-toggle-slider:before {
 @media (max-width: 640px) {
     .baca-sessions-modal-meta {
         grid-template-columns: 1fr;
+        padding: 1rem 1.25rem;
+    }
+
+    .baca-modal-content {
+        width: calc(100% - 2rem);
+        max-height: 90vh;
+    }
+
+    .baca-modal-header {
+        padding: 1rem 1.25rem;
+    }
+
+    .baca-modal-body {
+        padding: 1.25rem;
+    }
+
+    .baca-modal-footer {
+        padding: 0.875rem 1.25rem;
+    }
+
+    .baca-wizard-progress {
+        padding: 0.875rem 1.25rem 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .baca-wizard-modal__footer {
+        flex-direction: column-reverse;
+        align-items: stretch;
+        gap: 0.75rem;
+    }
+
+    .baca-wizard-modal__footer .baca-btn-primary {
+        width: 100%;
+    }
+
+    .baca-wizard-modal__footer .baca-wizard-skip {
+        text-align: center;
+        padding: 0.25rem 0;
+    }
+
+    .baca-modal-title h3 {
+        font-size: 1rem;
     }
 }
 
@@ -3200,6 +3293,30 @@ input:checked + .baca-toggle-slider:before {
 }
 
 /* Stats Grid */
+
+.baca-kb-index-progress {
+    margin-top: 14px;
+}
+
+.baca-kb-index-progress__bar {
+    width: 100%;
+    height: 8px;
+    border-radius: 4px;
+    background: #e5e7eb;
+    overflow: hidden;
+}
+
+.baca-kb-index-progress__fill {
+    height: 100%;
+    background: var(--baca-primary, #6366f1);
+    transition: width 0.4s ease;
+}
+
+.baca-kb-index-progress__label {
+    margin: 6px 0 0;
+    font-size: 12px;
+    color: #666;
+}
 
 /* Footer */
 .baca-kb-footer {

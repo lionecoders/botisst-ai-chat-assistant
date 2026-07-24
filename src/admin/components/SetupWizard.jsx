@@ -11,10 +11,6 @@ const PROVIDERS = {
 		name: __('Google Gemini', 'botisst-ai-chat-assistant'),
 		link: 'https://aistudio.google.com/api-keys',
 	},
-	anthropic: {
-		name: __('Anthropic', 'botisst-ai-chat-assistant'),
-		link: 'https://platform.claude.com/settings/keys',
-	},
 };
 
 const VECTOR_DB_OPTIONS = [
@@ -43,17 +39,43 @@ export default function SetupWizard({ open, settings, onSave, onClose, showNotic
 	const [busy, setBusy] = useState(false);
 
 	const getInitialProvider = () => {
+		if (settings?.chatbot?.default_provider) {
+			return settings.chatbot.default_provider;
+		}
 		if (settings?.api_keys?.openai) return 'openai';
 		if (settings?.api_keys?.google) return 'google';
-		if (settings?.api_keys?.anthropic) return 'anthropic';
-		return settings?.chatbot?.default_provider || 'openai';
+		return 'openai';
 	};
 
 	const [selectedProvider, setSelectedProvider] = useState(getInitialProvider);
+	const hasSavedApiKey = !!settings?.api_keys?.[selectedProvider];
 	const [apiKey, setApiKey] = useState(() => settings?.api_keys?.[getInitialProvider()] || '');
 
+	const getPreferredEmbeddingProvider = (currentSettings = settings) => {
+		const apiKeys = currentSettings?.api_keys || {};
+		const savedEmbeddingProvider = currentSettings?.rag?.embeddings?.provider;
+
+		if (savedEmbeddingProvider) {
+			return savedEmbeddingProvider;
+		}
+
+		if (currentSettings?.chatbot?.default_provider) {
+			return currentSettings.chatbot.default_provider;
+		}
+
+		if (apiKeys.google && !apiKeys.openai) {
+			return 'google';
+		}
+
+		if (apiKeys.openai && !apiKeys.google) {
+			return 'openai';
+		}
+
+		return 'openai';
+	};
+
 	const [vectorDb, setVectorDb] = useState(() => settings?.rag?.vector_db?.provider || 'sqlite');
-	const [embeddingProvider, setEmbeddingProvider] = useState(() => settings?.rag?.embeddings?.provider || 'openai');
+	const [embeddingProvider, setEmbeddingProvider] = useState(() => getPreferredEmbeddingProvider(settings));
 	const [pineconeApiKey, setPineconeApiKey] = useState(() => settings?.rag?.vector_db?.api_key || '');
 	const [pineconeHost, setPineconeHost] = useState(() => settings?.rag?.vector_db?.host || '');
 	const [pineconeIndexName, setPineconeIndexName] = useState(() => settings?.rag?.vector_db?.index_name || '');
@@ -74,7 +96,7 @@ export default function SetupWizard({ open, settings, onSave, onClose, showNotic
 		setApiKey(settings?.api_keys?.[initialProvider] || '');
 
 		setVectorDb(settings?.rag?.vector_db?.provider || 'sqlite');
-		setEmbeddingProvider(settings?.rag?.embeddings?.provider || 'openai');
+		setEmbeddingProvider(getPreferredEmbeddingProvider(settings));
 		setPineconeApiKey(settings?.rag?.vector_db?.api_key || '');
 		setPineconeHost(settings?.rag?.vector_db?.host || '');
 		setPineconeIndexName(settings?.rag?.vector_db?.index_name || '');
@@ -85,7 +107,12 @@ export default function SetupWizard({ open, settings, onSave, onClose, showNotic
 			.catch(() => { });
 
 		return () => document.body.classList.remove('baca-modal-open');
-	}, [open, settings]);
+		// Intentionally only [open]: this should initialize the wizard's
+		// fields once when it opens, not keep re-syncing (and clobbering
+		// in-progress edits) every time settings changes while it's open —
+		// each step already saves its own local state via onSave().
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [open]);
 
 	if (!open) {
 		return null;
@@ -109,24 +136,30 @@ export default function SetupWizard({ open, settings, onSave, onClose, showNotic
 		}
 
 		if (settings?.api_keys?.[selectedProvider] && apiKey === settings.api_keys[selectedProvider]) {
-			changeStep(2);
-			return;
+			if (settings?.chatbot?.default_provider === selectedProvider) {
+				changeStep(2);
+				return;
+			}
 		}
 
 		setBusy(true);
 		try {
-			await apiFetch({
+			const data = {
+				default_provider: selectedProvider,
+			};
+			if (apiKey !== settings?.api_keys?.[selectedProvider]) {
+				data[`${selectedProvider}_key`] = apiKey;
+			}
+
+			const response = await apiFetch({
 				path: '/baca/v1/save-settings',
 				method: 'POST',
-				data: { [`${selectedProvider}_key`]: apiKey },
+				data,
 			});
 
-			const maskedKey = apiKey.length < 8
-				? '********'
-				: apiKey.slice(0, 4) + '...' + apiKey.slice(-4);
-
 			onSave({
-				api_keys: { ...settings?.api_keys, [selectedProvider]: maskedKey },
+				api_keys: response.api_keys || {},
+				chatbot: response.chatbot || {},
 			});
 			changeStep(2);
 		} catch (error) {
@@ -272,12 +305,12 @@ export default function SetupWizard({ open, settings, onSave, onClose, showNotic
 		__('Connect an AI provider', 'botisst-ai-chat-assistant'),
 		__('Choose vector database', 'botisst-ai-chat-assistant'),
 		__('Pinecone settings', 'botisst-ai-chat-assistant'),
-		__('Content to embed', 'botisst-ai-chat-assistant'),
+		__('Content for Your Chatbot', 'botisst-ai-chat-assistant'),
 		__('Add chatbot knowledge', 'botisst-ai-chat-assistant'),
 	] : [
 		__('Connect an AI provider', 'botisst-ai-chat-assistant'),
 		__('Choose vector database', 'botisst-ai-chat-assistant'),
-		__('Content to embed', 'botisst-ai-chat-assistant'),
+		__('Content for Your Chatbot', 'botisst-ai-chat-assistant'),
 		__('Add chatbot knowledge', 'botisst-ai-chat-assistant'),
 	];
 
@@ -308,7 +341,7 @@ export default function SetupWizard({ open, settings, onSave, onClose, showNotic
 				{__('Connect an AI provider', 'botisst-ai-chat-assistant')}
 			</h2>
 			<p className="baca-wizard-step-desc">
-				{__('Pick the AI provider you want to power your chatbot, then paste in its API key. This step is required to continue.', 'botisst-ai-chat-assistant')}
+				{__('Choose an AI provider and enter your API key to continue.', 'botisst-ai-chat-assistant')}
 			</p>
 
 			<div className="baca-bot-field">
@@ -342,6 +375,7 @@ export default function SetupWizard({ open, settings, onSave, onClose, showNotic
 					value={apiKey}
 					onChange={(e) => setApiKey(e.target.value)}
 					placeholder={__('Paste your API key here', 'botisst-ai-chat-assistant')}
+					disabled={hasSavedApiKey}
 				/>
 				<a
 					href={PROVIDERS[selectedProvider].link}
@@ -362,10 +396,10 @@ export default function SetupWizard({ open, settings, onSave, onClose, showNotic
 		return (
 			<>
 				<h2 className="baca-wizard-step-title">
-					{__('Choose your vector database', 'botisst-ai-chat-assistant')}
+					{__('Choose your database', 'botisst-ai-chat-assistant')}
 				</h2>
 				<p className="baca-wizard-step-desc">
-					{__('This is where your knowledge base embeddings are stored for semantic search.', 'botisst-ai-chat-assistant')}
+					{__('Your knowledge base is stored here so the AI can quickly search and use it when answering questions.', 'botisst-ai-chat-assistant')}
 				</p>
 
 				<div className="baca-kb-db-options">
@@ -488,7 +522,7 @@ export default function SetupWizard({ open, settings, onSave, onClose, showNotic
 				{__('Add what your bot should know', 'botisst-ai-chat-assistant')}
 			</h2>
 			<p className="baca-wizard-step-desc">
-				{__('Add facts, FAQs, or company info the chatbot can use when answering. You can add URLs, files, and full site indexing later in the Knowledge Base tab.', 'botisst-ai-chat-assistant')}
+				{__('Add facts, FAQs, or company information for your chatbot. You can add more content later in the Knowledge Base.', 'botisst-ai-chat-assistant')}
 			</p>
 
 			<div className="baca-bot-field">
@@ -510,10 +544,10 @@ export default function SetupWizard({ open, settings, onSave, onClose, showNotic
 	const renderPostTypesStep = () => (
 		<>
 			<h2 className="baca-wizard-step-title">
-				{__('Content to embed', 'botisst-ai-chat-assistant')}
+				{__('Content for Your Chatbot', 'botisst-ai-chat-assistant')}
 			</h2>
 			<p className="baca-wizard-step-desc">
-				{__('Select which WordPress content types to index and convert to vector embeddings. The bot will use these to answer user questions.', 'botisst-ai-chat-assistant')}
+				{__('Choose which WordPress content the chatbot can use to answer questions.', 'botisst-ai-chat-assistant')}
 			</p>
 
 			<div className="baca-kb-post-types" style={{ marginTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
@@ -643,9 +677,15 @@ export default function SetupWizard({ open, settings, onSave, onClose, showNotic
 							<button
 								type="button"
 								className="baca-btn baca-btn-primary"
-								onClick={onClose}
+								onClick={() => {
+									if (window.location.href.includes('page=baca')) {
+										onClose();
+									} else {
+										window.location.href = 'admin.php?page=baca';
+									}
+								}}
 							>
-								{__('Go to dashboard', 'botisst-ai-chat-assistant')}
+								{__('Go to Settings', 'botisst-ai-chat-assistant')}
 							</button>
 						</>
 					) : (
@@ -666,7 +706,12 @@ export default function SetupWizard({ open, settings, onSave, onClose, showNotic
 								type="button"
 								className="baca-btn baca-btn-primary"
 								onClick={handleNextClick}
-								disabled={busy || (step === 2 && !settings?.api_keys?.[embeddingProvider])}
+								disabled={
+									busy ||
+									(step === 1 && !apiKey.trim()) ||
+									(step === 2 && !settings?.api_keys?.[embeddingProvider]) ||
+									(vectorDb === 'pinecone' && step === 3 && (!pineconeApiKey.trim() || !pineconeHost.trim() || !pineconeIndexName.trim()))
+								}
 							>
 								{busy
 									? <span className="baca-spinner" aria-hidden="true" />

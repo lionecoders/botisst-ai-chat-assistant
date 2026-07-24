@@ -6,7 +6,7 @@ export default function DisplaySettingsTab( { settings, onSave, showNotice } ) {
 	const [ saving, setSaving ] = useState( false );
 	const display = settings?.display || {};
 
-	const [ formData, setFormData ] = useState( {
+	const getInitialFormData = () => ( {
 		entire_site: display.entire_site ?? false,
 		show_on_mobile: display.show_on_mobile ?? true,
 		exclude_pages: display.exclude_pages || '',
@@ -15,6 +15,12 @@ export default function DisplaySettingsTab( { settings, onSave, showNotice } ) {
 		trigger_type: display.trigger_type || 'click',
 		trigger_delay: display.trigger_delay ?? 5,
 	} );
+
+	const [ formData, setFormData ] = useState( getInitialFormData );
+	// Snapshot of the last-saved form state — the Save button stays
+	// disabled until something differs from this baseline.
+	const [ baseline, setBaseline ] = useState( getInitialFormData );
+	const isDirty = JSON.stringify( formData ) !== JSON.stringify( baseline );
 
 	const handleChange = ( name, value ) => {
 		setFormData( ( prev ) => ( { ...prev, [ name ]: value } ) );
@@ -32,6 +38,7 @@ export default function DisplaySettingsTab( { settings, onSave, showNotice } ) {
 			onSave( {
 				display: { ...display, ...formData },
 			} );
+			setBaseline( formData );
 			showNotice( __( 'Display settings saved successfully!', 'botisst-ai-chat-assistant' ) );
 		} catch ( error ) {
 			showNotice( error.message || __( 'Failed to save settings', 'botisst-ai-chat-assistant' ), 'error' );
@@ -169,11 +176,10 @@ export default function DisplaySettingsTab( { settings, onSave, showNotice } ) {
 				) }
 
 				<footer className="baca-display-footer">
-					<button type="submit" className="baca-btn baca-btn-primary" disabled={ saving }>
-						<span className="dashicons dashicons-saved" aria-hidden="true" />
+					<button type="submit" className="baca-btn baca-btn-primary" disabled={ saving || ! isDirty }>
 						{ saving
 							? __( 'Saving…', 'botisst-ai-chat-assistant' )
-							: __( 'Save Display Settings', 'botisst-ai-chat-assistant' ) }
+							: __( 'Save', 'botisst-ai-chat-assistant' ) }
 					</button>
 				</footer>
 			</form>
