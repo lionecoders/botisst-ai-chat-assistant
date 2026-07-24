@@ -180,8 +180,6 @@ export default function KnowledgeBaseTab({ settings, onSave, showNotice }) {
 	const vectorDatabaseOptions = [
 		{ value: 'sqlite', label: __('SQLite (Local)', 'botisst-ai-chat-assistant'), desc: __('Local vector storage - no setup needed', 'botisst-ai-chat-assistant') },
 		{ value: 'pinecone', label: __('Pinecone (Cloud)', 'botisst-ai-chat-assistant'), desc: __('Managed cloud service - requires API key', 'botisst-ai-chat-assistant') },
-		// { value: 'weaviate', label: __('Weaviate', 'botisst-ai-chat-assistant'), desc: __('Self-hosted or cloud - requires host URL', 'botisst-ai-chat-assistant') },
-		// { value: 'milvus', label: __('Milvus', 'botisst-ai-chat-assistant'), desc: __('Open-source - requires host and port', 'botisst-ai-chat-assistant') },
 	];
 
 	useEffect(() => {
