@@ -103,6 +103,7 @@ export default function ApiKeysTab({ settings, onSave, showNotice }) {
 			onSave( {
 				api_keys: response.api_keys || {},
 				chatbot: response.chatbot || {},
+				models: response.models || {},
 			} );
 
 			if ( response.models_list ) {

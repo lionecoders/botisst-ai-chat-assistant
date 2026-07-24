@@ -411,7 +411,7 @@ export default function ChatSessionsTab( { showNotice } ) {
 			${ msgs
 				.map( ( msg ) => {
 					const role = msg.role === 'user' ? name : __( 'Assistant', 'botisst-ai-chat-assistant' );
-					return `<div class="msg"><div class="role">${ role }<span class="time">${ formatMessageTime( msg.created_at ) }</span></div><div class="body">${ msg.content.replace( /</g, '&lt;' ) }</div></div>`;
+					return `<div class="msg"><div class="role">${ escapeHtml( role ) }<span class="time">${ formatMessageTime( msg.created_at ) }</span></div><div class="body">${ escapeHtml( msg.content ) }</div></div>`;
 				} )
 				.join( '' ) }
 			</body></html>`

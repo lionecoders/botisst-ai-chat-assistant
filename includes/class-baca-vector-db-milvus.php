@@ -271,7 +271,7 @@ class BACA_Vector_DB_Milvus extends BACA_Vector_DB_Base {
 		$data = [
 			'db_name'           => $this->db_name,
 			'collection_name'   => $this->collection_name,
-			'filter'            => 'chunk_id == "' . esc_sql( $chunk_id ) . '"',
+			'filter'            => 'chunk_id == "' . (int) $chunk_id . '"',
 			'output_fields'     => [ 'embedding' ],
 			'limit'             => 1,
 		];
@@ -314,7 +314,7 @@ class BACA_Vector_DB_Milvus extends BACA_Vector_DB_Base {
 		$data = [
 			'db_name'           => $this->db_name,
 			'collection_name'   => $this->collection_name,
-			'filter'            => 'chunk_id == "' . esc_sql( $chunk_id ) . '"',
+			'filter'            => 'chunk_id == "' . (int) $chunk_id . '"',
 		];
 
 		$response = wp_remote_post(
@@ -361,7 +361,7 @@ class BACA_Vector_DB_Milvus extends BACA_Vector_DB_Base {
 		// Build filter for multiple IDs
 		$filters = array_map(
 			function ( $chunk_id ) {
-				return 'chunk_id == "' . esc_sql( $chunk_id ) . '"';
+				return 'chunk_id == "' . (int) $chunk_id . '"';
 			},
 			$chunk_ids
 		);

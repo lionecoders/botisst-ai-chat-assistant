@@ -51,10 +51,10 @@ export default function ChatWidget({ settings, inline }) {
     const [isTyping, setIsTyping] = useState(false);
 
     const [sessionId, setSessionId] = useState(() => {
-        return 'sess_' + Math.random().toString(36).substr(2, 9);
+        return window.baca_frontend_data?.session_id || ('sess_' + Math.random().toString(36).substr(2, 9));
     });
 
-    const [clearAllowed, setClearAllowed] = useState(true);
+    const [clearAllowed, setClearAllowed] = useState(() => window.baca_frontend_data?.clear_allowed ?? true);
 
     const [messages, setMessages] = useState([]);
 
@@ -68,6 +68,13 @@ export default function ChatWidget({ settings, inline }) {
     const messagesEndRef = useRef(null);
     const textareaRef = useRef(null);
     const widgetRef = useRef(null);
+    const isMountedRef = useRef(true);
+
+    useEffect(() => {
+        return () => {
+            isMountedRef.current = false;
+        };
+    }, []);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -133,6 +140,8 @@ export default function ChatWidget({ settings, inline }) {
                     data: { prompt: msgToSend, session_id: sessionId, email: trimmed }
                 });
 
+                if (!isMountedRef.current) return;
+
                 if (response.success) {
                     if (response.session_id && response.session_id !== sessionId) {
                         setSessionId(response.session_id);
@@ -150,9 +159,13 @@ export default function ChatWidget({ settings, inline }) {
                     setMessages(prev => [...prev, { role: 'error', content: getErrorMessage() }]);
                 }
             } catch (error) {
-                setMessages(prev => [...prev, { role: 'error', content: getErrorMessage() }]);
+                if (isMountedRef.current) {
+                    setMessages(prev => [...prev, { role: 'error', content: getErrorMessage() }]);
+                }
             } finally {
-                setIsTyping(false);
+                if (isMountedRef.current) {
+                    setIsTyping(false);
+                }
             }
         }
     };
@@ -191,6 +204,7 @@ export default function ChatWidget({ settings, inline }) {
 
     const handleSend = async (e, directText = null) => {
         if (e) e.preventDefault();
+        if (isTyping) return;
         const text = (directText !== null ? directText : input).trim();
         if (!text) return;
 
@@ -219,6 +233,8 @@ export default function ChatWidget({ settings, inline }) {
                 data: { prompt: text, session_id: sessionId, email: userEmail }
             });
 
+            if (!isMountedRef.current) return;
+
             if (response.success) {
                 if (response.session_id && response.session_id !== sessionId) {
                     setSessionId(response.session_id);
@@ -236,9 +252,13 @@ export default function ChatWidget({ settings, inline }) {
                 setMessages(prev => [...prev, { role: 'error', content: getErrorMessage() }]);
             }
         } catch (error) {
-            setMessages(prev => [...prev, { role: 'error', content: getErrorMessage() }]);
+            if (isMountedRef.current) {
+                setMessages(prev => [...prev, { role: 'error', content: getErrorMessage() }]);
+            }
         } finally {
-            setIsTyping(false);
+            if (isMountedRef.current) {
+                setIsTyping(false);
+            }
         }
     };
 
@@ -382,9 +402,10 @@ export default function ChatWidget({ settings, inline }) {
                                 }}
                                 placeholder={__('Type a message...', 'botisst-ai-chat-assistant')}
                                 rows={1}
+                                disabled={isTyping}
                                 style={{ resize: 'none', overflowY: 'auto', minHeight: '44px', lineHeight: '20px', padding: '12px 20px', boxSizing: 'border-box' }}
                             />
-                            <button className="baca-chat-send" onClick={handleSend} aria-label={__('Send message', 'botisst-ai-chat-assistant')}>
+                            <button className="baca-chat-send" onClick={handleSend} disabled={isTyping} aria-label={__('Send message', 'botisst-ai-chat-assistant')}>
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                                     <path
                                         d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"

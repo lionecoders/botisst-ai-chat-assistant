@@ -131,8 +131,11 @@ class BACA_Vector_DB_SQLite extends BACA_Vector_DB_Base {
 		$chunks_table     = esc_sql( $wpdb->prefix . 'baca_rag_chunks' );
 
 		// Fetch completed chunks and their embeddings using a JOIN
-		// limit to 500 to keep performance reasonable for local PHP cosine calculations
-		$query = "SELECT e.chunk_id, e.embedding FROM {$embeddings_table} e JOIN {$chunks_table} c ON e.chunk_id = c.id WHERE c.embedding_status = 'completed' LIMIT 500"; // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table names are dynamic but safe.
+		// limit to 500 to keep performance reasonable for local PHP cosine calculations.
+		// Ordered by most recently indexed first so which 500 chunks get
+		// searched (on sites with more than 500) is deterministic instead
+		// of an arbitrary/undefined subset.
+		$query = "SELECT e.chunk_id, e.embedding FROM {$embeddings_table} e JOIN {$chunks_table} c ON e.chunk_id = c.id WHERE c.embedding_status = 'completed' ORDER BY c.created_at DESC, c.id DESC LIMIT 500"; // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table names are dynamic but safe.
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.NotPrepared -- Direct database read from custom table, query is safe.
 		$results_db = $wpdb->get_results( $query, ARRAY_A );
 

@@ -107,7 +107,12 @@ export default function SetupWizard({ open, settings, onSave, onClose, showNotic
 			.catch(() => { });
 
 		return () => document.body.classList.remove('baca-modal-open');
-	}, [open, settings]);
+		// Intentionally only [open]: this should initialize the wizard's
+		// fields once when it opens, not keep re-syncing (and clobbering
+		// in-progress edits) every time settings changes while it's open —
+		// each step already saves its own local state via onSave().
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [open]);
 
 	if (!open) {
 		return null;

@@ -32,20 +32,6 @@ class BACA_MCP_Server {
 	private $cache_group = 'baca_mcp';
 
 	/**
-	 * Constructor
-	 */
-	public static function load() {
-		try {
-			return self::get_instance();
-		} catch ( Exception $e ) {
-			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-				error_log( 'Botisst AI MCP Server Load Error: ' . $e->getMessage() ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Allowed under WP_DEBUG constraint.
-			}
-			return null;
-		}
-	}
-
-	/**
 	 * Get Instance (Singleton)
 	 *
 	 * @return self
@@ -61,9 +47,7 @@ class BACA_MCP_Server {
 	 * Constructor
 	 */
 	private function __construct() {
-		// Initialize hooks for cache invalidation
-		add_action( 'save_post', [ $this, 'invalidate_cache' ] );
-		add_action( 'delete_post', [ $this, 'invalidate_cache' ] );
+		// Cache hooks are registered globally in the main plugin class.
 	}
 
 	/**
@@ -102,7 +86,8 @@ class BACA_MCP_Server {
 				}
 
 				if ( 'ecommerce' === $site_type && ! empty( $item['price'] ) ) {
-					$context .= "- **" . sanitize_text_field( $item['name'] ) . "** ($" . floatval( $item['price'] ) . "): " . sanitize_text_field( $item['description'] ) . "\n";
+					$currency_symbol = function_exists( 'get_woocommerce_currency_symbol' ) ? get_woocommerce_currency_symbol() : '$';
+					$context .= "- **" . sanitize_text_field( $item['name'] ) . "** (" . $currency_symbol . floatval( $item['price'] ) . "): " . sanitize_text_field( $item['description'] ) . "\n";
 				} else {
 					$context .= "- **" . sanitize_text_field( $item['title'] ?? $item['name'] ) . "**: " . sanitize_text_field( $item['description'] ?? $item['excerpt'] ?? '' ) . "\n";
 				}
@@ -301,15 +286,6 @@ class BACA_MCP_Server {
 		}
 
 		return $result;
-	}
-
-	/**
-	 * Invalidate cache when posts change
-	 *
-	 * @return void
-	 */
-	public function invalidate_cache() {
-		wp_cache_flush();
 	}
 
 	/**

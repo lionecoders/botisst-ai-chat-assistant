@@ -83,6 +83,10 @@ if (!class_exists('BACA_Chat_Assistant')):
 			add_shortcode('botisst_ai', [$this, 'baca_shortcode_render']);
 			add_action('plugin_action_links_' . BACA_BASENAME, [$this, 'baca_add_settings_link']);
 
+			// Cache Invalidation Hooks.
+			add_action('save_post', [$this, 'baca_invalidate_mcp_cache']);
+			add_action('delete_post', [$this, 'baca_invalidate_mcp_cache']);
+
 			// Integrations & Helpers.
 			add_action('init', [$this, 'baca_init_integrations']);
 			add_filter('http_request_timeout', [$this, 'baca_increase_http_timeout'], 9999, 2);
@@ -214,7 +218,8 @@ if (!class_exists('BACA_Chat_Assistant')):
 					'models_list' => $models_list,
 					'load_limit' => get_user_meta(get_current_user_id(), 'baca_sessions_load_limit', true) ?: '100',
 					'sort_order' => get_user_meta(get_current_user_id(), 'baca_sessions_sort_order', true) ?: 'desc',
-					'show_setup_wizard' => get_option('baca_setup_wizard_status') === 'pending' || (isset($_GET['baca_open_wizard']) && 'true' === $_GET['baca_open_wizard']),
+					// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+					'show_setup_wizard' => get_option('baca_setup_wizard_status') === 'pending' || (isset($_GET['baca_open_wizard']) && 'true' === sanitize_text_field(wp_unslash($_GET['baca_open_wizard']))),
 				]
 			);
 		}
@@ -273,6 +278,14 @@ if (!class_exists('BACA_Chat_Assistant')):
 		public function baca_ajax_dismiss_setup_notice()
 		{
 			check_ajax_referer('baca_dismiss_notice_nonce');
+
+			if (!current_user_can('manage_options')) {
+				wp_send_json_error(
+					esc_html__('You do not have permission to do this.', 'botisst-ai-chat-assistant'),
+					403
+				);
+			}
+
 			update_option('baca_setup_wizard_status', 'completed');
 			wp_send_json_success();
 		}
@@ -329,6 +342,8 @@ if (!class_exists('BACA_Chat_Assistant')):
 
 				// Set clear allowed cookie for 30 minutes (1800 seconds)
 				setcookie('baca_clear_allowed', 'true', time() + 1800, COOKIEPATH ? COOKIEPATH : '/', COOKIE_DOMAIN, is_ssl(), false);
+
+				$_COOKIE['baca_session_id'] = $session_id;
 			}
 		}
 
@@ -457,7 +472,7 @@ if (!class_exists('BACA_Chat_Assistant')):
 		 */
 		public function baca_add_settings_link($links)
 		{
-			$settings_link = '<a href="' . admin_url('admin.php?page=baca') . '">' . esc_html__('Settings', 'botisst-ai-chat-assistant') . '</a>';
+			$settings_link = '<a href="' . esc_url(admin_url('admin.php?page=baca')) . '">' . esc_html__('Settings', 'botisst-ai-chat-assistant') . '</a>';
 			array_unshift($links, $settings_link);
 			return $links;
 		}
@@ -590,6 +605,16 @@ if (!class_exists('BACA_Chat_Assistant')):
 			}
 
 			update_option('baca_chat_assistant_settings_migrated', true);
+		}
+
+		/**
+		 * Invalidate MCP site context cache when posts are saved or deleted.
+		 *
+		 * @return void
+		 */
+		public function baca_invalidate_mcp_cache()
+		{
+			wp_cache_delete('baca_site_context', 'baca_mcp');
 		}
 	}
 

@@ -108,8 +108,6 @@ class BACA_Indexer
 	 */
 	public function index_all_documents()
 	{
-		global $wpdb;
-
 		$settings = $this->get_settings();
 		$sources = !empty($settings['post_types']) ? $settings['post_types'] : ['post', 'page'];
 
@@ -421,7 +419,7 @@ class BACA_Indexer
 			$vector_db =
 				$this->vector_db;
 
-			if (!$vector_db) {
+			if (!$vector_db || is_wp_error($vector_db)) {
 
 				throw new Exception(
 					'Vector DB missing.'
@@ -530,7 +528,7 @@ class BACA_Indexer
 		$full_content = preg_replace('/\s+/', ' ', $full_content); // Normalize whitespace
 
 		$chunks = [];
-		$length = strlen($full_content);
+		$length = mb_strlen($full_content);
 
 		if ($length <= $this->chunk_size) {
 			return [
@@ -545,9 +543,13 @@ class BACA_Indexer
 		$start = 0;
 		$index = 0;
 
+		// Guard against a misconfigured chunk_overlap >= chunk_size, which
+		// would make $start never advance and loop forever.
+		$effective_overlap = min($this->chunk_overlap, max(0, $this->chunk_size - 1));
+
 		while ($start < $length) {
 			$end = min($start + $this->chunk_size, $length);
-			$chunk = substr($full_content, $start, $this->chunk_size);
+			$chunk = mb_substr($full_content, $start, $this->chunk_size);
 			$chunks[] = [
 				'content' => trim($chunk),
 				'chunk_index' => $index,
@@ -556,7 +558,7 @@ class BACA_Indexer
 			];
 
 			// Move start position with overlap
-			$start += ($this->chunk_size - $this->chunk_overlap);
+			$start += ($this->chunk_size - $effective_overlap);
 			$index++;
 		}
 
@@ -616,14 +618,12 @@ class BACA_Indexer
 			if ($existing) {
 				// Update
 				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct update to custom table.
-				$result = $wpdb->update(
+				$wpdb->update(
 					$table,
 					$insert_data,
 					['document_id' => $data['document_id']],
 					['%s', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s']
 				);
-				if (false === $result) {
-				}
 				return $existing->id;
 			} else {
 				// Insert
@@ -803,7 +803,7 @@ class BACA_Indexer
 			)
 		);
 
-		if (!empty($chunk_ids) && $this->vector_db) {
+		if (!empty($chunk_ids) && $this->vector_db && !is_wp_error($this->vector_db)) {
 			$this->vector_db->bulk_delete(array_map('intval', $chunk_ids));
 		}
 
@@ -891,7 +891,7 @@ class BACA_Indexer
 				$config
 			);
 
-		if (!$vector_db) {
+		if (!$vector_db || is_wp_error($vector_db)) {
 
 			return [
 				'processed' => 0,
@@ -1003,10 +1003,19 @@ class BACA_Indexer
 			}
 		}
 
-		$remaining = $this->count_pending_embeddings();
+		// Lock only the counter read-modify-write, not the embedding calls
+		// above — those can safely run concurrently across ticks since each
+		// chunk row is updated independently by its own ID.
+		if ($this->acquire_index_lock()) {
+			try {
+				$this->update_metadata('embed_processed', (int) $this->get_metadata('embed_processed', 0) + $processed);
+				$this->update_metadata('embed_failed', (int) $this->get_metadata('embed_failed', 0) + $failed);
+			} finally {
+				$this->release_index_lock();
+			}
+		}
 
-		$this->update_metadata('embed_processed', (int) $this->get_metadata('embed_processed', 0) + $processed);
-		$this->update_metadata('embed_failed', (int) $this->get_metadata('embed_failed', 0) + $failed);
+		$remaining = $this->count_pending_embeddings();
 
 		if (0 === $remaining) {
 			$this->update_metadata('index_status', 'completed');
@@ -1225,7 +1234,7 @@ class BACA_Indexer
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct read to compute content hashes for diffing; wp_posts is core.
 		$posts = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT ID, post_title, post_content FROM {$wpdb->posts} WHERE ID IN ({$id_placeholders})", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Placeholders are prepared; table is $wpdb->posts.
+				"SELECT ID, post_title, post_content FROM {$wpdb->posts} WHERE ID IN ({$id_placeholders})", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- Placeholders are prepared; table is $wpdb->posts.
 				$post_ids
 			),
 			ARRAY_A
@@ -1247,7 +1256,7 @@ class BACA_Indexer
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct read on custom table.
 		$existing_rows = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT document_id, hash FROM {$docs_table} WHERE document_id IN ({$doc_placeholders})", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is dynamic but safe; placeholders are prepared.
+				"SELECT document_id, hash FROM {$docs_table} WHERE document_id IN ({$doc_placeholders})", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- Table name is dynamic but safe; placeholders are prepared.
 				$document_ids
 			),
 			ARRAY_A
@@ -1273,6 +1282,39 @@ class BACA_Indexer
 	}
 
 	/**
+	 * Acquire the Indexing Lock
+	 *
+	 * Guards the index_queue read-modify-write cycle in process_index_batch()
+	 * and the progress counters in generate_pending_embeddings() against two
+	 * overlapping WP-Cron ticks (WordPress's pseudo-cron can be triggered by
+	 * two concurrent page loads) clobbering each other's write. Uses the
+	 * same transient-as-mutex pattern WordPress core itself uses in
+	 * wp-cron.php to prevent double-spawned cron runs.
+	 *
+	 * @return bool True if the lock was acquired.
+	 */
+	private function acquire_index_lock()
+	{
+		if (false !== get_transient('baca_indexing_lock')) {
+			return false;
+		}
+
+		set_transient('baca_indexing_lock', time(), 30);
+
+		return true;
+	}
+
+	/**
+	 * Release the Indexing Lock
+	 *
+	 * @return void
+	 */
+	private function release_index_lock()
+	{
+		delete_transient('baca_indexing_lock');
+	}
+
+	/**
 	 * Process Index Batch
 	 *
 	 * Indexes (and embeds, via index_post()) a small batch of queued
@@ -1286,56 +1328,71 @@ class BACA_Indexer
 	 */
 	public function process_index_batch($batch_size = 5)
 	{
-		$queue = json_decode((string) $this->get_metadata('index_queue', '[]'), true);
-
-		if (!is_array($queue)) {
-			$queue = [];
+		if (!$this->acquire_index_lock()) {
+			// Another tick is actively writing the queue right now — skip
+			// this run untouched; the caller's existing "remaining > 0"
+			// reschedule logic will simply retry a few seconds later.
+			return [
+				'remaining' => count((array) json_decode((string) $this->get_metadata('index_queue', '[]'), true)),
+				'indexed' => 0,
+				'failed' => 0,
+			];
 		}
 
-		$batch = array_splice($queue, 0, max(1, (int) $batch_size));
+		try {
+			$queue = json_decode((string) $this->get_metadata('index_queue', '[]'), true);
 
-		$indexed = 0;
-		$failed = 0;
-
-		foreach ($batch as $post_id) {
-
-			$post = get_post((int) $post_id);
-
-			if (!$post) {
-				continue;
+			if (!is_array($queue)) {
+				$queue = [];
 			}
 
-			try {
-				if ($this->index_post($post)) {
-					$indexed++;
-				} else {
+			$batch = array_splice($queue, 0, max(1, (int) $batch_size));
+
+			$indexed = 0;
+			$failed = 0;
+
+			foreach ($batch as $post_id) {
+
+				$post = get_post((int) $post_id);
+
+				if (!$post) {
+					continue;
+				}
+
+				try {
+					if ($this->index_post($post)) {
+						$indexed++;
+					} else {
+						$failed++;
+					}
+				} catch (Exception $e) {
 					$failed++;
 				}
-			} catch (Exception $e) {
-				$failed++;
 			}
+
+			$this->update_metadata('index_queue', wp_json_encode($queue));
+			$this->update_metadata('index_processed', (int) $this->get_metadata('index_processed', 0) + count($batch));
+			$this->update_metadata('index_indexed', (int) $this->get_metadata('index_indexed', 0) + $indexed);
+			$this->update_metadata('index_failed', (int) $this->get_metadata('index_failed', 0) + $failed);
+
+			$remaining = count($queue);
+
+			if (0 === $remaining) {
+				$this->update_metadata('index_status', 'embedding');
+				$this->update_metadata('embed_total', $this->count_pending_embeddings());
+				$this->update_metadata('embed_processed', 0);
+				$this->update_metadata('embed_failed', 0);
+				$this->update_metadata('last_index_time', current_time('mysql'));
+			}
+
+			return [
+				'remaining' => $remaining,
+				'indexed' => $indexed,
+				'failed' => $failed,
+			];
+		} finally {
+			$this->release_index_lock();
 		}
-
-		$this->update_metadata('index_queue', wp_json_encode($queue));
-		$this->update_metadata('index_processed', (int) $this->get_metadata('index_processed', 0) + count($batch));
-		$this->update_metadata('index_indexed', (int) $this->get_metadata('index_indexed', 0) + $indexed);
-		$this->update_metadata('index_failed', (int) $this->get_metadata('index_failed', 0) + $failed);
-
-		$remaining = count($queue);
-
-		if (0 === $remaining) {
-			$this->update_metadata('index_status', 'embedding');
-			$this->update_metadata('embed_total', $this->count_pending_embeddings());
-			$this->update_metadata('embed_processed', 0);
-			$this->update_metadata('embed_failed', 0);
-			$this->update_metadata('last_index_time', current_time('mysql'));
-		}
-
-		return [
-			'remaining' => $remaining,
-			'indexed' => $indexed,
-			'failed' => $failed,
-		];
 	}
 
 	/**

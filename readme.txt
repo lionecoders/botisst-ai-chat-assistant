@@ -8,7 +8,7 @@ Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-A friendly, custom AI assistant for your WordPress site. Connect OpenAI or Google Gemini in seconds, train it with your own knowledge base, and chat with your visitors in real-time.
+A custom AI assistant for WordPress. Connect OpenAI or Gemini, train it with your knowledge base, and chat with visitors in real-time.
 
 == Description ==
 

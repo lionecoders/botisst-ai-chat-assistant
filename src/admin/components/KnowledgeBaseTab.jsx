@@ -177,15 +177,6 @@ export default function KnowledgeBaseTab({ settings, onSave, showNotice }) {
 		return selectedPostTypes.some((pt) => !indexedSet.has(pt));
 	})();
 
-	// Index what to include checkboxes. "website" is derived from whether any
-	// post type is selected below, instead of being a separate toggle, since
-	// the two controls previously had to be set in sync to take effect.
-	const [indexWhat, setIndexWhat] = useState({
-		knowledge_text: true,
-		urls: true,
-		files: true,
-	});
-
 	const vectorDatabaseOptions = [
 		{ value: 'sqlite', label: __('SQLite (Local)', 'botisst-ai-chat-assistant'), desc: __('Local vector storage - no setup needed', 'botisst-ai-chat-assistant') },
 		{ value: 'pinecone', label: __('Pinecone (Cloud)', 'botisst-ai-chat-assistant'), desc: __('Managed cloud service - requires API key', 'botisst-ai-chat-assistant') },
@@ -275,10 +266,12 @@ export default function KnowledgeBaseTab({ settings, onSave, showNotice }) {
 		const indexWebsite = selectedPostTypes.length > 0;
 		const typesToIndex = indexWebsite ? [...selectedPostTypes] : [];
 
+		// knowledge_text/urls/files are always included; only "website" is
+		// conditional on whether any post type is selected below.
 		const indexSources = {
-			knowledge_text: indexWhat.knowledge_text,
-			urls: indexWhat.urls,
-			files: indexWhat.files,
+			knowledge_text: true,
+			urls: true,
+			files: true,
 			website: indexWebsite,
 		};
 

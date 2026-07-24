@@ -47,9 +47,18 @@ class BACA_Vector_DB_Weaviate extends BACA_Vector_DB_Base {
 	public function __construct( $config = [] ) {
 		parent::__construct( $config );
 
-		$this->host_url   = ! empty( $config['host_url'] ) ? rtrim( $config['host_url'], '/' ) : 'http://localhost:8080';
-		$this->api_key    = ! empty( $config['api_key'] ) ? $config['api_key'] : '';
-		$this->class_name = ! empty( $config['class_name'] ) ? $config['class_name'] : 'BotisstDocument';
+		$this->host_url = ! empty( $config['host_url'] ) ? rtrim( $config['host_url'], '/' ) : 'http://localhost:8080';
+		$this->api_key  = ! empty( $config['api_key'] ) ? $config['api_key'] : '';
+
+		// class_name is interpolated as a bare GraphQL identifier in query
+		// strings (see search(), get_embedding(), etc.), so it can't be
+		// quote-escaped like a value — it must instead be restricted to a
+		// safe identifier shape. Every legitimate Weaviate class name
+		// already matches this (Weaviate itself requires alphanumeric +
+		// underscore names), so this only rejects malformed/malicious
+		// input, never a real class name.
+		$class_name = ! empty( $config['class_name'] ) ? $config['class_name'] : 'BotisstDocument';
+		$this->class_name = preg_match( '/^[A-Za-z_][A-Za-z0-9_]*$/', $class_name ) ? $class_name : 'BotisstDocument';
 	}
 
 	/**
@@ -279,7 +288,7 @@ class BACA_Vector_DB_Weaviate extends BACA_Vector_DB_Base {
 			  }
 			}',
 			$this->class_name,
-			esc_attr( $chunk_id )
+			(int) $chunk_id
 		);
 
 		$response = wp_remote_post(
@@ -335,7 +344,7 @@ class BACA_Vector_DB_Weaviate extends BACA_Vector_DB_Base {
 			  }
 			}',
 			$this->class_name,
-			esc_attr( $chunk_id )
+			(int) $chunk_id
 		);
 
 		// Get the object to delete

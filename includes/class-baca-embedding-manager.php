@@ -36,12 +36,21 @@ class BACA_Embedding_Manager {
 		$provider = $rag_settings['embeddings']['provider'];
 
 		if ( $provider === 'google' ) {
-			$rag_settings['embeddings']['model'] = 'models/gemini-embedding-001';
+			if ( empty( $rag_settings['embeddings']['model'] ) ) {
+				$rag_settings['embeddings']['model'] = 'models/gemini-embedding-001';
+			}
 			$rag_settings['embeddings']['api_key_type'] = 'google';
+		} elseif ( $provider === 'local' ) {
+			if ( empty( $rag_settings['embeddings']['model'] ) ) {
+				$rag_settings['embeddings']['model'] = 'local-embedding';
+			}
+			$rag_settings['embeddings']['api_key_type'] = 'local';
 		} else {
 			// default to openai
 			$rag_settings['embeddings']['provider'] = 'openai';
-			$rag_settings['embeddings']['model'] = 'text-embedding-3-small';
+			if ( empty( $rag_settings['embeddings']['model'] ) ) {
+				$rag_settings['embeddings']['model'] = 'text-embedding-3-small';
+			}
 			$rag_settings['embeddings']['api_key_type'] = 'openai';
 		}
 
@@ -77,10 +86,6 @@ class BACA_Embedding_Manager {
 					break;
 				default:
 					$embedding = $this->embed_google( $text );
-			}
-
-			if ( ! $embedding ) {
-				// Embedding generation failed silently.
 			}
 
 			return $embedding;

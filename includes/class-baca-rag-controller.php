@@ -48,6 +48,40 @@ class BACA_RAG_Controller
 	}
 
 	/**
+	 * Check whether a submitted host resolves to a public, external
+	 * address rather than a private/loopback/link-local one.
+	 *
+	 * Used to stop an admin-configurable "host" field (e.g. Pinecone) from
+	 * being usable as an SSRF vector to make this server issue
+	 * authenticated requests into its own internal network.
+	 *
+	 * @param string $host Raw host/URL as submitted by the admin.
+	 * @return bool True if the host is a safe, public target.
+	 */
+	private function is_safe_external_host($host)
+	{
+		$parsed = wp_parse_url($host);
+		$hostname = isset($parsed['host']) ? $parsed['host'] : '';
+
+		if (empty($hostname)) {
+			return false;
+		}
+
+		$ip = filter_var($hostname, FILTER_VALIDATE_IP) ? $hostname : gethostbyname($hostname);
+
+		if (!filter_var($ip, FILTER_VALIDATE_IP)) {
+			// Could not resolve the hostname at all.
+			return false;
+		}
+
+		return false !== filter_var(
+			$ip,
+			FILTER_VALIDATE_IP,
+			FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE
+		);
+	}
+
+	/**
 	 * REST callback: save RAG configuration settings.
 	 *
 	 * @param \WP_REST_Request $request The REST request object.
@@ -125,6 +159,21 @@ class BACA_RAG_Controller
 			$vector_db['provider'] === 'pinecone' &&
 			!empty($vector_db['api_key'])
 		) {
+
+			// Pinecone is a cloud-only service — a legitimate host is
+			// always a public *.pinecone.io address, never a private or
+			// loopback one. Reject anything else so this field can't be
+			// used to make the server issue authenticated requests into
+			// its own internal network (SSRF).
+			if (!empty($vector_db['host']) && !$this->is_safe_external_host($vector_db['host'])) {
+				return new \WP_REST_Response(
+					[
+						'success' => false,
+						'message' => esc_html__('Pinecone host must be a public address, not a private, loopback, or internal network host.', 'botisst-ai-chat-assistant'),
+					],
+					400
+				);
+			}
 
 			try {
 
@@ -567,7 +616,12 @@ class BACA_RAG_Controller
 			}
 
 			/*
-			 * Detect follow-up questions
+			 * Detect follow-up questions. Only phrases that specifically
+			 * mean "continue/expand on what we were just discussing" — not
+			 * generic question words like "how"/"why"/"when", which are
+			 * how most brand-new questions start and would otherwise get
+			 * misrouted to search using the previous topic instead of the
+			 * user's actual new question.
 			 */
 			$followup_keywords = [
 				'more',
@@ -579,15 +633,8 @@ class BACA_RAG_Controller
 				'elaborate',
 				'full details',
 				'more information',
-				'how',
-				'why',
-				'when',
-				'where',
-				'which',
 				'what about',
 				'can you explain',
-				'example',
-				'examples'
 			];
 
 			$query_lower = strtolower(trim($query));
@@ -740,6 +787,10 @@ class BACA_RAG_Controller
 			return '';
 		}
 
+		// Same reasoning as the follow-up keyword list in get_context():
+		// only phrases that specifically mean "continue the previous
+		// topic," not generic question words that any brand-new question
+		// could start with.
 		$followup_phrases = [
 			'more',
 			'more details',
@@ -748,19 +799,9 @@ class BACA_RAG_Controller
 			'explain more',
 			'continue',
 			'elaborate',
-			'why',
-			'why?',
-			'how',
-			'how?',
-			'when',
-			'when?',
-			'where',
-			'where?',
 			'what about that',
 			'what about this',
 			'can you explain',
-			'example',
-			'examples',
 		];
 
 		/*

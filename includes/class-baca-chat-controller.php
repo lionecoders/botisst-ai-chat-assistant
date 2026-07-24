@@ -88,6 +88,16 @@ class BACA_Chat_Controller
 		$session_id = isset($params['session_id']) ? sanitize_text_field($params['session_id']) : 'default';
 		$email = isset($params['email']) ? sanitize_email($params['email']) : '';
 
+		if (!current_user_can('manage_options')) {
+			$cookie_session_id = isset($_COOKIE['baca_session_id']) ? sanitize_text_field(wp_unslash($_COOKIE['baca_session_id'])) : '';
+			if (empty($cookie_session_id) || $cookie_session_id !== $session_id) {
+				return $this->error_response(
+					esc_html__('Unauthorized session access.', 'botisst-ai-chat-assistant'),
+					403
+				);
+			}
+		}
+
 		if (empty($prompt)) {
 			return $this->error_response(
 				esc_html__('Empty prompt provided.', 'botisst-ai-chat-assistant'),
@@ -125,12 +135,16 @@ class BACA_Chat_Controller
 				);
 			}
 		} catch (Exception $e) {
-			return $this->error_response($e->getMessage(), 400);
+			self::log_debug('Botisst AI Chat Active Provider/Model Error: ' . $e->getMessage());
+			$error_message = current_user_can('manage_options') ? $e->getMessage() : esc_html__('An error occurred while processing your request.', 'botisst-ai-chat-assistant');
+			return $this->error_response($error_message, 400);
 		}
 		try {
 			$system_message = $this->build_system_prompt($bot, $settings);
 		} catch (Exception $e) {
-			return $this->error_response($e->getMessage(), 500);
+			self::log_debug('Botisst AI Chat System Prompt Error: ' . $e->getMessage());
+			$error_message = current_user_can('manage_options') ? $e->getMessage() : esc_html__('An error occurred while processing your request.', 'botisst-ai-chat-assistant');
+			return $this->error_response($error_message, 500);
 		}
 		try {
 			$rag_data = $this->rag_controller->get_chat_context($prompt, $session_id, $bot, $settings);
@@ -187,7 +201,9 @@ class BACA_Chat_Controller
 				);
 			}
 		} catch (\Throwable $e) {
-			return $this->error_response($e->getMessage(), 500);
+			self::log_debug('Botisst AI Chat API/Processing Error: ' . $e->getMessage());
+			$error_message = current_user_can('manage_options') ? $e->getMessage() : esc_html__('An error occurred while processing your request.', 'botisst-ai-chat-assistant');
+			return $this->error_response($error_message, 500);
 		}
 
 		try {

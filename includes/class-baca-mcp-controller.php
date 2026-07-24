@@ -193,8 +193,10 @@ class BACA_MCP_Controller
 
 	/**
 	 * Build MCP-derived context for a chat prompt: site content context from
-	 * BACA_MCP_Server if available, otherwise a summary of enabled custom
-	 * MCP servers.
+	 * BACA_MCP_Server, combined with a summary of enabled custom MCP
+	 * servers. Both are included (not one as a fallback for the other) so a
+	 * configured custom server is actually used even when the site already
+	 * has content of its own — which is virtually always.
 	 *
 	 * @param string $prompt   User prompt.
 	 * @param array  $settings Plugin settings.
@@ -208,16 +210,16 @@ class BACA_MCP_Controller
 			}
 
 			$mcp_server = BACA_MCP_Server::get_instance();
-			if (!$mcp_server) {
-				return '';
+			$site_context = $mcp_server ? $mcp_server->get_site_context() : '';
+
+			$custom_context = $this->get_custom_servers_context($prompt, $settings);
+
+			$context = $site_context;
+			if (!empty($custom_context)) {
+				$context .= "\n\n## Connected MCP Servers\n" . $custom_context;
 			}
 
-			$site_context = $mcp_server->get_site_context();
-			if (!empty($site_context)) {
-				return $site_context;
-			}
-
-			return $this->get_custom_servers_context($prompt, $settings) ?: '';
+			return $context;
 		} catch (Exception $e) {
 			self::log_debug('Botisst AI MCP Context Retrieval Error: ' . $e->getMessage());
 			return '';

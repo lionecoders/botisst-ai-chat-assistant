@@ -133,9 +133,11 @@ class BACA_Key_Store
 				stripos($msg, 'invalid') !== false ||
 				stripos($msg, 'key not found') !== false
 			) {
+				/* translators: %s: AI provider name. */
+				$error_message = sprintf(esc_html__('Invalid API key for %s. Please check your credentials.', 'botisst-ai-chat-assistant'), esc_html($provider_name));
 				return new \WP_Error(
 					'invalid_key',
-					sprintf(esc_html__('Invalid API key for %s. Please check your credentials.', 'botisst-ai-chat-assistant'), esc_html($provider_name))
+					$error_message
 				);
 			}
 
@@ -226,6 +228,7 @@ class BACA_Key_Store
 				'api_keys' => $api_keys,
 				'models_list' => $models_list,
 				'chatbot' => $chatbot_data,
+				'models' => isset($updated_settings['models']) ? $updated_settings['models'] : [],
 			],
 			200
 		);
@@ -241,6 +244,13 @@ class BACA_Key_Store
 	{
 		$provider = sanitize_text_field($request->get_param('provider'));
 
+		if (!in_array($provider, ['openai', 'google'], true)) {
+			return new \WP_REST_Response(
+				['success' => false, 'message' => esc_html__('Unknown provider.', 'botisst-ai-chat-assistant')],
+				400
+			);
+		}
+
 		$settings = BACA_Settings_Handler::baca_get_all_settings();
 		if (isset($settings['models'][$provider])) {
 			$settings['models'][$provider] = '';
@@ -249,11 +259,15 @@ class BACA_Key_Store
 			unset($settings['api_keys'][$provider]);
 		}
 
-		// If the reset provider was the default_provider, update it
+		// If the reset provider was the default_provider, update it. Checks
+		// the actual key storage (self::get_provider_key()) rather than
+		// $settings['api_keys'], which normal key-saving never populates —
+		// using that would always see "no other provider configured" and
+		// wrongly clear default_provider even when one still is.
 		if (isset($settings['chatbot']['default_provider']) && $settings['chatbot']['default_provider'] === $provider) {
 			$remaining = [];
 			foreach (['openai', 'google'] as $p) {
-				if ($p !== $provider && !empty($settings['api_keys'][$p])) {
+				if ($p !== $provider && !empty(self::get_provider_key($p))) {
 					$remaining[] = $p;
 				}
 			}
@@ -282,11 +296,15 @@ class BACA_Key_Store
 	/**
 	 * Encrypt Secret
 	 *
-	 * Symmetric encryption for secrets (e.g. MCP server API keys) stored in
-	 * the settings option, keyed from this site's WordPress auth salt.
+	 * Authenticated symmetric encryption (AES-256-GCM) for secrets (e.g.
+	 * MCP server API keys) stored in the settings option, keyed from this
+	 * site's WordPress auth salt. The "v2:" prefix marks the authenticated
+	 * format so decrypt_secret() can tell it apart from secrets saved by
+	 * the older unauthenticated AES-256-CBC format and keep reading those
+	 * correctly too.
 	 *
 	 * @param string $plaintext Value to encrypt.
-	 * @return string Base64-encoded IV + ciphertext, or '' on empty input/failure.
+	 * @return string "v2:" + base64-encoded IV + tag + ciphertext, or '' on empty input/failure.
 	 */
 	public function encrypt_secret($plaintext)
 	{
@@ -295,19 +313,25 @@ class BACA_Key_Store
 		}
 
 		$key = hash('sha256', wp_salt('auth'), true);
-		$iv = random_bytes(openssl_cipher_iv_length('aes-256-cbc'));
+		$iv = random_bytes(openssl_cipher_iv_length('aes-256-gcm'));
+		$tag = '';
 
-		$ciphertext = openssl_encrypt($plaintext, 'aes-256-cbc', $key, OPENSSL_RAW_DATA, $iv);
+		$ciphertext = openssl_encrypt($plaintext, 'aes-256-gcm', $key, OPENSSL_RAW_DATA, $iv, $tag);
 
 		if (false === $ciphertext) {
 			return '';
 		}
 
-		return base64_encode($iv . $ciphertext);
+		return 'v2:' . base64_encode($iv . $tag . $ciphertext);
 	}
 
 	/**
 	 * Decrypt Secret
+	 *
+	 * Reads both the current authenticated (AES-256-GCM, "v2:"-prefixed)
+	 * format and the legacy unauthenticated AES-256-CBC format produced by
+	 * encrypt_secret() before it was hardened, so secrets saved prior to
+	 * that change keep decrypting correctly.
 	 *
 	 * @param string $encoded Value produced by encrypt_secret().
 	 * @return string Decrypted plaintext, or '' on empty input/failure.
@@ -318,6 +342,29 @@ class BACA_Key_Store
 			return '';
 		}
 
+		$key = hash('sha256', wp_salt('auth'), true);
+
+		if (0 === strpos($encoded, 'v2:')) {
+			$raw = base64_decode(substr($encoded, 3), true);
+
+			if (false === $raw) {
+				return '';
+			}
+
+			$iv_length = openssl_cipher_iv_length('aes-256-gcm');
+			$tag_length = 16; // AES-GCM auth tag is always 16 bytes.
+			$iv = substr($raw, 0, $iv_length);
+			$tag = substr($raw, $iv_length, $tag_length);
+			$ciphertext = substr($raw, $iv_length + $tag_length);
+
+			$plaintext = openssl_decrypt($ciphertext, 'aes-256-gcm', $key, OPENSSL_RAW_DATA, $iv, $tag);
+
+			return false === $plaintext ? '' : $plaintext;
+		}
+
+		// Legacy AES-256-CBC format (no integrity check) — kept only so
+		// secrets saved before encrypt_secret() switched to GCM keep
+		// decrypting correctly. New saves always use the v2: format above.
 		$raw = base64_decode($encoded, true);
 
 		if (false === $raw) {
@@ -328,7 +375,6 @@ class BACA_Key_Store
 		$iv = substr($raw, 0, $iv_length);
 		$ciphertext = substr($raw, $iv_length);
 
-		$key = hash('sha256', wp_salt('auth'), true);
 		$plaintext = openssl_decrypt($ciphertext, 'aes-256-cbc', $key, OPENSSL_RAW_DATA, $iv);
 
 		return false === $plaintext ? '' : $plaintext;

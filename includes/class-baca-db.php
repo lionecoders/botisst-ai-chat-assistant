@@ -160,36 +160,19 @@ class BACA_DB {
 		$table = esc_sql( $wpdb->prefix . 'baca_sessions' );
 		$time  = current_time( 'mysql' );
 
-		// If email is provided, retrieve any existing session matching this email
-		if ( ! empty( $email ) ) {
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Required for custom table query.
-			$existing_session = $wpdb->get_row(
-				$wpdb->prepare(
-					"SELECT session_id, content FROM {$table} WHERE email = %s LIMIT 1", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is dynamic but safe.
-					$email
-				)
-			);
-			if ( $existing_session ) {
-				$session_id = $existing_session->session_id;
-				$existing_messages = $existing_session->content;
-			}
-		}
-
 		$cache_key   = 'baca_session_' . md5( $session_id );
 		$cache_group = 'botisst_ai';
 
-		if ( ! isset( $existing_messages ) ) {
-			$existing_messages = wp_cache_get( $cache_key, $cache_group );
+		$existing_messages = wp_cache_get( $cache_key, $cache_group );
 
-			if ( false === $existing_messages ) {
-				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Required for custom table query.
-				$existing_messages = $wpdb->get_var(
-					$wpdb->prepare(
-						"SELECT content FROM {$table} WHERE session_id = %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQL.NotPrepared
-						$session_id
-					)
-				);
-			}
+		if ( false === $existing_messages ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Required for custom table query.
+			$existing_messages = $wpdb->get_var(
+				$wpdb->prepare(
+					"SELECT content FROM {$table} WHERE session_id = %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQL.NotPrepared
+					$session_id
+				)
+			);
 		}
 
 		$new_messages = [
@@ -280,13 +263,13 @@ class BACA_DB {
 		// Normalize and validate order.
 		$order_clean = esc_sql( strtoupper( $order ) === 'ASC' ? 'ASC' : 'DESC' );
 
-		// Normalize and build limit SQL segment.
+		// Normalize and build limit SQL segment. A limit of exactly 0 (or a
+		// negative value) should mean "zero rows", not "no LIMIT clause at
+		// all" — so the LIMIT is always applied whenever $limit isn't 'all'.
 		$limit_sql = esc_sql( '' );
 		if ( $limit !== 'all' ) {
-			$limit_val = intval( $limit );
-			if ( $limit_val > 0 ) {
-				$limit_sql = esc_sql( " LIMIT {$limit_val}" );
-			}
+			$limit_val = max( 0, intval( $limit ) );
+			$limit_sql = esc_sql( " LIMIT {$limit_val}" );
 		}
 
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Custom table read.

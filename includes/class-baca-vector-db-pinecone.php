@@ -186,7 +186,7 @@ class BACA_Vector_DB_Pinecone extends BACA_Vector_DB_Base
 	private function upsert_vectors($vectors)
 	{
 		$url = $this->base_url . '/vectors/upsert';
-		$response = wp_remote_post($url, ['headers' => ['Api-Key' => $this->api_key, 'Content-Type' => 'application/json', 'X-Pinecone-API-Version' => '2025-10',], 'body' => wp_json_encode(['vectors' => $vectors, 'namespace' => 'default',]), 'timeout' => 60,]);
+		$response = wp_safe_remote_post($url, ['headers' => ['Api-Key' => $this->api_key, 'Content-Type' => 'application/json', 'X-Pinecone-API-Version' => '2025-10',], 'body' => wp_json_encode(['vectors' => $vectors, 'namespace' => 'default',]), 'timeout' => 60,]);
 		if (is_wp_error($response)) {
 			return $response;
 		}
@@ -203,7 +203,7 @@ class BACA_Vector_DB_Pinecone extends BACA_Vector_DB_Base
 
 		$url = $this->base_url . '/query';
 
-		$response = wp_remote_post(
+		$response = wp_safe_remote_post(
 			$url,
 			[
 				'headers' => [
@@ -271,7 +271,7 @@ class BACA_Vector_DB_Pinecone extends BACA_Vector_DB_Base
 	{
 		$url = $this->base_url . '/vectors/fetch?ids=' . urlencode($chunk_id);
 
-		$response = wp_remote_get(
+		$response = wp_safe_remote_get(
 			$url,
 			[
 				'headers' => [
@@ -306,7 +306,7 @@ class BACA_Vector_DB_Pinecone extends BACA_Vector_DB_Base
 
 		$url = $this->base_url . '/vectors/delete';
 
-		$response = wp_remote_post(
+		$response = wp_safe_remote_post(
 			$url,
 			[
 				'headers' => [
@@ -353,7 +353,7 @@ class BACA_Vector_DB_Pinecone extends BACA_Vector_DB_Base
 	{
 		$url = $this->base_url . '/vectors/delete';
 
-		$response = wp_remote_post(
+		$response = wp_safe_remote_post(
 			$url,
 			[
 				'headers' => [
@@ -388,7 +388,7 @@ class BACA_Vector_DB_Pinecone extends BACA_Vector_DB_Base
 			$this->base_url .
 			'/describe_index_stats';
 
-		$response = wp_remote_post(
+		$response = wp_safe_remote_post(
 			$url,
 			[
 				'headers' => [
@@ -482,7 +482,7 @@ class BACA_Vector_DB_Pinecone extends BACA_Vector_DB_Base
 	{
 		$url = $this->base_url . '/describe_index_stats';
 
-		$response = wp_remote_post(
+		$response = wp_safe_remote_post(
 			$url,
 			[
 				'headers' => [
